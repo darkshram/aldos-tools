@@ -76,10 +76,11 @@ if [ $# -eq 0 ]; then
     echo -e "${green}${bold}  * Uso: $0 Tema"
     echo -e " "
     echo -e "${blue}${bold}  Temas disponibles:${purple}${bold}"
-    echo -e "    ALDOS Adwaita Amber AmberCircle Arc ArcDarker Chicago95 Greybird Materia"
-    echo -e "    MateriaDark MojaveDark MojaveLight Nordic NordicPolar Numix NumixCircle"
-    echo -e "    NumixSquare OrchisDark Plano PlanoLight Qogir QogirDark QogirLight"
-    echo -e "    Redmond10 Redmond7 RedmondXP Vimix VimixDark WhiteSurDark WhiteSurLight"
+    echo -e "   ALDOS Adwaita Amber AmberCircle Arc ArcDarker Chicago95 Greybird LaStrange"
+    echo -e "   Materia MateriaDark MojaveDark MojaveLight Nordic NordicPolar Numix"
+    echo -e "   NumixCircle NumixSquare OrchisDark Plano PlanoLight Qogir QogirDark"
+    echo -e "   QogirLight Redmond10 Redmond7 RedmondXP Vimix VimixDark WhiteSurDark"
+    echo -e "   WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}  Ejemplos:"
     echo -e "${white}${bold}  $0 ${purple}${bold}ALDOS"
@@ -875,9 +876,34 @@ function Redmond10() {
    notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Redmond10' establecido"
 }
 
+function LaStrange() {
+   rpm -q --quiet \
+       hardcode-tray sound-theme-smooth \
+       adwaita-cursor-theme lastrange-icon-theme lastrange-gtk-theme || \
+   pkcon -y install \
+       hardcode-tray sound-theme-smooth \
+       adwaita-cursor-theme lastrange-icon-theme lastrange-gtk-theme
+   rpm -q --quiet \
+       hardcode-tray sound-theme-smooth \
+       adwaita-cursor-theme lastrange-icon-theme lastrange-gtk-theme && \
+   xfconf-query -t string -c xfwm4 -p /general/theme -s LaStrange && \
+   xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+   xfconf-query -t string -c xsettings -p /Net/IconThemeName -s LaStrange && \
+   xfconf-query -t string -c xsettings -p /Net/ThemeName -s LaStrange && \
+   xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+   xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarTreePane && \
+   echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+   sudo hardcode-tray --apply > /dev/null && \
+   echo -e "${white}${bold} Hecho." && \
+   xfce4-panel -r && xfdesktop -R && \
+   sleep 3 && \
+   echo -e "${white}${bold}Tema 'LaStrange' establecido.${reset}" && \
+   notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'LaStrange' establecido"
+}
+
 function demo() {
 
-ALDOS ; sleep 20 ; Adwaita ; sleep 20 ; Amber ; sleep 20; AmberCircle ; sleep 20 ; Arc ; sleep 20 ; ArcDarker ; sleep 20 ; Chicago95 ; sleep 20 ; Greybird ; sleep 20 ; Materia ; sleep 20 ; MateriaDark ; sleep 20 ; MojaveDark ; sleep 20 ; MojaveLight ; sleep 20 ; Nordic ; sleep 20 ; NordicPolar ; sleep 20 ; Numix ; sleep 20 ; NumixCircle ; sleep 20 ; NumixSquare ; sleep 20 ; OrchisDark ; sleep 20 ; Plano ; sleep 20 ; PlanoLight ; sleep 20 ; Qogir ; sleep 20 ; QogirDark ; sleep 20 ; QogirLight ; sleep 20 ; Redmond10 ; sleep 20 ; Redmond7 ; sleep 20 ; RedmondXP ; sleep 20 ; Vimix ; sleep 20 ; VimixDark ; sleep 20 ; WhiteSurDark ; sleep 20 ; WhiteSurLight; sleep 20 ; ALDOS
+ALDOS ; sleep 20 ; Adwaita ; sleep 20 ; Amber ; sleep 20; AmberCircle ; sleep 20 ; Arc ; sleep 20 ; ArcDarker ; sleep 20 ; Chicago95 ; sleep 20 ; Greybird ; sleep 20; LaStrange; sleep 20 ; Materia ; sleep 20 ; MateriaDark ; sleep 20 ; MojaveDark ; sleep 20 ; MojaveLight ; sleep 20 ; Nordic ; sleep 20 ; NordicPolar ; sleep 20 ; Numix ; sleep 20 ; NumixCircle ; sleep 20 ; NumixSquare ; sleep 20 ; OrchisDark ; sleep 20 ; Plano ; sleep 20 ; PlanoLight ; sleep 20 ; Qogir ; sleep 20 ; QogirDark ; sleep 20 ; QogirLight ; sleep 20 ; Redmond10 ; sleep 20 ; Redmond7 ; sleep 20 ; RedmondXP ; sleep 20 ; Vimix ; sleep 20 ; VimixDark ; sleep 20 ; WhiteSurDark ; sleep 20 ; WhiteSurLight; sleep 20 ; ALDOS
 
 }
 
