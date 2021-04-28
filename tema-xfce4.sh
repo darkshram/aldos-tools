@@ -526,15 +526,15 @@ function MateriaDark() {
 function Vimix() {
    rpm -q --quiet \
        hardcode-tray sound-theme-smooth \
-       vimix-gtk-theme vimix-icon-theme || \
+       vimix-cursor-theme vimix-gtk-theme vimix-icon-theme || \
    pkcon -y install \
        hardcode-tray sound-theme-smooth \
-       vimix-gtk-theme vimix-icon-theme
+       vimix-cursor-theme vimix-gtk-theme vimix-icon-theme
    rpm -q --quiet \
        hardcode-tray sound-theme-smooth \
-       vimix-gtk-theme vimix-icon-theme && \
-   xfconf-query -t string -c xfwm4 -p /general/theme -s Vimix-doder && \
-   xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Vimix && \
+       vimix-cursor-theme vimix-gtk-theme vimix-icon-theme && \
+   xfconf-query -t string -c xfwm4 -p /general/theme -s Vimix && \
+   xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Vimix-cursors && \
    xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Vimix && \
    xfconf-query -t string -c xsettings -p /Net/ThemeName -s Vimix && \
    xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
@@ -558,8 +558,8 @@ function VimixDark() {
    rpm -q --quiet \
        hardcode-tray sound-theme-smooth \
        vimix-gtk-theme vimix-icon-theme && \
-   xfconf-query -t string -c xfwm4 -p /general/theme -s Vimix-dark-doder && \
-   xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Vimix-dark && \
+   xfconf-query -t string -c xfwm4 -p /general/theme -s Vimix-dark && \
+   xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Vimix-white-cursors && \
    xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Vimix-dark && \
    xfconf-query -t string -c xsettings -p /Net/ThemeName -s Vimix-dark && \
    xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
