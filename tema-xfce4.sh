@@ -144,8 +144,8 @@ function ALDOSDarker() {
         echo -e "${white}${bold} Hecho." && \
         xfce4-panel -r && xfdesktop -R && \
         sleep 3 && \
-        echo -e "${white}${bold}Tema 'ALDOS' establecido.${reset}" && \
-        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ALDOS' establecido"
+        echo -e "${white}${bold}Tema 'ALDOSDark' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ALDOSDark' establecido"
 }
 
 function Plano() {
