@@ -76,11 +76,11 @@ if [ $# -eq 0 ]; then
     echo -e "${green}${bold}  * Uso: $0 Tema"
     echo -e " "
     echo -e "${blue}${bold}  Temas disponibles:${purple}${bold}"
-    echo -e "   ALDOS Adwaita Amber AmberCircle Arc ArcDarker Chicago95 Greybird LaStrange"
-    echo -e "   Materia MateriaDark MojaveDark MojaveLight Nordic NordicPolar Numix"
-    echo -e "   NumixCircle NumixSquare OrchisDark Plano PlanoLight Qogir QogirDark"
-    echo -e "   QogirLight Redmond10 Redmond7 RedmondXP Vimix VimixDark WhiteSurDark"
-    echo -e "   WhiteSurLight"
+    echo -e "   ALDOS ALDOSdarker Adwaita Amber AmberCircle Arc ArcDarker Chicago95 "
+    echo -e "   Greybird LaStrange Materia MateriaDark MojaveDark MojaveLight Nordic"
+    echo -e "   NordicPolar Numix NumixCircle NumixSquare OrchisDark Plano PlanoLight"
+    echo -e "   Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP Vimix VimixDark"
+    echo -e "   WhiteSurDark WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}  Ejemplos:"
     echo -e "${white}${bold}  $0 ${purple}${bold}ALDOS"
@@ -109,6 +109,31 @@ function ALDOS() {
        hardcode-tray sound-theme-smooth \
        numix-cursor-theme arc-theme tela-icon-theme && \
    xfconf-query -t string -c xfwm4 -p /general/theme -s Arc && \
+   xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
+   xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-dark && \
+   xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
+   xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+   xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+   echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+   sudo hardcode-tray --apply > /dev/null && \
+   echo -e "${white}${bold} Hecho." && \
+   xfce4-panel -r && xfdesktop -R && \
+   sleep 3 && \
+   echo -e "${white}${bold}Tema 'ALDOS' establecido.${reset}" && \
+   notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ALDOS' establecido"
+}
+
+function ALDOSDarker() {
+   rpm -q --quiet \
+       hardcode-tray sound-theme-smooth \
+       numix-cursor-theme arc-theme tela-icon-theme || \
+   pkcon -y install \
+       hardcode-tray sound-theme-smooth \
+       numix-cursor-theme arc-theme tela-icon-theme
+   rpm -q --quiet \
+       hardcode-tray sound-theme-smooth \
+       numix-cursor-theme arc-theme tela-icon-theme && \
+   xfconf-query -t string -c xfwm4 -p /general/theme -s Arc-Darker && \
    xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
    xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-dark && \
    xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
@@ -244,7 +269,7 @@ function Arc() {
    echo -e "${white}${bold} Hecho." && \
    xfce4-panel -r && xfdesktop -R && \
    sleep 3 && \
-   echo -e "${white}${bold}Tema 'Arc'establecido.${reset}" && \
+   echo -e "${white}${bold}Tema 'Arc' establecido.${reset}" && \
    notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Arc' establecido"
 }
 
@@ -269,7 +294,7 @@ function ArcDarker() {
    echo -e "${white}${bold} Hecho." && \
    xfce4-panel -r && xfdesktop -R && \
    sleep 3 && \
-   echo -e "${white}${bold}Tema 'ArcDarker'establecido.${reset}" && \
+   echo -e "${white}${bold}Tema 'ArcDarker' establecido.${reset}" && \
    notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ArcDarker' establecido"
 }
 
@@ -294,7 +319,7 @@ function ArcDark() {
    echo -e "${white}${bold} Hecho." && \
    xfce4-panel -r && xfdesktop -R && \
    sleep 3 && \
-   echo -e "${white}${bold}Tema 'ArcDark'establecido.${reset}" && \
+   echo -e "${white}${bold}Tema 'ArcDark' establecido.${reset}" && \
    notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ArcDark' establecido"
 }
 
