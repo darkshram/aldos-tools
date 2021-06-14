@@ -76,11 +76,11 @@ if [ $# -eq 0 ]; then
     echo -e "${green}${bold}  * Uso: $0 Tema"
     echo -e " "
     echo -e "${blue}${bold}  Temas disponibles:${purple}${bold}"
-    echo -e "   ALDOS ALDOSdarker Adwaita Amber AmberCircle Arc ArcDarker Chicago95 "
-    echo -e "   Greybird LaStrange Materia MateriaDark MojaveDark MojaveLight Nordic"
-    echo -e "   NordicPolar Numix NumixCircle NumixSquare OrchisDark Plano PlanoLight"
-    echo -e "   Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP Vimix VimixDark"
-    echo -e "   WhiteSurDark WhiteSurLight"
+    echo -e "   ALDOS ALDOSDarker Adwaita Amber AmberCircle Arc ArcDarker Chicago95 "
+    echo -e "   Dracula Greybird LaStrange Materia MateriaDark MojaveDark MojaveLight"
+    echo -e "   Nordic NordicPolar Numix NumixCircle NumixSquare OrchisDark Plano"
+    echo -e "   PlanoLight Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP Vimix"
+    echo -e "   VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}  Ejemplos:"
     echo -e "${white}${bold}  $0 ${purple}${bold}ALDOS"
@@ -421,6 +421,32 @@ function Greybird() {
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Grebird' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Grebird' establecido"
+}
+
+
+function Dracula() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        numix-cursor-theme dracula-gtk-theme candy-icon-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        numix-cursor-theme dracula-gtk-theme candy-icon-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        numix-cursor-theme dracula-gtk-theme candy-icon-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Dracula && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Candy && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Dracula && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Dracula' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Dracula' establecido"
 }
 
 function Nordic() {
