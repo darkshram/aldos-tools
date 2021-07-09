@@ -77,8 +77,8 @@ if [ $# -eq 0 ]; then
     echo -e " "
     echo -e "${blue}${bold}  Temas disponibles:${purple}${bold}"
     echo -e "   ALDOS ALDOSDarker Adwaita Amber AmberCircle Arc ArcDarker Chicago95 "
-    echo -e "   Dracula Greybird LaStrange Materia MateriaDark MojaveDark MojaveLight"
-    echo -e "   Nordic NordicPolar Numix NumixCircle NumixSquare OrchisDark Plano"
+    echo -e "   Dracula Greybird LaStrange Layan Materia MateriaDark MojaveDark"
+    echo -e "   MojaveLight Nordic NordicPolar Numix NumixCircle NumixSquare OrchisDark Plano"
     echo -e "   PlanoLight Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP Vimix"
     echo -e "   VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
@@ -446,6 +446,31 @@ function Dracula() {
         xfce4-panel -r && xfdesktop -R && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Dracula' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Dracula' establecido"
+}
+
+function Layan() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        numix-cursor-theme layan-gtk-theme tela-icon-theme layan-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        numix-cursor-theme layan-gtk-theme tela-icon-theme layan-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        numix-cursor-theme layan-gtk-theme tela-icon-theme layan-cursor-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Layan && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Layan-cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Layan && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Layan' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Dracula' establecido"
 }
 
