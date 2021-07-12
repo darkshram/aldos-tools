@@ -436,7 +436,7 @@ function Dracula() {
         numix-cursor-theme dracula-gtk-theme candy-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Dracula && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Candy && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Dracula && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Dracula && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
