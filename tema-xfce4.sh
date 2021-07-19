@@ -76,11 +76,11 @@ if [ $# -eq 0 ]; then
     echo -e "${green}${bold}  * Uso: $0 Tema"
     echo -e " "
     echo -e "${blue}${bold}  Temas disponibles:${purple}${bold}"
-    echo -e "   ALDOS ALDOSDarker Adwaita Amber AmberCircle Arc ArcDarker Chicago95 "
-    echo -e "   Dracula Greybird LaStrange Layan Materia MateriaDark MojaveDark"
-    echo -e "   MojaveLight Nordic NordicPolar Numix NumixCircle NumixSquare OrchisDark Plano"
-    echo -e "   PlanoLight Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP Vimix"
-    echo -e "   VimixDark WhiteSurDark WhiteSurLight"
+    echo -e "   ALDOS ALDOSDarker Adwaita Amber AmberCircle Arc ArcDarker Chicago95"
+    echo -e "   Dracula Fluent FluentDark Greybird LaStrange Layan Materia MateriaDark"
+    echo -e "   MojaveDark MojaveLight Nordic NordicPolar Numix NumixCircle NumixSquare"
+    echo -e "   Plano PlanoLight Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP"
+    echo -e "   Vimix VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}  Ejemplos:"
     echo -e "${white}${bold}  $0 ${purple}${bold}ALDOS"
@@ -471,7 +471,7 @@ function Layan() {
         xfce4-panel -r && xfdesktop -R && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Layan' establecido.${reset}" && \
-        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Dracula' establecido"
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Layan' establecido"
 }
 
 function Nordic() {
@@ -827,13 +827,13 @@ function QogirDark() {
 function QogirLight() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        fluent-gtk-theme fluent-icon-theme || \
+        qogir-gtk-theme qogir-icon-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        fluent-gtk-theme fluent-icon-theme
+        qogir-gtk-theme qogir-icon-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        fluent-gtk-theme fluent-icon-theme && \
+        qogir-gtk-theme qogir-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Qogir-light && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Qogir && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Qogir-light && \
@@ -848,6 +848,57 @@ function QogirLight() {
         echo -e "${white}${bold}Tema 'QogirLight' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'QogirLight' establecido"
 }
+
+function Fluent() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        fluent-gtk-theme fluent-cursor-theme fluent-icon-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        fluent-gtk-theme fluent-cursor-theme fluent-icon-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        fluent-gtk-theme fluent-cursor-theme fluent-icon-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Fluent && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Fluent && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Fluent && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Fluent' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'fluent' establecido"
+}
+
+function FluentDark() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        fluent-gtk-theme fluent-cursor-theme fluent-icon-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        fluent-gtk-theme fluent-cursor-theme fluent-icon-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        fluent-gtk-theme fluent-cursor-theme fluent-icon-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Fluent-dark && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent-dark && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Fluent-dark && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Fluent-dark && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'FluentDark' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'FluentDark' establecido"
+}
+
 
 function Chicago95() {
     rpm -q --quiet \
@@ -979,7 +1030,7 @@ function LaStrange() {
 
 function demo() {
 
-    ALDOS ; sleep 20 ; Adwaita ; sleep 20 ; Amber ; sleep 20; AmberCircle ; sleep 20 ; Arc ; sleep 20 ; ArcDarker ; sleep 20 ; Chicago95 ; sleep 20 ; Greybird ; sleep 20; LaStrange; sleep 20 ; Materia ; sleep 20 ; MateriaDark ; sleep 20 ; MojaveDark ; sleep 20 ; MojaveLight ; sleep 20 ; Nordic ; sleep 20 ; NordicPolar ; sleep 20 ; Numix ; sleep 20 ; NumixCircle ; sleep 20 ; NumixSquare ; sleep 20 ; OrchisDark ; sleep 20 ; Plano ; sleep 20 ; PlanoLight ; sleep 20 ; Qogir ; sleep 20 ; QogirDark ; sleep 20 ; QogirLight ; sleep 20 ; Redmond10 ; sleep 20 ; Redmond7 ; sleep 20 ; RedmondXP ; sleep 20 ; Vimix ; sleep 20 ; VimixDark ; sleep 20 ; WhiteSurDark ; sleep 20 ; WhiteSurLight; sleep 20 ; ALDOS
+    ALDOS ; sleep 20; ALDOSDarker ; sleep 20; Adwaita ; sleep 20; Amber ; sleep 20; AmberCircle ; sleep 20; Arc ; sleep 20; ArcDarker ; sleep 20; Chicago95 ; sleep 20; Dracula ; sleep 20; Fluent ; sleep 20; FluentDark ; sleep 20; Greybird ; sleep 20; LaStrange ; sleep 20; Layan ; sleep 20; Materia ; sleep 20; MateriaDark ; sleep 20; MojaveDark ; sleep 20; MojaveLight ; sleep 20; Nordic ; sleep 20; NordicPolar ; sleep 20; Numix ; sleep 20; NumixCircle ; sleep 20; NumixSquare ; sleep 20; Plano ; sleep 20; PlanoLight ; sleep 20; Qogir ; sleep 20; QogirDark ; sleep 20; QogirLight ; sleep 20; Redmond10 ; sleep 20; Redmond7 ; sleep 20; RedmondXP ; sleep 20; Vimix ; sleep 20; VimixDark ; sleep 20; WhiteSurDark ; sleep 20; WhiteSurLight; sleep 20 ; ALDOS;
 
 }
 
