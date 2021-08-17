@@ -510,7 +510,7 @@ function NordicPolar() {
         hardcode-tray sound-theme-smooth \
         numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordzy-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Nordic-Polar && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordzy && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordzy-white-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nordic-Polar && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
