@@ -101,16 +101,16 @@ fi
 function ALDOS() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme tela-icon-theme || \
+        numix-cursor-theme arc-theme tela-icon-theme-black || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme tela-icon-theme
+        numix-cursor-theme arc-theme tela-icon-theme-black
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme tela-icon-theme && \
+        numix-cursor-theme arc-theme tela-icon-theme-black && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-dark && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-black-dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
@@ -477,16 +477,16 @@ function Layan() {
 function Nordic() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme || \
+        numix-cursor-theme nordic-gtk-theme nordzy-icon-theme nordzy-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme
+        numix-cursor-theme nordic-gtk-theme nordzy-icon-theme nordzy-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme && \
+        numix-cursor-theme nordic-gtk-theme nordzy-icon-theme nordzy-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Nordic && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordzy-cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Nordzy-dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nordic && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
@@ -502,15 +502,15 @@ function Nordic() {
 function NordicPolar() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme || \
+        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordzy-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme
+        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordzy-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme && \
+        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordzy-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Nordic-Polar && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordzy && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nordic-Polar && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
