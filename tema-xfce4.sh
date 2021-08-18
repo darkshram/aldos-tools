@@ -427,13 +427,13 @@ function Greybird() {
 function Dracula() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme dracula-gtk-theme dracula-icon-theme oreo-dracula-cursor-theme || \
+        dracula-gtk-theme dracula-icon-theme oreo-dracula-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme dracula-gtk-theme dracula-icon-theme oreo-dracula-cursor-theme
+       dracula-gtk-theme dracula-icon-theme oreo-dracula-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme dracula-gtk-theme dracula-icon-theme oreo-dracula-cursor-theme && \
+        dracula-gtk-theme dracula-icon-theme oreo-dracula-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Dracula && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Oreo-Dracula-dark-purple && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Dracula && \
