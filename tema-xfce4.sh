@@ -861,7 +861,7 @@ function Fluent() {
         fluent-gtk-theme fluent-cursor-theme fluent-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Fluent && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Fluent-dark && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Fluent && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Fluent && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
