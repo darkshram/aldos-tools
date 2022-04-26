@@ -101,16 +101,16 @@ fi
 function ALDOS() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme tela-icon-theme-black || \
+        numix-cursor-theme arc-theme tela-icon-theme-nord || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme tela-icon-theme-black
+        numix-cursor-theme arc-theme tela-icon-theme-nord
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         numix-cursor-theme arc-theme tela-icon-theme-black && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-black-dark && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
@@ -126,16 +126,16 @@ function ALDOS() {
 function ALDOSDarker() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme tela-black-icon-theme || \
+        numix-cursor-theme arc-theme tela-icon-theme-nord || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme tela-black-icon-theme
+        numix-cursor-theme arc-theme tela-icon-theme-nord
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme tela-black-icon-theme && \
+        numix-cursor-theme arc-theme tela-icon-theme-nord && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-black-dark && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
@@ -201,13 +201,13 @@ function PlanoLight() {
 function Amber() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-black-icon-theme || \
+        numix-cursor-theme amber-theme tela-icon-theme-black || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-black-icon-theme
+        numix-cursor-theme amber-theme tela-icon-theme-black
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-black-icon-theme && \
+        numix-cursor-theme amber-theme tela-icon-theme-black && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Amber && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-black && \
@@ -226,13 +226,13 @@ function Amber() {
 function AmberCircle() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-circle-black || \
+        numix-cursor-theme amber-theme tela-circle-black-icon-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-circle-black
+        numix-cursor-theme amber-theme tela-circle-black-icon-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-circle-black && \
+        numix-cursor-theme amber-theme tela-circle-black-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Amber && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-circle-black && \
