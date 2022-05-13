@@ -659,10 +659,10 @@ function MojaveLight() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         mojave-gtk-theme mcmojave-cursor-theme mcmojave-circle-icon-theme && \
-        xfconf-query -t string -c xfwm4 -p /general/theme -s Mojave-light && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Mojave-Light && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s McMojave-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s McMojave-circle && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Mojave-light && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Mojave-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -684,10 +684,10 @@ function MojaveDark() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         mojave-gtk-theme mcmojave-cursor-theme mcmojave-circle-icon-theme && \
-        xfconf-query -t string -c xfwm4 -p /general/theme -s Mojave-dark && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Mojave-Dark && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s McMojave-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s McMojave-circle-dark && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Mojave-dark && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Mojave-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
