@@ -202,16 +202,16 @@ function PlanoLight() {
 function Amber() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-icon-theme-circle numix-cursor-theme amber-theme tela-icon-theme-black || \
+        numix-icon-theme numix-cursor-theme amber-theme tela-icon-theme-black || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-icon-theme-black
+        numix-icon-theme numix-cursor-theme amber-theme tela-icon-theme-black
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-icon-theme-circle numix-cursor-theme amber-theme tela-icon-theme-black && \
+        numix-icon-theme numix-cursor-theme amber-theme tela-icon-theme-black && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Amber && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Numix-Circle && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Numix && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Amber && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
@@ -227,16 +227,16 @@ function Amber() {
 function AmberCircle() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-circle-black-icon-theme || \
+        numix-cursor-theme amber-theme numix-icon-theme-circle || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-circle-black-icon-theme
+        numix-cursor-theme amber-theme numix-icon-theme-circle
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-circle-black-icon-theme && \
+        numix-cursor-theme amber-theme numix-icon-theme-circle && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Amber && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-circle-black && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Numix-Circle && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Amber && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
