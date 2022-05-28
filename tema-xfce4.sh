@@ -18,6 +18,7 @@
 # License available at: https://www.gnu.org/licenses/gpl-3.0.en.html
 #
 # Author: Joel Barrios <darkshram@gmail.com>
+# URL: https://github.com/darkshram/aldos-tools/
 
 # https://techstop.github.io/bash-script-colors/
 # Bold High Intensty
@@ -401,13 +402,13 @@ function NumixSquare() {
 function Greybird() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme greybird-light-theme adwaita-icon-theme || \
+        adwaita-cursor-theme greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme greybird-light-theme adwaita-icon-theme
+        adwaita-cursor-theme greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme greybird-light-theme adwaita-icon-theme && \
+        adwaita-cursor-theme greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Greybird && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Adwaita && \
@@ -527,13 +528,13 @@ function NordicPolar() {
 function Adwaita() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme gnome-themes-extra greybird-light-theme adwaita-icon-theme || \
+        adwaita-cursor-theme gnome-themes-extra greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme gnome-themes-extra greybird-light-theme adwaita-icon-theme
+        adwaita-cursor-theme gnome-themes-extra greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme gnome-themes-extra greybird-light-theme adwaita-icon-theme && \
+        adwaita-cursor-theme gnome-themes-extra greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Greybird && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Adwaita && \
