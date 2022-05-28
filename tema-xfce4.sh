@@ -202,16 +202,16 @@ function PlanoLight() {
 function Amber() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-icon-theme-black || \
+        numix-icon-theme-circle numix-cursor-theme amber-theme tela-icon-theme-black || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
         numix-cursor-theme amber-theme tela-icon-theme-black
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme amber-theme tela-icon-theme-black && \
+        numix-icon-theme-circle numix-cursor-theme amber-theme tela-icon-theme-black && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Amber && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-black && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Numix-Circle && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Amber && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
@@ -484,7 +484,7 @@ function Nordic() {
         numix-cursor-theme nordic-gtk-theme zafiro-icon-theme nordzy-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-gtk-theme nordzy-icon-theme nordzy-cursor-theme && \
+        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme nordzy-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Nordic && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordzy-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons && \
