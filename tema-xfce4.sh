@@ -810,10 +810,10 @@ function QogirDark() {
         rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         qogir-gtk-theme qogir-icon-theme || \
-        xfconf-query -t string -c xfwm4 -p /general/theme -s Qogir-dark && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Qogir-dark && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Qogir-dark && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Qogir-dark && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Qogir-Dark && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Qogir-Dark && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Qogir-Dark && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Qogir-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -835,10 +835,10 @@ function QogirLight() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         qogir-gtk-theme qogir-icon-theme && \
-        xfconf-query -t string -c xfwm4 -p /general/theme -s Qogir-light && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Qogir-Light && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Qogir && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Qogir-light && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Qogir-light && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Qogir-Light && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Qogir-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
