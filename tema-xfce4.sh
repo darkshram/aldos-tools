@@ -450,6 +450,31 @@ function Dracula() {
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Dracula' establecido"
 }
 
+function DraculaCandy() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        dracula-gtk-theme candy-icon-theme dracula-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+       dracula-gtk-theme candy-icon-theme dracula-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        dracula-gtk-theme candy-icon-theme dracula-cursor-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Dracula && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Dracula-cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Candy && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Dracula && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Dracula' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Dracula' establecido"
+}
+
 function Layan() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
