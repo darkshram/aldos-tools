@@ -553,17 +553,17 @@ function NordicPolar() {
 function Adwaita() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme gnome-themes-extra greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme || \
+        adwaita-cursor-theme gnome-themes-extra adwaita-icon-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme gnome-themes-extra greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme
+        adwaita-cursor-theme gnome-themes-extra adwaita-icon-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme gnome-themes-extra greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme && \
-        xfconf-query -t string -c xfwm4 -p /general/theme -s Greybird && \
+        adwaita-cursor-theme gnome-themes-extra adwaita-icon-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Default && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Adwaita && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Greybird && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -735,10 +735,10 @@ function WhiteSurLight() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         whitesur-gtk-theme whitesur-cursor-theme whitesur-icon-theme && \
-        xfconf-query -t string -c xfwm4 -p /general/theme -s WhiteSur-light && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s WhiteSur-Light && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s WhiteSur-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s WhiteSur && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s WhiteSur-light && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s WhiteSur-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -760,10 +760,10 @@ function WhiteSurDark() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         whitesur-gtk-theme whitesur-cursor-theme whitesur-icon-theme && \
-        xfconf-query -t string -c xfwm4 -p /general/theme -s WhiteSur-dark && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s WhiteSur-Dark && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s WhiteSur-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s WhiteSur-dark && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s WhiteSur-dark && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s WhiteSur-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
