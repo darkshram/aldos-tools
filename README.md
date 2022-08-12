@@ -10,7 +10,7 @@ mkdir -p ~/.local/bin/
 wget -P ~/.local/bin/ https://raw.githubusercontent.com/darkshram/aldos-tools/main/tema-xfce4.sh
 chmod +x ~/.local/bin/tema-xfce4.sh
 ```
-Works from terminal. **Requires a regular user account configured to use sudo** because the use of hardcoretray, **but it should not be used directly with sudo**. Just execute it without arguments ***as regular user*** and it will explain itself how to use it. To switch theme in Xfce, just execute it with the name of the theme (in the list of supported themes) as argument. Program itself will download and install (using sudo) everything needed for ALDOS, including hardcode-tray to fix the hardcoded tray icons (this part also requires sudo).
+Works from terminal. **Requires a regular user account configured to use sudo** because the use of hardcode-tray, **but it should not be used directly with sudo**. Just execute it without arguments ***as regular user*** and it will explain itself how to use it. To switch theme in Xfce, just execute it with the name of the theme (in the list of supported themes) as argument. Program itself will download and install (using sudo) everything needed for ALDOS, including hardcode-tray to fix the hardcoded tray icons (this part also requires sudo).
 
 ```
  
