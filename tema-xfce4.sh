@@ -577,13 +577,13 @@ function Layan() {
 function Nordic() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme nordic-cursors || \
+        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme nordic-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme nordic-cursors
+        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme nordic-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme nordic-cursors && \
+        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme nordic-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Nordic && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons && \
