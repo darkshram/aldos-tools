@@ -452,17 +452,17 @@ function Ant() {
 function Dracula() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        dracula-gtk-theme dracula-icon-theme dracula-cursor-theme || \
+        dracula-gtk-theme tela-circle-dracula-icon-theme dracula-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-       dracula-gtk-theme dracula-icon-theme dracula-cursor-theme
+       dracula-gtk-theme tela-circle-dracula-icon-theme dracula-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        dracula-gtk-theme dracula-icon-theme dracula-cursor-theme && \
+        dracula-gtk-theme tela-circle-dracula-icon-theme dracula-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Dracula && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Dracula-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Dracula && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Dracula && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Tela-circle-dracula-dark  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
