@@ -452,16 +452,16 @@ function Ant() {
 function Kimi() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        kimi-gtk-theme boston-icon-theme adwaita-cursor-theme || \
+        kimi-gtk-theme tela-icon-theme-purple adwaita-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        kimi-gtk-theme boston-icon-theme adwaita-cursor-theme
+        kimi-gtk-theme tela-icon-theme-purple adwaita-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        kimi-gtk-theme boston-icon-theme adwaita-cursor-theme && \
+        kimi-gtk-theme tela-icon-theme-purple adwaita-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Kimi && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Boston && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-purple && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Kimi  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
