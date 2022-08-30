@@ -452,15 +452,15 @@ function Ant() {
 function Otis() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        otis-gtk-theme candy-icon-theme adwaita-cursor-theme || \
+        otis-gtk-theme candy-icon-theme numix-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        otis-gtk-theme candy-icon-theme adwaita-cursor-theme
+        otis-gtk-theme candy-icon-theme numix-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        otis-gtk-theme candy-icon-theme adwaita-cursor-theme && \
+        otis-gtk-theme candy-icon-theme numix-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Otis && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Candy && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Otis  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
