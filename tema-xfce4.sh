@@ -78,8 +78,8 @@ if [ $# -eq 0 ]; then
     echo -e " "
     echo -e "${blue}${bold}  Temas disponibles:${purple}${bold}"
     echo -e "   ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95"
-    echo -e "   ColloidDark ColloidLight Dracula Fluent FluentDark Greybird LaStrange Layan"
-    echo -e "   Materia MateriaDark MojaveDark MojaveLight Nordic NordicPolar Numix"
+    echo -e "   ColloidDark ColloidLight Dracula Fluent FluentDark Greybird Kimi LaStrange"
+    echo -e "   Layan Materia MateriaDark MojaveDark MojaveLight Nordic NordicPolar Numix"
     echo -e "   NumixCircle NumixSquare Otis Plano PlanoLight Qogir QogirDark QogirLight"
     echo -e "   Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
@@ -447,6 +447,31 @@ function Ant() {
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Ant' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Ant' establecido"
+}
+
+function Kimi() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        kimi-gtk-theme boston-icon-theme adwaita-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        kimi-gtk-theme boston-icon-theme adwaita-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        kimi-gtk-theme boston-icon-theme adwaita-cursor-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Kimi && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Boston && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s KImi  && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Kimi' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Kimi' establecido"
 }
 
 function Otis() {
