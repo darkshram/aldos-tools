@@ -1205,8 +1205,16 @@ function LaStrange() {
 
 function demo() {
 
-    ALDOS ; sleep 20; ALDOSDarker ; sleep 20; Adwaita ; sleep 20; Amber ; sleep 20; AmberCircle ; sleep 20 ; Ant; sleep 20; Arc ; sleep 20; ArcDarker ; sleep 20; Chicago95; sleep 20; ColloidDark; sleep 20; ColloidLight ; sleep 20; Dracula ; sleep 20; DraculaCandy ; sleep 20; Fluent ; sleep 20; FluentDark ; sleep 20; Greybird ; sleep 20; LaStrange ; sleep 20; Layan ; sleep 20; Materia ; sleep 20; MateriaDark ; sleep 20; MojaveDark ; sleep 20; MojaveLight ; sleep 20; Nordic ; sleep 20; NordicPolar ; sleep 20; Numix ; sleep 20; NumixCircle ; sleep 20; NumixSquare ; sleep 20; Plano ; sleep 20; PlanoLight ; sleep 20; Qogir ; sleep 20; QogirDark ; sleep 20; QogirLight ; sleep 20; Redmond10 ; sleep 20; Redmond7 ; sleep 20; RedmondXP ; sleep 20; Vimix ; sleep 20; VimixDark ; sleep 20; WhiteSurDark ; sleep 20; WhiteSurLight; sleep 20 ; ALDOS;
-
+    for TESTTHEME in \
+       ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95 \
+       ColloidDark ColloidLight Dracula Fluent FluentDark Greybird Kimi LaStrange \
+       Layan Materia MateriaDark MojaveDark MojaveLight Nordic NordicPolar Numix \
+       NumixCircle NumixSquare Otis Plano PlanoLight Qogir QogirDark QogirLight \
+       Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark WhiteSurDark WhiteSurLight \
+       ALDOS
+    do
+       ${TESTTHEME} ; sleep 20
+    done
 }
 
 $1
