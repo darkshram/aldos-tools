@@ -80,8 +80,8 @@ if [ $# -eq 0 ]; then
     echo -e "   ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95"
     echo -e "   ColloidDark ColloidLight Dracula Fluent FluentDark Greybird LaStrange Layan"
     echo -e "   Materia MateriaDark MojaveDark MojaveLight Nordic NordicPolar Numix"
-    echo -e "   NumixCircle NumixSquare Plano PlanoLight Qogir QogirDark QogirLight"
-    echo -e "   Redmond10 Redmond7 RedmondXP Vimix VimixDark WhiteSurDark WhiteSurLight"
+    echo -e "   NumixCircle NumixSquare Otis Plano PlanoLight Qogir QogirDark QogirLight"
+    echo -e "   Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}  Ejemplos:"
     echo -e "${white}${bold}  $0 ${purple}${bold}ALDOS"
@@ -449,20 +449,70 @@ function Ant() {
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Ant' establecido"
 }
 
+function Otis() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        otis-gtk-theme candy-icon-theme adwaita-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        otis-gtk-theme candy-icon-theme adwaita-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        otis-gtk-theme candy-icon-theme adwaita-cursor-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Otis && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Candy && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Otis  && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Otis' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Otis' establecido"
+}
+
+function Snow() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        snow-gtk-theme boston-icon-theme adwaita-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        snow-gtk-theme boston-icon-theme adwaita-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        snow-gtk-theme boston-icon-theme adwaita-cursor-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Snow && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Boston && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Snow  && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Snow' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Snow' establecido"
+}
+
 function Dracula() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         dracula-gtk-theme tela-circle-dracula-icon-theme dracula-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-       dracula-gtk-theme tela-circle-dracula-icon-theme dracula-cursor-theme
+        dracula-gtk-theme tela-circle-dracula-icon-theme dracula-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         dracula-gtk-theme tela-circle-dracula-icon-theme dracula-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Dracula && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Dracula-cursors && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Dracula && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Tela-circle-dracula-dark  && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-circle-dracula-dark && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Dracula && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -480,7 +530,7 @@ function DraculaCandy() {
         dracula-gtk-theme candy-icon-theme dracula-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-       dracula-gtk-theme candy-icon-theme dracula-cursor-theme
+        dracula-gtk-theme candy-icon-theme dracula-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         dracula-gtk-theme candy-icon-theme dracula-cursor-theme && \
