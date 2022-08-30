@@ -462,7 +462,7 @@ function Kimi() {
         xfconf-query -t string -c xfwm4 -p /general/theme -s Kimi && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Boston && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s KImi  && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Kimi  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
