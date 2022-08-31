@@ -14,25 +14,26 @@ Works from terminal. **Requires a regular user account configured to use sudo** 
 
 ```
  
-  * Se requiere el nombre de un tema como argumento.
-  * Uso: /home/jbarrios/.local/bin/tema-xfce4.sh Tema
+  * Utilice el nombre de un tema como argumento.
+  * Uso: tema-xfce4.sh [Tema]
  
-  Temas disponibles:
-   ALDOS ALDOSDarker Adwaita Amber AmberCircle Arc ArcDarker Chicago95
-   Dracula Fluent FluentDark Greybird LaStrange Layan Materia MateriaDark
-   MojaveDark MojaveLight Nordic NordicPolar Numix NumixCircle NumixSquare
-   Plano PlanoLight Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP
-   Vimix VimixDark WhiteSurDark WhiteSurLight
+Temas disponibles en ALDOS:
+ ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95
+ ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark Greybird
+ Kimi LaStrange Layan Materia MateriaDark MojaveDark MojaveLight Nephrite
+ NephriteLight Nordic NordicPolar Numix NumixCircle NumixSquare Otis Plano
+ PlanoLight Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP Snow
+ Vimix VimixDark WhiteSurDark WhiteSurLight
  
-  Ejemplos:
-  /home/jbarrios/.local/bin/tema-xfce4.sh ALDOS
+Ejemplos:
+  tema-xfce4.sh ALDOS
  
-  /home/jbarrios/.local/bin/tema-xfce4.sh Amber
+  tema-xfce4.sh Amber
  
-  /home/jbarrios/.local/bin/tema-xfce4.sh Arc
+  tema-xfce4.sh Arc
  
 * Use 'demo' como argumento para presentar todos los temas c/u por 20 seg.
   (Al final establecerá ALDOS como tema.) 
  
-* Refrescando caché de yum con pkcon... Hecho.
+* Refrescando caché de yum con pkcon... Hecho. 
 ```
