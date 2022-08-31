@@ -76,7 +76,7 @@ if [ $# -eq 0 ]; then
     echo -e "${red}${bold}  * Se requiere el nombre de un tema como argumento."
     echo -e "${green}${bold}  * Uso: $0 Tema"
     echo -e " "
-    echo -e "${blue}${bold}Temas disponibles:${purple}${bold}"
+    echo -e "${blue}${bold}Temas disponibles en ALDOS:${purple}${bold}"
     echo -e " ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95"
     echo -e " ColloidDark ColloidLight Dracula DraculaCaandy Fluent FluentDark Greybird"
     echo -e " Kimi LaStrange Layan Materia MateriaDark MojaveDark MojaveLight Nephrite"
