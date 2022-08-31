@@ -76,14 +76,15 @@ if [ $# -eq 0 ]; then
     echo -e "${red}${bold}  * Se requiere el nombre de un tema como argumento."
     echo -e "${green}${bold}  * Uso: $0 Tema"
     echo -e " "
-    echo -e "${blue}${bold}  Temas disponibles:${purple}${bold}"
-    echo -e "   ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95"
-    echo -e "   ColloidDark ColloidLight Dracula Fluent FluentDark Greybird Kimi LaStrange"
-    echo -e "   Layan Materia MateriaDark MojaveDark MojaveLight Nephrite Nordic NordicPolar"
-    echo -e "   Numix NumixCircle NumixSquare Otis Plano PlanoLight Qogir QogirDark QogirLight"
-    echo -e "   Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark WhiteSurDark WhiteSurLight"
+    echo -e "${blue}${bold}Temas disponibles:${purple}${bold}"
+    echo -e " ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95"
+    echo -e " ColloidDark ColloidLight Dracula DraculaCaandy Fluent FluentDark Greybird"
+    echo -e " Kimi LaStrange Layan Materia MateriaDark MojaveDark MojaveLight Nephrite"
+    echo -e " NephriteLight Nordic NordicPolar Numix NumixCircle NumixSquare Otis Plano"
+    echo -e " PlanoLight Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP Snow"
+    echo -e " Vimix VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
-    echo -e "${green}${bold}  Ejemplos:"
+    echo -e "${green}${bold}Ejemplos:"
     echo -e "${white}${bold}  $0 ${purple}${bold}ALDOS"
     echo -e " "
     echo -e "${white}${bold}  $0 ${purple}${bold}Amber"
@@ -597,6 +598,31 @@ function Nephrite() {
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Nephrite' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Nephrite' establecido"
+}
+
+function NephriteLight() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        nephrite-gtk-theme fluent-icon-theme-teal fluent-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        nephrite-gtk-theme fluent-icon-theme-teal fluent-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        nephrite-gtk-theme fluent-icon-theme-teal fluent-cursor-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Nephrite-Light && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent-cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Fluent-teal && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nephrite-Light  && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'NephriteLight' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'NephriteLight' establecido"
 }
 
 function ColloidDark() {
@@ -1232,11 +1258,11 @@ function demo() {
 
     for TESTTHEME in \
        ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95 \
-       ColloidDark ColloidLight Dracula Fluent FluentDark Greybird Kimi LaStrange \
-       Layan Materia MateriaDark MojaveDark MojaveLight Nordic NordicPolar Numix \
-       NumixCircle NumixSquare Otis Plano PlanoLight Qogir QogirDark QogirLight \
-       Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark WhiteSurDark WhiteSurLight \
-       ALDOS
+       ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark Greybird Kimi \
+       LaStrange Layan Materia MateriaDark MojaveDark MojaveLight Nephrite NephriteLight \
+       Nordic NordicPolar Numix NumixCircle NumixSquare Otis Plano PlanoLight Qogir \
+       QogirDark QogirLight Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark \
+       WhiteSurDark WhiteSurLight ALDOS
     do
        ${TESTTHEME} ; sleep 20
     done
