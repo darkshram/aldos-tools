@@ -78,11 +78,11 @@ if [ $# -eq 0 ]; then
     echo -e " "
     echo -e "${blue}${bold}Temas disponibles en ALDOS:${purple}${bold}"
     echo -e " ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95"
-    echo -e " ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark Greybird"
-    echo -e " Kimi LaStrange Layan Materia MateriaDark MojaveDark MojaveLight Nephrite"
-    echo -e " NephriteLight Nordic NordicPolar Numix NumixCircle NumixSquare Otis Plano"
-    echo -e " PlanoLight Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP Snow"
-    echo -e " Vimix VimixDark WhiteSurDark WhiteSurLight"
+    echo -e " ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark Graphite"
+    echo -e " Greybird Kimi LaStrange Layan Materia MateriaDark MojaveDark MojaveLight"
+    echo -e " Nephrite NephriteLight Nordic NordicPolar Numix NumixCircle NumixSquare Otis"
+    echo -e " Plano PlanoLight Qogir QogirDark QogirLight Redmond98 Redmond10 Redmond7"
+    echo -e " RedmondXP Snow Vimix VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}Ejemplos:"
     echo -e "${white}${bold}  tema-xfce4.sh ${purple}${bold}ALDOS"
@@ -625,6 +625,56 @@ function NephriteLight() {
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'NephriteLight' establecido"
 }
 
+function Graphite() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        graphite-gtk-theme tela-circle-black-icon-theme graphite-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        graphite-gtk-theme tela-circle-black-icon-theme graphite-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        graphite-gtk-theme tela-circle-black-icon-theme graphite-cursor-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Graphite-Dark && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Graphite-dark-cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-circle-black-dark && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Graphite-Dark  && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Graphite' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Graphite' establecido"
+}
+
+function GraphiteLight() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        graphite-gtk-theme tela-circle-black-icon-theme graphite-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        graphite-gtk-theme tela-circle-black-icon-theme graphite-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        graphite-gtk-theme tela-circle-black-icon-theme graphite-cursor-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s GraphiteLight && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Graphite-light-cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-circle-black && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Graphite-Light  && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'GraphiteLight' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'GraphiteLight' establecido"
+}
+
 function ColloidDark() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
@@ -1087,7 +1137,7 @@ function Fluent() {
         fluent-gtk-theme fluent-cursor-theme fluent-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Fluent && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Fluent && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Fluent-dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Fluent && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
@@ -1110,10 +1160,10 @@ function FluentDark() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         fluent-gtk-theme fluent-cursor-theme fluent-icon-theme && \
-        xfconf-query -t string -c xfwm4 -p /general/theme -s Fluent-dark && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent-dark && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Fluent-Dark && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent-dark-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Fluent-dark && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Fluent-dark && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Fluent-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -1124,7 +1174,6 @@ function FluentDark() {
         echo -e "${white}${bold}Tema 'FluentDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'FluentDark' establecido"
 }
-
 
 function Chicago95() {
     rpm -q --quiet \
@@ -1142,6 +1191,34 @@ function Chicago95() {
         xfconf-query -t string -c xfwm4 -p /general/theme -s Chicago95 && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Chicago95_Animated_Hourglass_Cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Chicago95 && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Chicago95 && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Chicago95 && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarTreePane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Chicago95' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Chicago95' establecido"
+}
+
+function Redmond98() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        chicago95-cursor-theme chicago95-gtk-theme redmond98se-icon-theme \
+        chicago95-sound-theme chicago95-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        chicago95-cursor-theme chicago95-gtk-theme redmond98se-icon-theme \
+        chicago95-sound-theme chicago95-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        chicago95-cursor-theme chicago95-gtk-theme redmond98se-icon-theme \
+        chicago95-sound-theme chicago95-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Chicago95 && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Chicago95_Animated_Hourglass_Cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Redmond98SE && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Chicago95 && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Chicago95 && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarTreePane && \
