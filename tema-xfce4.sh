@@ -70,6 +70,15 @@ if [ "$UID" -eq "0" ]; then
     exit 1
 fi
 
+# Validar que usuario pertenezca al grupo wheel
+if id -nG "${USER}" | grep -qw "wheel"; then
+    true
+else
+    echo -e "${red}${bold}\n    El usuario '${USER}' require pertenecer al grupo 'wheel' para poder\n    usar este programa. Específicamente porque así lo requiere hardcode-tray,\n    pues éste necesita usar 'sudo' para poder hacer los cambios\n    correspondientes en el sistema.\n\n    Ejecuta como root lo siguiente:${reset}\n\n${bold}    gpasswd -a ${USER} wheel${reset}\n\n${red}${bold}    Luego ejecuta como root 'visudo' y descomenta la línea correspondiente a:${reset}\n\n    ${bold}%wheel        ALL=(ALL)       ALL\n${reset}\n\n    ${red}${bold}O bien, si prefieres usar 'sudo' sin contraseña, descomenta en su lugar\n    la línea correspondiente a:${reset}\n\n    ${bold}%wheel        ALL=(ALL)       NOPASSWD: ALL\n${reset}"
+    exit 1
+fi
+
+
 # Validamos que se proporcione un argumento.
 if [ $# -eq 0 ]; then
     echo -e "${green}${bold} "
