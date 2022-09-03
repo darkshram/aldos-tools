@@ -403,16 +403,16 @@ function NumixSquare() {
 function Greybird() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme || \
+        dmz-cursor-themes greybird-light-theme greybird-xfwm4-theme elementary-xfce-icon-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme
+        dmz-cursor-themes greybird-light-theme greybird-xfwm4-theme elementary-xfce-icon-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme greybird-light-theme greybird-xfwm4-theme adwaita-icon-theme && \
+        dmz-cursor-themes greybird-light-theme greybird-xfwm4-theme elementary-xfce-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Greybird && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s DMZ-Black && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s elementary-xfce-dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Greybird && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
