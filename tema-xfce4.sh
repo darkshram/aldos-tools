@@ -77,12 +77,12 @@ if [ $# -eq 0 ]; then
     echo -e "${green}${bold}  * Uso: tema-xfce4.sh [Tema]"
     echo -e " "
     echo -e "${blue}${bold}Temas disponibles en ALDOS:${purple}${bold}"
-    echo -e " ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95"
-    echo -e " ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark Graphite"
-    echo -e " Greybird Kimi LaStrange Layan Materia MateriaDark MojaveDark MojaveLight"
-    echo -e " Nephrite NephriteLight Nordic NordicPolar Numix NumixCircle NumixSquare Otis"
-    echo -e " Plano PlanoLight Qogir QogirDark QogirLight Redmond98 Redmond10 Redmond7"
-    echo -e " RedmondXP Snow Vimix VimixDark WhiteSurDark WhiteSurLight"
+    echo -e " ALDOS ALDOSDarker Adwaita AdwaitaDark Amber AmberCircle Ant Arc ArcDarker"
+    echo -e " Chicago95 ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark"
+    echo -e " Graphite Greybird Kimi LaStrange Layan Materia MateriaDark MojaveDark"
+    echo -e " MojaveLight Nephrite NephriteLight Nordic NordicPolar Numix NumixCircle"
+    echo -e " NumixSquare Otis Plano PlanoLight Qogir QogirDark QogirLight Redmond98 "
+    echo -e " Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}Ejemplos:"
     echo -e "${white}${bold}  tema-xfce4.sh ${purple}${bold}ALDOS"
@@ -823,6 +823,31 @@ function Adwaita() {
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Adwaita' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Adwaita' establecido"
+}
+
+function AdwaitaDark() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme gnome-themes-extra adwaita-icon-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme gnome-themes-extra adwaita-icon-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme gnome-themes-extra adwaita-icon-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Default && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Adwaita-dark && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'AdwaitaDark' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'AdwaitaDark' establecido"
 }
 
 function Materia() {
