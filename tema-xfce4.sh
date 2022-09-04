@@ -125,6 +125,7 @@ function ALDOS() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Arc" && \
         gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Arc" && \
@@ -148,11 +149,12 @@ function ALDOSDarker() {
         hardcode-tray sound-theme-smooth \
         numix-cursor-theme arc-theme tela-icon-theme-nord && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc-Darker && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Arc-Darker" && \
         gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Arc-Darker" && \
@@ -176,11 +178,12 @@ function ALDOSDark() {
         hardcode-tray sound-theme-smooth \
         numix-cursor-theme arc-theme tela-icon-theme-nord && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc-Dark && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord-dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Arc-Dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "Tela-nord-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Arc-Dark" && \
@@ -209,6 +212,7 @@ function Plano() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Plano-dark-titlebar && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Numix" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Plano-dark-titlebar" && \
         gsettings set org.gnome.desktop.interface icon-theme "Tela" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Plano" && \
@@ -237,6 +241,7 @@ function PlanoLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Plano && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Numix" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Plano" && \
         gsettings set org.gnome.desktop.interface icon-theme "Numix" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Plano" && \
@@ -265,6 +270,7 @@ function Amber() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Amber && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Numix" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Amber" && \
         gsettings set org.gnome.desktop.interface icon-theme "Numix" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Amber" && \
@@ -293,6 +299,7 @@ function AmberCircle() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Amber && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Numix" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Amber" && \
         gsettings set org.gnome.desktop.interface icon-theme "Numix-Circle" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Amber" && \
@@ -308,19 +315,20 @@ function AmberCircle() {
 function Arc() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme papirus-icon-theme || \
+        arc-theme papirus-icon-theme adwaita-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
         numix-cursor-theme arc-theme papirus-icon-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme papirus-icon-theme && \
+        arc-theme papirus-icon-theme adwaita-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Arc" && \
         gsettings set org.gnome.desktop.interface icon-theme "Papirus" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Arc" && \
@@ -336,19 +344,20 @@ function Arc() {
 function ArcDarker() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme papirus-icon-theme || \
+        arc-theme papirus-icon-theme adwaita-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme papirus-icon-theme
+        arc-theme papirus-icon-theme adwaita-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme papirus-icon-theme && \
+        arc-theme papirus-icon-theme adwaita-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus-Dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Arc-Darker" && \
         gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Arc-Darker" && \
@@ -364,13 +373,13 @@ function ArcDarker() {
 function ArcDark() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme papirus-icon-theme || \
+        arc-theme papirus-icon-theme adwaita-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme papirus-icon-theme
+        numix-cursor-theme arc-theme papirus-icon-theme adwaita-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme arc-theme papirus-icon-theme && \
+        arc-theme papirus-icon-theme adwaita-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc-Dark && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus-Dark && \
@@ -405,6 +414,7 @@ function Numix() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Numix && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Numix" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Numix" && \
         gsettings set org.gnome.desktop.interface icon-theme "Numix" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Numix" && \
@@ -433,6 +443,7 @@ function NumixCircle() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Numix && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Numix" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Numix" && \
         gsettings set org.gnome.desktop.interface icon-theme "Numix-Circle" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Numix" && \
@@ -461,6 +472,7 @@ function NumixSquare() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Numix && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Numix" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Numix" && \
         gsettings set org.gnome.desktop.interface icon-theme "Numix-Square" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Numix" && \
@@ -489,6 +501,7 @@ function Greybird() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Greybird && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "DMZ-Black" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Greybird" && \
         gsettings set org.gnome.desktop.interface icon-theme "elementary-xfce-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Greybird" && \
@@ -517,6 +530,7 @@ function Ant() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Ant && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Ant" && \
         gsettings set org.gnome.desktop.interface icon-theme "Boston" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Ant" && \
@@ -545,6 +559,7 @@ function Kimi() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Kimi  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Kimi" && \
         gsettings set org.gnome.desktop.interface icon-theme "Tela-purple" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Kimi" && \
@@ -573,6 +588,7 @@ function Juno() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Juno  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Juno" && \
         gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Juno" && \
@@ -588,19 +604,20 @@ function Juno() {
 function Otis() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        otis-gtk-theme candy-icon-theme numix-cursor-theme || \
+        otis-gtk-theme candy-icon-theme adwaita-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        otis-gtk-theme candy-icon-theme numix-cursor-theme
+        otis-gtk-theme candy-icon-theme adwaita-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        otis-gtk-theme candy-icon-theme numix-cursor-theme && \
+        otis-gtk-theme candy-icon-theme adwaita-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Otis && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Candy && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Otis  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Otis" && \
         gsettings set org.gnome.desktop.interface icon-theme "Candy" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Otis" && \
@@ -629,6 +646,7 @@ function Snow() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Snow  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Snow" && \
         gsettings set org.gnome.desktop.interface icon-theme "Boston" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Snow" && \
@@ -657,6 +675,7 @@ function Dracula() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Dracula && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Dracula-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Dracula" && \
         gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-dracula-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Dracula" && \
@@ -685,6 +704,7 @@ function DraculaCandy() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Dracula && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Dracula-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Dracula" && \
         gsettings set org.gnome.desktop.interface icon-theme "Candy" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Dracula" && \
@@ -713,6 +733,7 @@ function Nephrite() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nephrite-Dark  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Fluent-dark-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Nephrite-Dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "Fluent-teal-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Nephrite-Dark" && \
@@ -741,6 +762,7 @@ function NephriteLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nephrite-Light  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Fluent-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Nephrite-Light" && \
         gsettings set org.gnome.desktop.interface icon-theme "Fluent-teal" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Nephrite-Light" && \
@@ -769,6 +791,7 @@ function Graphite() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Graphite-Dark  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Graphite-dark-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Graphite-Dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-black-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Graphite-Dark" && \
@@ -797,6 +820,7 @@ function GraphiteLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Graphite-Light  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Graphite-light-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Graphite-Light" && \
         gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-black" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Graphite-Light" && \
@@ -825,6 +849,7 @@ function ColloidDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Colloid-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Colloid-dark-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "Colloid-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Colloid-Dark" && \
@@ -853,6 +878,7 @@ function ColloidLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Colloid-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Colloid-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Light" && \
         gsettings set org.gnome.desktop.interface icon-theme "Colloid-light" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Colloid-Light" && \
@@ -881,6 +907,7 @@ function Layan() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Layan && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Layan-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Layan" && \
         gsettings set org.gnome.desktop.interface icon-theme "Tela" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Layan" && \
@@ -909,6 +936,7 @@ function Nordic() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nordic && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Nordic" && \
         gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Nordic" && \
@@ -924,19 +952,20 @@ function Nordic() {
 function NordicPolar() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordzy-cursor-theme || \
+        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordic-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordzy-cursor-theme
+        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordic-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordzy-cursor-theme && \
+        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordic-cursor-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Nordic-Polar && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordzy-white-cursors && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons-light && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nordic-Polar && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Nordic-Polar" && \
         gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons-light" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Nordic-Polar" && \
@@ -965,6 +994,7 @@ function Adwaita() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface icon-theme "Adwaita" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Adwaita" && \
@@ -993,6 +1023,7 @@ function AdwaitaDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Adwaita-dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "Adwaita" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Adwaita" && \
@@ -1008,19 +1039,20 @@ function AdwaitaDark() {
 function Materia() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme materia-gtk-theme papirus-icon-theme || \
+        adwaita-cursor-theme materia-gtk-theme papirus-icon-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme materia-gtk-theme papirus-icon-theme
+        adwaita-cursor-theme materia-gtk-theme papirus-icon-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme materia-gtk-theme papirus-icon-theme && \
+        adwaita-cursor-theme materia-gtk-theme papirus-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Materia-compact && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Materia-compact && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Materia-compact" && \
         gsettings set org.gnome.desktop.interface icon-theme "Papirus" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Materia-compact" && \
@@ -1036,19 +1068,20 @@ function Materia() {
 function MateriaDark() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme materia-gtk-theme papirus-icon-theme || \
+        adwaita-cursor-theme materia-gtk-theme papirus-icon-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
         numix-cursor-theme materia-gtk-theme papirus-icon-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme materia-gtk-theme papirus-icon-theme && \
+        adwaita-cursor-theme materia-gtk-theme papirus-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Materia-dark-compact && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus-Dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Materia-dark-compact && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Materia-dark-compact" && \
         gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Materia-dark-compact" && \
@@ -1077,6 +1110,7 @@ function Vimix() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Vimix && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Vimix-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Vimix" && \
         gsettings set org.gnome.desktop.interface icon-theme "Vimix" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Vimix" && \
@@ -1105,6 +1139,7 @@ function VimixDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Vimix-dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Vimix-white-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Vimix-dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "Vimix-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Vimix-dark" && \
@@ -1133,6 +1168,7 @@ function MojaveLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Mojave-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "McMojave-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Mojave-Light" && \
         gsettings set org.gnome.desktop.interface icon-theme "McMojave-circle" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Mojave-Light" && \
@@ -1161,6 +1197,7 @@ function MojaveDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Mojave-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "McMojave-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Mojave-Dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "McMojave-circle-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Mojave-Dark" && \
@@ -1189,6 +1226,7 @@ function WhiteSurLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s WhiteSur-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "WhiteSur-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "WhiteSur-Light" && \
         gsettings set org.gnome.desktop.interface icon-theme "WhiteSur" && \
         gsettings set org.gnome.desktop.wm.preferences theme "WhiteSur-Light" && \
@@ -1217,6 +1255,7 @@ function WhiteSurDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s WhiteSur-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "WhiteSur-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "WhiteSur-Dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "WhiteSur-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "WhiteSur-Dark" && \
@@ -1245,6 +1284,7 @@ function OrchisDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Orchis-dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Vimix-dark" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Orchis-dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Orchis-dark" && \
@@ -1273,6 +1313,7 @@ function Qogir() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Qogir && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Qogir" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Qogir" && \
         gsettings set org.gnome.desktop.interface icon-theme "Qogir" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Qogir" && \
@@ -1301,6 +1342,7 @@ function QogirDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Qogir-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Qogir-Dark" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Qogir-Dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "Qogir-Dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Qogir-Dark" && \
@@ -1329,6 +1371,7 @@ function QogirLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Qogir-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Qogir" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Qogir-Light" && \
         gsettings set org.gnome.desktop.interface icon-theme "Qogit-Light" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Qogit-Light" && \
@@ -1352,11 +1395,12 @@ function Fluent() {
         hardcode-tray sound-theme-smooth \
         fluent-gtk-theme fluent-cursor-theme fluent-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Fluent && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Fluent-dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Fluent && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Fluent-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Fluent" && \
         gsettings set org.gnome.desktop.interface icon-theme "Fluent-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Fluent" && \
@@ -1385,6 +1429,7 @@ function FluentDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Fluent-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Fluent-dark-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Fluent-Dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "Fluent-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Fluent-Dark" && \
@@ -1416,6 +1461,7 @@ function Chicago95() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Chicago95 && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Chicago95 && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarTreePane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Chicago95_Animated_Hourglass_Cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Chicago95" && \
         gsettings set org.gnome.desktop.interface icon-theme "Chicago95" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Chicago95" && \
@@ -1447,6 +1493,7 @@ function Redmond98() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Chicago95 && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Chicago95 && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarTreePane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Chicago95_Animated_Hourglass_Cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Chicago95" && \
         gsettings set org.gnome.desktop.interface icon-theme "Redmond98SE" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Chicago95" && \
@@ -1475,6 +1522,7 @@ function RedmondXP() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s RedmondXP_Luna && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarTreePane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "DMZ-White" && \
         gsettings set org.gnome.desktop.interface gtk-theme "RedmondXP" && \
         gsettings set org.gnome.desktop.interface icon-theme "RedmondXP" && \
         gsettings set org.gnome.desktop.wm.preferences theme "RedmondXP" && \
@@ -1503,6 +1551,7 @@ function Redmond7() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Redmond7 && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "DMZ-White" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Redmond7" && \
         gsettings set org.gnome.desktop.interface icon-theme "Redmond7" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Redmond7" && \
@@ -1531,6 +1580,7 @@ function Redmond10() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Redmond10 && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "DMZ-White" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Redmond10" && \
         gsettings set org.gnome.desktop.interface icon-theme "Redmond10" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Redmond10" && \
@@ -1559,6 +1609,7 @@ function LaStrange() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s LaStrange && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarTreePane && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "LaStrange" && \
         gsettings set org.gnome.desktop.interface icon-theme "LaStrange" && \
         gsettings set org.gnome.desktop.wm.preferences theme "LaStrange" && \
@@ -1575,7 +1626,7 @@ function demo() {
 
     for TESTTHEME in \
        ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95 \
-       ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark Greybird Kimi \
+       ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark Greybird Juno Kimi \
        LaStrange Layan Materia MateriaDark MojaveDark MojaveLight Nephrite NephriteLight \
        Nordic NordicPolar Numix NumixCircle NumixSquare Otis Plano PlanoLight Qogir \
        QogirDark QogirLight Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark \
