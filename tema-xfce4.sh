@@ -131,7 +131,7 @@ function ALDOS() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'ALDOS' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ALDOS' establecido"
@@ -150,7 +150,7 @@ function ALDOSDarker() {
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
         gsettings set org.gnome.desktop.interface gtk-theme "Arc-Darker" && \
@@ -159,7 +159,35 @@ function ALDOSDarker() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'ALDOSDark' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ALDOSDark' establecido"
+}
+
+function ALDOSDark() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        numix-cursor-theme arc-theme tela-icon-theme-nord || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        numix-cursor-theme arc-theme tela-icon-theme-nord
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        numix-cursor-theme arc-theme tela-icon-theme-nord && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Arc-Dark && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Numix && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord-dark && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc-Dark && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Arc-Dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Arc-Dark" && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'ALDOSDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ALDOSDark' establecido"
@@ -187,7 +215,7 @@ function Plano() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Plano' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Plano' establecido"
@@ -215,7 +243,7 @@ function PlanoLight() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'PlanoLight' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'PlanoLight' establecido"
@@ -243,7 +271,7 @@ function Amber() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Amber' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Amber' establecido"
@@ -271,7 +299,7 @@ function AmberCircle() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Amber' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Amber' establecido"
@@ -299,7 +327,7 @@ function Arc() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Arc' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Arc' establecido"
@@ -327,7 +355,7 @@ function ArcDarker() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'ArcDarker' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ArcDarker' establecido"
@@ -355,7 +383,7 @@ function ArcDark() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'ArcDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ArcDark' establecido"
@@ -383,7 +411,7 @@ function Numix() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Numix' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Numix' establecido"
@@ -411,7 +439,7 @@ function NumixCircle() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'NumixCircle' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'NumixCircle' establecido"
@@ -439,7 +467,7 @@ function NumixSquare() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'NumixSquare' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'NumixSquare' establecido"
@@ -467,7 +495,7 @@ function Greybird() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Grebird' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Grebird' establecido"
@@ -495,7 +523,7 @@ function Ant() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Ant' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Ant' establecido"
@@ -523,7 +551,7 @@ function Kimi() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Kimi' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Kimi' establecido"
@@ -551,7 +579,7 @@ function Juno() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Juno' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Juno' establecido"
@@ -579,7 +607,7 @@ function Otis() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Otis' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Otis' establecido"
@@ -607,7 +635,7 @@ function Snow() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Snow' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Snow' establecido"
@@ -635,7 +663,7 @@ function Dracula() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Dracula' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Dracula' establecido"
@@ -663,7 +691,7 @@ function DraculaCandy() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Dracula' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Dracula' establecido"
@@ -691,7 +719,7 @@ function Nephrite() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Nephrite' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Nephrite' establecido"
@@ -719,7 +747,7 @@ function NephriteLight() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'NephriteLight' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'NephriteLight' establecido"
@@ -747,7 +775,7 @@ function Graphite() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Graphite' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Graphite' establecido"
@@ -775,7 +803,7 @@ function GraphiteLight() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'GraphiteLight' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'GraphiteLight' establecido"
@@ -803,7 +831,7 @@ function ColloidDark() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'ColloidDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ColloidDark' establecido"
@@ -831,7 +859,7 @@ function ColloidLight() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'ColloidLight' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ColloidLight' establecido"
@@ -859,7 +887,7 @@ function Layan() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Layan' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Layan' establecido"
@@ -887,7 +915,7 @@ function Nordic() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Nordic' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Nordic' establecido"
@@ -915,7 +943,7 @@ function NordicPolar() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'NordicPolar' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'NordicPolar' establecido"
@@ -943,7 +971,7 @@ function Adwaita() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Adwaita' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Adwaita' establecido"
@@ -971,7 +999,7 @@ function AdwaitaDark() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'AdwaitaDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'AdwaitaDark' establecido"
@@ -999,7 +1027,7 @@ function Materia() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Materia' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Materia' establecido"
@@ -1027,7 +1055,7 @@ function MateriaDark() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'MateriaDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'MateriaDark' establecido"
@@ -1055,7 +1083,7 @@ function Vimix() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Vimix' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Vimix' establecido"
@@ -1083,7 +1111,7 @@ function VimixDark() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'VimixDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'VimixDark' establecido"
@@ -1111,7 +1139,7 @@ function MojaveLight() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'MojaveLight' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'MojaveLight' establecido"
@@ -1139,7 +1167,7 @@ function MojaveDark() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'MojaveDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'MojaveDark' establecido"
@@ -1167,7 +1195,7 @@ function WhiteSurLight() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'WhiteSurLight' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'WhiteSurLight' establecido"
@@ -1195,7 +1223,7 @@ function WhiteSurDark() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'WhiteSurDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'WhiteSurDark' establecido"
@@ -1223,7 +1251,7 @@ function OrchisDark() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'OrchisDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'OrchisDark' establecido"
@@ -1251,7 +1279,7 @@ function Qogir() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Qogir' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Qogir' establecido"
@@ -1279,7 +1307,7 @@ function QogirDark() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'QogirDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'QogirDark' establecido"
@@ -1307,7 +1335,7 @@ function QogirLight() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'QogirLight' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'QogirLight' establecido"
@@ -1335,7 +1363,7 @@ function Fluent() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Fluent' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'fluent' establecido"
@@ -1363,7 +1391,7 @@ function FluentDark() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'FluentDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'FluentDark' establecido"
@@ -1394,7 +1422,7 @@ function Chicago95() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Chicago95' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Chicago95' establecido"
@@ -1425,7 +1453,7 @@ function Redmond98() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Chicago95' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Chicago95' establecido"
@@ -1453,7 +1481,7 @@ function RedmondXP() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'RedmondXP' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'RedmondXP' establecido"
@@ -1481,7 +1509,7 @@ function Redmond7() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Redmond7' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Redmond7' establecido"
@@ -1509,7 +1537,7 @@ function Redmond10() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Redmond10' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Redmond10' establecido"
@@ -1537,7 +1565,7 @@ function LaStrange() {
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
-        xfce4-panel -r && xfdesktop -R && \
+        echo "xfce4-panel -r" >/dev/null && echo "xfdesktop -R" >/dev/null && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'LaStrange' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'LaStrange' establecido"
