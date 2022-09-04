@@ -88,7 +88,7 @@ if [ $# -eq 0 ]; then
     echo -e "${blue}${bold}Temas disponibles en ALDOS:${purple}${bold}"
     echo -e " ALDOS ALDOSDarker Adwaita AdwaitaDark Amber AmberCircle Ant Arc ArcDarker"
     echo -e " Chicago95 ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark"
-    echo -e " Graphite Greybird Kimi LaStrange Layan Materia MateriaDark MojaveDark"
+    echo -e " Graphite Greybird Juno Kimi LaStrange Layan Materia MateriaDark MojaveDark"
     echo -e " MojaveLight Nephrite NephriteLight Nordic NordicPolar Numix NumixCircle"
     echo -e " NumixSquare Otis Plano PlanoLight Qogir QogirDark QogirLight Redmond98 "
     echo -e " Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark WhiteSurDark WhiteSurLight"
@@ -125,6 +125,9 @@ function ALDOS() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Arc" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Arc" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -150,6 +153,9 @@ function ALDOSDarker() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Arc-Darker" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Arc-Darker" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -175,6 +181,9 @@ function Plano() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Plano-dark-titlebar && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Plano-dark-titlebar" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Plano" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -200,6 +209,9 @@ function PlanoLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Plano && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Plano" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Numix" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Plano" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -225,6 +237,9 @@ function Amber() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Amber && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Amber" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Numix" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Amber" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -250,6 +265,9 @@ function AmberCircle() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Amber && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Amber" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Numix-Circle" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Amber" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -275,6 +293,9 @@ function Arc() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Arc" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Arc" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -296,10 +317,13 @@ function ArcDarker() {
         numix-cursor-theme arc-theme papirus-icon-theme && \
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus-dark && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus-Dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Arc-Darker" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Arc-Darker" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -325,6 +349,9 @@ function ArcDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Arc-Dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Arc-Dark" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -350,6 +377,9 @@ function Numix() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Numix && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Numix" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Numix" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Numix" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -375,6 +405,9 @@ function NumixCircle() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Numix && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Numix" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Numix-Circle" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Numix" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -400,6 +433,9 @@ function NumixSquare() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Numix && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Numix" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Numix-Square" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Numix" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -425,6 +461,9 @@ function Greybird() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Greybird && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Greybird" && \
+        gsettings set org.gnome.desktop.interface icon-theme "elementary-xfce-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Greybird" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -450,6 +489,9 @@ function Ant() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Ant && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Ant" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Boston" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Ant" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -475,6 +517,9 @@ function Kimi() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Kimi  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Kimi" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-purple" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Kimi" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -482,6 +527,34 @@ function Kimi() {
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Kimi' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Kimi' establecido"
+}
+
+function Juno() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        juno-gtk-theme zafiro-icon-theme adwaita-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        juno-gtk-theme zafiro-icon-theme adwaita-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        juno-gtk-theme zafiro-icon-theme adwaita-cursor-theme && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Juno && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Juno  && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Juno" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Juno" && \
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        xfce4-panel -r && xfdesktop -R && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Juno' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Juno' establecido"
 }
 
 function Otis() {
@@ -500,6 +573,9 @@ function Otis() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Otis  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Otis" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Candy" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Otis" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -525,6 +601,9 @@ function Snow() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Snow  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Snow" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Boston" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Snow" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -550,6 +629,9 @@ function Dracula() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Dracula && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Dracula" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-dracula-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Dracula" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -575,6 +657,9 @@ function DraculaCandy() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Dracula && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Dracula" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Candy" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Dracula" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -600,6 +685,9 @@ function Nephrite() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nephrite-Dark  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Nephrite-Dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Fluent-teal-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Nephrite-Dark" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -625,6 +713,9 @@ function NephriteLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nephrite-Light  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Nephrite-Light" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Fluent-teal" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Nephrite-Light" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -650,6 +741,9 @@ function Graphite() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Graphite-Dark  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Graphite-Dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-black-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Graphite-Dark" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -669,12 +763,15 @@ function GraphiteLight() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
         graphite-gtk-theme tela-circle-black-icon-theme graphite-cursor-theme && \
-        xfconf-query -t string -c xfwm4 -p /general/theme -s GraphiteLight && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Graphite-Light && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Graphite-light-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-circle-black && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Graphite-Light  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Graphite-Light" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-black" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Graphite-Light" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -700,6 +797,9 @@ function ColloidDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Colloid-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Colloid-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Colloid-Dark" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -725,6 +825,9 @@ function ColloidLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Colloid-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Light" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Colloid-light" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Colloid-Light" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -750,6 +853,9 @@ function Layan() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Layan && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Layan" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Layan" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -775,6 +881,9 @@ function Nordic() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nordic && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Nordic" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Nordic" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -800,6 +909,9 @@ function NordicPolar() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nordic-Polar && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Nordic-Polar" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons-light" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Nordic-Polar" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -825,6 +937,9 @@ function Adwaita() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Adwaita && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Adwaita" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Adwaita" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Adwaita" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -850,6 +965,9 @@ function AdwaitaDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Adwaita-dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Adwaita" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Adwaita" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -875,6 +993,9 @@ function Materia() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Materia-compact && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Materia-compact" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Materia-compact" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -900,6 +1021,9 @@ function MateriaDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Materia-dark-compact && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Materia-dark-compact" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Materia-dark-compact" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -925,6 +1049,9 @@ function Vimix() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Vimix && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Vimix" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Vimix" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Vimix" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -950,6 +1077,9 @@ function VimixDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Vimix-dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Vimix-dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Vimix-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Vimix-dark" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -975,6 +1105,9 @@ function MojaveLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Mojave-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Mojave-Light" && \
+        gsettings set org.gnome.desktop.interface icon-theme "McMojave-circle" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Mojave-Light" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1000,6 +1133,9 @@ function MojaveDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Mojave-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Mojave-Dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "McMojave-circle-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Mojave-Dark" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1025,6 +1161,9 @@ function WhiteSurLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s WhiteSur-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "WhiteSur-Light" && \
+        gsettings set org.gnome.desktop.interface icon-theme "WhiteSur" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "WhiteSur-Light" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1050,6 +1189,9 @@ function WhiteSurDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s WhiteSur-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "WhiteSur-Dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "WhiteSur-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "WhiteSur-Dark" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1075,6 +1217,9 @@ function OrchisDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Orchis-dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Orchis-dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Orchis-dark" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1100,6 +1245,9 @@ function Qogir() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Qogir && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Qogir" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Qogir" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Qogir" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1125,6 +1273,9 @@ function QogirDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Qogir-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Qogir-Dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Qogir-Dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Qogir-Dark" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1150,6 +1301,9 @@ function QogirLight() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Qogir-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Qogir-Light" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Qogit-Light" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Qogit-Light" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1175,6 +1329,9 @@ function Fluent() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Fluent && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Fluent" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Fluent-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Fluent" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1200,6 +1357,9 @@ function FluentDark() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Fluent-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Fluent-Dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Fluent-dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Fluent-Dark" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1228,6 +1388,9 @@ function Chicago95() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Chicago95 && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Chicago95 && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarTreePane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Chicago95" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Chicago95" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Chicago95" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1256,6 +1419,9 @@ function Redmond98() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Chicago95 && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Chicago95 && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarTreePane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Chicago95" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Redmond98SE" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Chicago95" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1281,6 +1447,9 @@ function RedmondXP() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s RedmondXP_Luna && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarTreePane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "RedmondXP" && \
+        gsettings set org.gnome.desktop.interface icon-theme "RedmondXP" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "RedmondXP" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1306,6 +1475,9 @@ function Redmond7() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Redmond7 && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Redmond7" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Redmond7" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Redmond7" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1331,6 +1503,9 @@ function Redmond10() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Redmond10 && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Redmond10" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Redmond10" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Redmond10" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -1356,6 +1531,9 @@ function LaStrange() {
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s LaStrange && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarTreePane && \
+        gsettings set org.gnome.desktop.interface gtk-theme "LaStrange" && \
+        gsettings set org.gnome.desktop.interface icon-theme "LaStrange" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "LaStrange" && \
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
