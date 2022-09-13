@@ -1426,7 +1426,7 @@ function OrchisDark() {
         orchis-gtk-theme tela-circle-icon-theme || \
         rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        orchis-gtk-theme tela-circle-icon-theme || \
+        orchis-gtk-theme tela-circle-icon-theme && \
 if [ -f /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Orchis-dark && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Vimix-dark && \
@@ -1458,7 +1458,7 @@ function Qogir() {
         qogir-gtk-theme qogir-icon-theme || \
         rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        qogir-gtk-theme qogir-icon-theme || \
+        qogir-gtk-theme qogir-icon-theme && \
 if [ -f /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Qogir && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Qogir && \
@@ -1490,7 +1490,7 @@ function QogirDark() {
         qogir-gtk-theme qogir-icon-theme || \
         rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        qogir-gtk-theme qogir-icon-theme || \
+        qogir-gtk-theme qogir-icon-theme && \
 if [ -f /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Qogir-Dark && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Qogir-Dark && \
