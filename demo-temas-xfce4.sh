@@ -49,8 +49,8 @@ for TEMA in \
     RedmondXP \
     Redmond7 \
     Redmond10 \
-    ALDOS \
-    ALDOSDarker
+    ALDOSDarker \
+    ALDOS
 do
 	tema-xfce4.sh ${TEMA} && \
   echo -e "Tema ${TEMA}" | aosd_cat   -n "${TIPOGRAFIA}" -u 5000 -o 300 -R orange -S black -f 300 -y -540 -x 50 -t 2 -e 5 && \
