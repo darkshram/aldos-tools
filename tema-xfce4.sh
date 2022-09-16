@@ -122,7 +122,7 @@ function ALDOS() {
 if [ -f /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord-dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
@@ -130,14 +130,14 @@ fi
 if [ -f /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
         gsettings set org.cinnamon.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.cinnamon.desktop.interface gtk-theme "Arc" && \
-        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord-dark" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "Arc" && \
         gsettings set org.cinnamon.theme name "Arc"
 fi
 if [ -f /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Arc" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Arc"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -161,7 +161,7 @@ function ALDOSDarker() {
 if [ -f /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord-dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
@@ -169,14 +169,14 @@ fi
 if [ -f /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
         gsettings set org.cinnamon.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.cinnamon.desktop.interface gtk-theme "Arc" && \
-        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord-dark" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "Arc-Darker" && \
         gsettings set org.cinnamon.theme name "Arc"
 fi
 if [ -f /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Arc-Darker" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Arc-Darker"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -208,7 +208,7 @@ fi
 if [ -f /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
         gsettings set org.cinnamon.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.cinnamon.desktop.interface gtk-theme "Arc-Dark" && \
-        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord-dark" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "Arc-Dark" && \
         gsettings set org.cinnamon.theme name "Arc-Dark"
 fi
