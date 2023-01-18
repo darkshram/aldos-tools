@@ -89,7 +89,7 @@ if [ $# -eq 0 ]; then
     echo -e " ALDOS ALDOSDarker Adwaita AdwaitaDark Amber AmberCircle Ant Arc ArcDarker"
     echo -e " Chicago95 ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark"
     echo -e " Graphite Greybird Juno Kimi LaStrange Layan Materia MateriaDark MojaveDark"
-    echo -e " MojaveLight Nephrite NephriteLight Nordic NordicPolar Numix NumixCircle"
+    echo -e " MojaveLight Jasper JasperLight Nordic NordicPolar Numix NumixCircle"
     echo -e " NumixSquare Otis Plano PlanoLight Qogir QogirDark QogirLight Redmond98 "
     echo -e " Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
@@ -122,7 +122,7 @@ function ALDOS() {
 if [ -f /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord-dark && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
@@ -130,14 +130,14 @@ fi
 if [ -f /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
         gsettings set org.cinnamon.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.cinnamon.desktop.interface gtk-theme "Arc" && \
-        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord-dark" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "Arc" && \
         gsettings set org.cinnamon.theme name "Arc"
 fi
 if [ -f /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Arc" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord-dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Arc"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -161,7 +161,7 @@ function ALDOSDarker() {
 if [ -f /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord-dark && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Arc-Darker && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
@@ -169,14 +169,14 @@ fi
 if [ -f /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
         gsettings set org.cinnamon.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.cinnamon.desktop.interface gtk-theme "Arc" && \
-        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord-dark" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "Arc-Darker" && \
         gsettings set org.cinnamon.theme name "Arc"
 fi
 if [ -f /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Arc-Darker" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord-dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Arc-Darker"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -208,7 +208,7 @@ fi
 if [ -f /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
         gsettings set org.cinnamon.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.cinnamon.desktop.interface gtk-theme "Arc-Dark" && \
-        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord-dark" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "Arc-Dark" && \
         gsettings set org.cinnamon.theme name "Arc-Dark"
 fi
@@ -809,68 +809,68 @@ fi
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Dracula' establecido"
 }
 
-function Nephrite() {
+function Jasper() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        nephrite-gtk-theme fluent-icon-theme-teal fluent-cursor-theme || \
+        jasper-gtk-theme fluent-icon-theme-teal fluent-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        nephrite-gtk-theme fluent-icon-theme-teal fluent-cursor-theme
+        jasper-gtk-theme fluent-icon-theme-teal fluent-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        nephrite-gtk-theme fluent-icon-theme-teal fluent-cursor-theme && \
+        jasper-gtk-theme fluent-icon-theme-teal fluent-cursor-theme && \
 if [ -f /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
-        xfconf-query -t string -c xfwm4 -p /general/theme -s Nephrite-Dark && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Jasper-Dark && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent-dark-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Fluent-teal-dark && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nephrite-Dark  && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Jasper-Dark  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
 fi
 if [ -f /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Fluent-dark-cursors" && \
-        gsettings set org.gnome.desktop.interface gtk-theme "Nephrite-Dark" && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Jasper-Dark" && \
         gsettings set org.gnome.desktop.interface icon-theme "Fluent-teal-dark" && \
-        gsettings set org.gnome.desktop.wm.preferences theme "Nephrite-Dark"
+        gsettings set org.gnome.desktop.wm.preferences theme "Jasper-Dark"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
         sleep 3 && \
-        echo -e "${white}${bold}Tema 'Nephrite' establecido.${reset}" && \
-        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Nephrite' establecido"
+        echo -e "${white}${bold}Tema 'Jasper' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Jasper' establecido"
 }
 
-function NephriteLight() {
+function JasperLight() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        nephrite-gtk-theme fluent-icon-theme-teal fluent-cursor-theme || \
+        jasper-gtk-theme fluent-icon-theme-teal fluent-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        nephrite-gtk-theme fluent-icon-theme-teal fluent-cursor-theme
+        jasper-gtk-theme fluent-icon-theme-teal fluent-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        nephrite-gtk-theme fluent-icon-theme-teal fluent-cursor-theme && \
+        jasper-gtk-theme fluent-icon-theme-teal fluent-cursor-theme && \
 if [ -f /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
-        xfconf-query -t string -c xfwm4 -p /general/theme -s Nephrite-Light && \
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Jasper-Light && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent-cursors && \
         xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Fluent-teal && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nephrite-Light  && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Jasper-Light  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
 fi
 if [ -f /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Fluent-cursors" && \
-        gsettings set org.gnome.desktop.interface gtk-theme "Nephrite-Light" && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Jasper-Light" && \
         gsettings set org.gnome.desktop.interface icon-theme "Fluent-teal" && \
-        gsettings set org.gnome.desktop.wm.preferences theme "Nephrite-Light"
+        gsettings set org.gnome.desktop.wm.preferences theme "Jasper-Light"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
         sleep 3 && \
-        echo -e "${white}${bold}Tema 'NephriteLight' establecido.${reset}" && \
-        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'NephriteLight' establecido"
+        echo -e "${white}${bold}Tema 'JasperLight' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'JasperLight' establecido"
 }
 
 function Graphite() {
@@ -1812,7 +1812,7 @@ function demo() {
     for TESTTHEME in \
        ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95 \
        ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark Greybird Juno Kimi \
-       LaStrange Layan Materia MateriaDark MojaveDark MojaveLight Nephrite NephriteLight \
+       LaStrange Layan Materia MateriaDark MojaveDark MojaveLight Jasper JasperLight \
        Nordic NordicPolar Numix NumixCircle NumixSquare Otis Plano PlanoLight Qogir \
        QogirDark QogirLight Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark \
        WhiteSurDark WhiteSurLight ALDOS
