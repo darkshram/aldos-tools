@@ -34,8 +34,8 @@ for TEMA in \
     MojaveDark \
     MojaveLight \
     Nordic \
-    Nephrite \
-    NephriteLight \
+    Jasper \
+    JasperLight \
     Otis \
     Qogir \
     QogirDark \
@@ -63,9 +63,9 @@ do
     sleep 1 && \
     xdotool type "awf-gtk3" && sleep 2 && \
     xdotool key "Return" && \
-    sleep 7 && \
+    sleep 6 && \
     xdotool key Alt+F4
-    sleep 2
+    sleep 1
 done
 
 xdotool key Ctrl+Shift+r
