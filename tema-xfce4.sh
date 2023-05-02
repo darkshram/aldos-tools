@@ -140,6 +140,16 @@ if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; t
         gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Arc"
 fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Tela-nord" && \
+        gsettings set org.mate.interface gtk-theme "Arc"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Nordic-cursors"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "Arc"
+fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
@@ -768,6 +778,16 @@ if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; t
         gsettings set org.gnome.desktop.interface gtk-theme "Dracula" && \
         gsettings set org.gnome.desktop.interface icon-theme "Tela-circle-dracula-dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Dracula"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Tela-circle-dracula-dark" && \
+        gsettings set org.mate.interface gtk-theme "Dracula"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Dracula-cursors"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "Dracula"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
