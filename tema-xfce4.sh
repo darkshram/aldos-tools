@@ -91,7 +91,7 @@ if [ $# -eq 0 ]; then
     echo -e " Graphite Greybird Juno Kimi LaStrange Layan Materia MateriaDark MojaveDark"
     echo -e " MojaveLight Jasper JasperLight Nordic NordicPolar Numix NumixCircle"
     echo -e " NumixSquare Otis Plano PlanoLight Qogir QogirDark QogirLight Redmond98 "
-    echo -e " Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark WhiteSurDark WhiteSurLight"
+    echo -e " Redmond10 Redmond7 RedmondXP Sweet Snow Vimix VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}Ejemplos:"
     echo -e "${white}${bold}  tema-xfce4.sh ${purple}${bold}ALDOS"
@@ -753,6 +753,38 @@ fi
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Snow' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Snow' establecido"
+}
+
+function Sweet() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        sweet-gtk-theme boston-icon-theme adwaita-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        sweet-gtk-theme boston-icon-theme adwaita-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        sweet-gtk-theme boston-icon-theme adwaita-cursor-theme && \
+if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Sweet && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Boston && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Sweet  && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Sweet" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Boston" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Sweet"
+fi
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Sweet' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Sweet' establecido"
 }
 
 function Dracula() {
