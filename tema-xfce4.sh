@@ -81,17 +81,18 @@ fi
 
 # Validamos que se proporcione un argumento.
 if [ $# -eq 0 ]; then
-    echo -e "${green}${bold} "
-    echo -e "${red}${bold}  * Utilice el nombre de un tema como argumento."
+#    echo -e "${green}${bold} "
+    echo -e "${green}${bold}  * Utilice el nombre de un tema como argumento."
     echo -e "${green}${bold}  * Uso: tema-xfce4.sh [Tema]"
     echo -e " "
     echo -e "${blue}${bold}Temas disponibles en ALDOS:${purple}${bold}"
-    echo -e " ALDOS ALDOSDarker Adwaita AdwaitaDark Amber AmberCircle Ant Arc ArcDarker"
-    echo -e " Chicago95 ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark"
-    echo -e " Graphite Greybird Juno Kimi LaStrange Layan Materia MateriaDark MojaveDark"
-    echo -e " MojaveLight Jasper JasperLight Nordic NordicPolar Numix NumixCircle"
-    echo -e " NumixSquare Otis Plano PlanoLight Qogir QogirDark QogirLight Redmond98 "
-    echo -e " Redmond10 Redmond7 RedmondXP Sweet Snow Vimix VimixDark WhiteSurDark WhiteSurLight"
+    echo -e " ALDOS ALDOSDarker Adwaita AdwaitaDark Amber AmberCircle Andromeda Ant Arc"
+    echo -e " ArcDarker BlueSky Chicago95 ColloidDark ColloidLight Dracula DraculaCandy"
+    echo -e " Fluent FluentDark Graphite Greybird Juno Kimi LaStrange Lavanda Layan Materia"
+    echo -e " MateriaDark MojaveDark MojaveLight Jasper JasperLight Nordic NordicPolar"
+    echo -e " Numix NumixCircle NumixSquare Otis Plano PlanoLight Qogir QogirDark"
+    echo -e " QogirLight Redmond98 Redmond10 Redmond7 RedmondXP Sweet Snow Vimix VimixDark"
+    echo -e " WhiteSurDark WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}Ejemplos:"
     echo -e "${white}${bold}  tema-xfce4.sh ${purple}${bold}ALDOS"
@@ -234,6 +235,104 @@ fi
         sleep 3 && \
         echo -e "${white}${bold}Tema 'ALDOSDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'ALDOSDark' establecido"
+}
+
+function BlueSky() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme bluesky-gtk-theme papirus-icon-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme bluesky-gtk-theme papirus-icon-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme bluesky-gtk-theme papirus-icon-theme && \
+if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
+        xfconf-query -t string -c xfwm4 -p /general/theme -s BlueSky && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s BlueSky && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.cinnamon.desktop.interface gtk-theme "BlueSky" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.cinnamon.desktop.wm.preferences theme "BlueSky" && \
+        gsettings set org.cinnamon.theme name "Arc"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.gnome.desktop.interface gtk-theme "BlueSky" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "BlueSky"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Papirus" && \
+        gsettings set org.mate.interface gtk-theme "BlueSky"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Adwaita"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "BlueSky"
+fi
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'BlueSky' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'BlueSky' establecido"
+}
+
+function Lavanda() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        fluent-cursor-theme bluesky-gtk-theme papirus-icon-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        fluent-cursor-theme bluesky-gtk-theme papirus-icon-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        fluent-cursor-theme bluesky-gtk-theme papirus-icon-theme && \
+if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Lavanda && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Fluent-cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-circle && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Lavanda && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Fluent-cursors" && \
+        gsettings set org.cinnamon.desktop.interface gtk-theme "Lavanda" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-circle" && \
+        gsettings set org.cinnamon.desktop.wm.preferences theme "Lavanda" && \
+        gsettings set org.cinnamon.theme name "Arc"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
+        gsettings set org.gnome.desktop.interface cursor-theme "Fluent-cursors" && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Lavanda" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-circle" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Lavanda"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Tela-circle" && \
+        gsettings set org.mate.interface gtk-theme "Lavanda"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Fluent-cursors"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "Lavanda"
+fi
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Lavanda' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Lavanda' establecido"
 }
 
 function Plano() {
@@ -715,12 +814,78 @@ if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; t
         gsettings set org.gnome.desktop.interface icon-theme "Candy" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Otis"
 fi
+if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.cinnamon.desktop.interface gtk-theme "Otis" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Candy" && \
+        gsettings set org.cinnamon.desktop.wm.preferences theme "Otis" && \
+        gsettings set org.cinnamon.theme name "Otis"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Candy" && \
+        gsettings set org.mate.interface gtk-theme "Otis"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Adwaita"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "Otis"
+fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Otis' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Otis' establecido"
+}
+
+function Andromeda() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        andromeda-gtk-theme zafiro-icon-theme adwaita-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        andromeda-gtk-theme zafiro-icon-theme adwaita-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        andromeda-gtk-theme zafiro-icon-theme adwaita-cursor-theme && \
+if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Andromeda && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Andromeda  && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Andromeda" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Andromeda"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.cinnamon.desktop.interface gtk-theme "Andromeda" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Candy" && \
+        gsettings set org.cinnamon.desktop.wm.preferences theme "Andromeda" && \
+        gsettings set org.cinnamon.theme name "Andromeda"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Zafiro-icons" && \
+        gsettings set org.mate.interface gtk-theme "Andromeda"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Adwaita"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "Andromeda"
+fi
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Andromeda' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Andromeda' establecido"
 }
 
 function Snow() {
@@ -1860,9 +2025,9 @@ fi
 function demo() {
 
     for TESTTHEME in \
-       ALDOS ALDOSDarker Adwaita Amber AmberCircle Ant Arc ArcDarker Chicago95 \
+       ALDOS ALDOSDarker Adwaita Amber AmberCircle Andromeda Ant Arc ArcDarker BlueSky Chicago95 \
        ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark Greybird Juno Kimi \
-       LaStrange Layan Materia MateriaDark MojaveDark MojaveLight Jasper JasperLight \
+       LaStrange Lavanda Layan Materia MateriaDark MojaveDark MojaveLight Jasper JasperLight \
        Nordic NordicPolar Numix NumixCircle NumixSquare Otis Plano PlanoLight Qogir \
        QogirDark QogirLight Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark \
        WhiteSurDark WhiteSurLight ALDOS
