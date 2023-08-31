@@ -21,8 +21,10 @@ for TEMA in \
     Arc \
     Adwaita \
     AdwaitaDark \
+    Andromeda \
     Ant \
     AmberCircle \
+    BlueSky \
     ColloidDark \
     Dracula \
     DraculaCandy \
@@ -36,6 +38,7 @@ for TEMA in \
     Nordic \
     Jasper \
     JasperLight \
+    Lavanda \
     Otis \
     Qogir \
     QogirDark \
