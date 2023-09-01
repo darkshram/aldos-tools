@@ -26,6 +26,7 @@ for TEMA in \
     AmberCircle \
     BlueSky \
     ColloidDark \
+    Cloudy \
     Dracula \
     DraculaCandy \
     FluentDark \
