@@ -1391,7 +1391,7 @@ function NordicPolar() {
 if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Nordic-Polar && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons-light && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons-Light && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nordic-Polar && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
@@ -1399,7 +1399,7 @@ fi
 if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Nordic-Polar" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons-light" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons-Light" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Nordic-Polar"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
