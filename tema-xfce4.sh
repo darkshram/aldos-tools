@@ -91,8 +91,8 @@ if [ $# -eq 0 ]; then
     echo -e " DraculaCandy Fluent FluentDark Graphite Greybird Juno Kimi LaStrange Lavanda"
     echo -e " Layan Materia MateriaDark MojaveDark MojaveLight Jasper JasperLight Nordic"
     echo -e " NordicPolar Numix NumixCircle NumixSquare Otis Plano PlanoLight Qogir QogirDark"
-    echo -e " QogirLight Redmond98 Redmond10 Redmond7 RedmondXP Sweet Snow Vimix VimixDark"
-    echo -e " WhiteSurDark WhiteSurLight"
+    echo -e " QogirLight Redmond98 Redmond10 Redmond7 RedmondXP ShadesOfPurple Snow Sweet"
+    echo -e " Vimix VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}Ejemplos:"
     echo -e "${white}${bold}  tema-xfce4.sh ${purple}${bold}ALDOS"
@@ -382,6 +382,55 @@ fi
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Lavanda' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Lavanda' establecido"
+}
+
+function ShadesOfPurple() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        layan-cursor-theme shades-of-purple-gtk-theme candy-icon-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        layan-cursor-theme shades-of-purple-gtk-theme candy-icon-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        layan-cursor-theme shades-of-purple-gtk-theme candy-icon-theme && \
+if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Shades-of-purple && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Layan-white-cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Candy && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Shades-of-purple && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Layan-white-cursors" && \
+        gsettings set org.cinnamon.desktop.interface gtk-theme "Shades-of-purple" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Candy" && \
+        gsettings set org.cinnamon.desktop.wm.preferences theme "Shades-of-purple" && \
+        gsettings set org.cinnamon.theme name "Shades-of-purple"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
+        gsettings set org.gnome.desktop.interface cursor-theme "Layan-white-cursors" && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Shades-of-purple" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Candy" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Shades-of-purple"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Candy" && \
+        gsettings set org.mate.interface gtk-theme "Shades-of-purple"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Layan-white-cursors"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "Shades-of-purple"
+fi
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Shades-of-purple' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Shades-of-purple' establecido"
 }
 
 function Plano() {
@@ -2078,8 +2127,8 @@ function demo() {
        Chicago95 Cloudy ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark \
        Greybird Jasper JasperLight Juno Kimi LaStrange Lavanda Layan Materia MateriaDark \
        MojaveDark MojaveLight Nordic NordicPolar Numix NumixCircle NumixSquare Otis Plano \
-       PlanoLight Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP Snow Vimix VimixDark \
-       WhiteSurDark WhiteSurLight ALDOS
+       PlanoLight Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP ShadesOfPurple \
+       Snow Sweet Vimix VimixDark WhiteSurDark WhiteSurLight ALDOS
     do
        ${TESTTHEME} ; sleep 20
     done
