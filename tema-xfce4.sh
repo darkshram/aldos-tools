@@ -89,10 +89,10 @@ if [ $# -eq 0 ]; then
     echo -e " ALDOS ALDOSDarker Adwaita AdwaitaDark Amber AmberCircle Andromeda Ant Arc"
     echo -e " ArcDarker BlueSky Chicago95 Cloudy ColloidDark ColloidLight Dracula"
     echo -e " DraculaCandy Fluent FluentDark Graphite Greybird Juno Kimi LaStrange Lavanda"
-    echo -e " Layan Materia MateriaDark MojaveDark MojaveLight Jasper JasperLight Nordic"
-    echo -e " NordicPolar Numix NumixCircle NumixSquare Otis Plano PlanoLight Qogir"
-    echo -e " QogirDark QogirLight Redmond98 Redmond10 Redmond7 RedmondXP ShadesOfPurple"
-    echo -e " Snow Sweet Vimix VimixDark WhiteSurDark WhiteSurLight"
+    echo -e " Layan Jasper JasperLight Midnight Materia MateriaDark MojaveDark MojaveLight"
+    echo -e " Nordic NordicPolar Numix NumixCircle NumixSquare Otis Plano PlanoLight"
+    echo -e " Qogir QogirDark QogirLight Redmond98 Redmond10 Redmond7 RedmondXP"
+    echo -e " ShadesOfPurple Snow Sweet Vimix VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}Ejemplos:"
     echo -e "${white}${bold}  tema-xfce4.sh ${purple}${bold}ALDOS"
@@ -260,7 +260,7 @@ if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]
         gsettings set org.cinnamon.desktop.interface gtk-theme "BlueSky" && \
         gsettings set org.cinnamon.desktop.interface icon-theme "Papirus" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "BlueSky" && \
-        gsettings set org.cinnamon.theme name "Arc"
+        gsettings set org.cinnamon.theme name "BlueSky"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
@@ -284,6 +284,55 @@ fi
         sleep 3 && \
         echo -e "${white}${bold}Tema 'BlueSky' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'BlueSky' establecido"
+}
+
+function Midnight() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme midnight-gtk-theme papirus-dark-icon-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme midnight-gtk-theme papirus-dark-icon-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme midnight-gtk-theme papirus-dark-icon-theme && \
+if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Midnight && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus-Dark && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Midnight && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.cinnamon.desktop.interface gtk-theme "Midnight" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Papirus-Dark" && \
+        gsettings set org.cinnamon.desktop.wm.preferences theme "Midnight" && \
+        gsettings set org.cinnamon.theme name "Midnight"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Midnight" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Midnight"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Papirus-Dark" && \
+        gsettings set org.mate.interface gtk-theme "Midnight"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Adwaita"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "Midnight"
+fi
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Midnight' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Midnight' establecido"
 }
 
 function Cloudy() {
