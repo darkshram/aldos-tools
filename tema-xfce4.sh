@@ -89,10 +89,10 @@ if [ $# -eq 0 ]; then
     echo -e " ALDOS ALDOSDarker Adwaita AdwaitaDark Amber AmberCircle Andromeda Ant Arc"
     echo -e " ArcDarker BlueSky Chicago95 Cloudy ColloidDark ColloidLight Dracula"
     echo -e " DraculaCandy Fluent FluentDark Graphite Greybird Juno Kimi LaStrange Lavanda"
-    echo -e " Layan Jasper JasperLight Midnight Materia MateriaDark MojaveDark MojaveLight"
-    echo -e " Nordic NordicPolar Numix NumixCircle NumixSquare Otis Plano PlanoLight"
-    echo -e " Qogir QogirDark QogirLight Redmond98 Redmond10 Redmond7 RedmondXP"
-    echo -e " ShadesOfPurple Snow Sweet Vimix VimixDark WhiteSurDark WhiteSurLight"
+    echo -e " Layan Jasper JasperLight Midnight MojaveDark MojaveLight Nordic NordicPolar"
+    echo -e " Numix NumixCircle NumixSquare Otis Plano PlanoLight Qogir QogirDark"
+    echo -e " QogirLight Redmond98 Redmond10 Redmond7 RedmondXP ShadesOfPurple Snow Space"
+    echo -e " Sweet Vimix VimixDark WhiteSurDark WhiteSurLight"
     echo -e " "
     echo -e "${green}${bold}Ejemplos:"
     echo -e "${white}${bold}  tema-xfce4.sh ${purple}${bold}ALDOS"
@@ -1099,6 +1099,38 @@ fi
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Sweet' establecido"
 }
 
+function Space() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        space-gtk-theme boston-icon-theme adwaita-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        space-gtk-theme boston-icon-theme adwaita-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        space-gtk-theme boston-icon-theme adwaita-cursor-theme && \
+if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Space && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Boston && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Space  && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Space" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Boston" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Space"
+fi
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Space' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Space' establecido"
+}
+
 function Dracula() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
@@ -1521,70 +1553,6 @@ fi
         sleep 3 && \
         echo -e "${white}${bold}Tema 'AdwaitaDark' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'AdwaitaDark' establecido"
-}
-
-function Materia() {
-    rpm -q --quiet \
-        hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme materia-gtk-theme papirus-icon-theme || \
-        pkcon -y install \
-        hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme materia-gtk-theme papirus-icon-theme
-    rpm -q --quiet \
-        hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme materia-gtk-theme papirus-icon-theme && \
-if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
-        xfconf-query -t string -c xfwm4 -p /general/theme -s Materia-compact && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Materia-compact && \
-        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
-        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
-fi
-if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
-        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
-        gsettings set org.gnome.desktop.interface gtk-theme "Materia-compact" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Papirus" && \
-        gsettings set org.gnome.desktop.wm.preferences theme "Materia-compact"
-fi
-        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
-        sudo hardcode-tray --apply > /dev/null && \
-        echo -e "${white}${bold} Hecho." && \
-        sleep 3 && \
-        echo -e "${white}${bold}Tema 'Materia' establecido.${reset}" && \
-        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Materia' establecido"
-}
-
-function MateriaDark() {
-    rpm -q --quiet \
-        hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme materia-gtk-theme papirus-icon-theme || \
-        pkcon -y install \
-        hardcode-tray sound-theme-smooth \
-        numix-cursor-theme materia-gtk-theme papirus-icon-theme
-    rpm -q --quiet \
-        hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme materia-gtk-theme papirus-icon-theme && \
-if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
-        xfconf-query -t string -c xfwm4 -p /general/theme -s Materia-dark-compact && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus-Dark && \
-        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Materia-dark-compact && \
-        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
-        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
-fi
-if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
-        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
-        gsettings set org.gnome.desktop.interface gtk-theme "Materia-dark-compact" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" && \
-        gsettings set org.gnome.desktop.wm.preferences theme "Materia-dark-compact"
-fi
-        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
-        sudo hardcode-tray --apply > /dev/null && \
-        echo -e "${white}${bold} Hecho." && \
-        sleep 3 && \
-        echo -e "${white}${bold}Tema 'MateriaDark' establecido.${reset}" && \
-        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'MateriaDark' establecido"
 }
 
 function Vimix() {
