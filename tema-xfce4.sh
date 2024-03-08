@@ -87,7 +87,7 @@ if [ $# -eq 0 ]; then
     echo -e " "
     echo -e "${blue}${bold}Temas disponibles en ALDOS:${purple}${bold}"
     echo -e " ALDOS ALDOSDarker Adwaita AdwaitaDark Amber AmberCircle Andromeda Ant Arc"
-    echo -e " ArcDarker BlueSky Chicago95 Cloudy ColloidDark ColloidLight Dracula"
+    echo -e " ArcDarker BlueSky Bubble Chicago95 Cloudy ColloidDark ColloidLight Dracula"
     echo -e " DraculaCandy Fluent FluentDark Graphite Greybird Juno Kimi LaStrange Lavanda"
     echo -e " Layan Jasper JasperLight Midnight MojaveDark MojaveLight Nordic NordicPolar"
     echo -e " Numix NumixCircle NumixSquare Otis Plano PlanoLight Qogir QogirDark"
@@ -382,6 +382,55 @@ fi
         sleep 3 && \
         echo -e "${white}${bold}Tema 'Cloudy' establecido.${reset}" && \
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Cloudy' establecido"
+}
+
+function Bubble() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme bubble-gtk-theme papirus-icon-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme bubble-gtk-theme papirus-icon-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        adwaita-cursor-theme bubble-gtk-theme papirus-icon-theme && \
+if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Bubble && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Bubble && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.cinnamon.desktop.interface gtk-theme "Bubble" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.cinnamon.desktop.wm.preferences theme "Bubble" && \
+        gsettings set org.cinnamon.theme name "Bubble"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
+        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Bubble" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Bubble"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Papirus" && \
+        gsettings set org.mate.interface gtk-theme "Bubble"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Adwaita"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "Bubble"
+fi
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        sleep 3 && \
+        echo -e "${white}${bold}Tema 'Bubble' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Bubble' establecido"
 }
 
 function Lavanda() {
