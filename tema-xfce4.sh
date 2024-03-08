@@ -1123,6 +1123,23 @@ if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; t
         gsettings set org.gnome.desktop.interface icon-theme "Boston" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Space"
 fi
+if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.cinnamon.desktop.interface gtk-theme "Space" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Boston" && \
+        gsettings set org.cinnamon.desktop.wm.preferences theme "Space" && \
+        gsettings set org.cinnamon.theme name "Space"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Boston" && \
+        gsettings set org.mate.interface gtk-theme "Space"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Adwaita"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "Space"
+fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
         echo -e "${white}${bold} Hecho." && \
