@@ -1,0 +1,19 @@
+#!/bin/sh
+
+MYHOSTNAME=${1}
+
+hostname "${MYHOSTNAME}" && \
+sed -i -e "s|HOSTNAME=.*|HOSTNAME=${MYHOSTNAME}|g" /etc/sysconfig/network && \
+echo "${MYHOSTNAME}" > /etc/hostname && \
+export MYHOSTNAME
+
+if /bin/grep -Fq "${MYHOSTNAME}" /etc/hosts
+then
+	echo "Hostname already present in /etc/hosts"
+else
+	sed -i \
+		-e "s|localhost.localdomain localhost|localhost.localdomain localhost ${MYHOSTNAME}|g" \
+		/etc/hosts
+fi
+
+hostname
