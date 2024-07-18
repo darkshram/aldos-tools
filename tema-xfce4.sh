@@ -87,7 +87,7 @@ if [ $# -eq 0 ]; then
     echo -e " "
     echo -e "${blue}${bold}Temas disponibles en ALDOS:${purple}${bold}"
     echo -e " ALDOS ALDOSDarker Adwaita AdwaitaDark Amber AmberCircle Andromeda Ant Arc"
-    echo -e " ArcDarker BlueSky Bubble Chicago95 Cloudy ColloidDark ColloidLight Dracula"
+    echo -e " ArcDarker BlueSky Bubble Chicago95 Cloudy Colloid ColloidDark Dracula"
     echo -e " DraculaCandy Fluent FluentDark Graphite Greybird Juno Kimi LaStrange Lavanda"
     echo -e " Layan Jasper JasperLight Magnetic Midnight MojaveDark MojaveLight Nordic"
     echo -e " NordicPolar Numix NumixCircle NumixSquare Otis Plano PlanoLight Qogir"
@@ -1446,6 +1446,38 @@ fi
         notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'GraphiteLight' establecido"
 }
 
+function Colloid() {
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        colloid-gtk-theme colloid-icon-theme colloid-cursor-theme || \
+        pkcon -y install \
+        hardcode-tray sound-theme-smooth \
+        colloid-gtk-theme colloid-icon-theme colloid-cursor-theme
+    rpm -q --quiet \
+        hardcode-tray sound-theme-smooth \
+        colloid-gtk-theme colloid-icon-theme colloid-cursor-theme && \
+if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
+        xfconf-query -t string -c xfwm4 -p /general/theme -s Colloid && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Colloid-cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Colloid-Dark && \
+        xfconf-query -t string -c xsettings -p /Net/ThemeName -s Colloid && \
+        xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
+        xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
+        gsettings set org.gnome.desktop.interface cursor-theme "Colloid-cursors" && \
+        gsettings set org.gnome.desktop.interface gtk-theme "Colloid" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Colloid-Dark" && \
+        gsettings set org.gnome.desktop.wm.preferences theme "Colloid"
+fi
+        echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
+        sudo hardcode-tray --apply > /dev/null && \
+        echo -e "${white}${bold} Hecho." && \
+        sleep 1 && \
+        echo -e "${white}${bold}Tema 'Colloid' establecido.${reset}" && \
+        notify-send -a xfce4-settings-editor -i org.xfce.settings.appearance -t 8000 "Tema 'Colloid' establecido"
+}
+
 function ColloidDark() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
@@ -1459,7 +1491,7 @@ function ColloidDark() {
 if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Colloid-Dark && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Colloid-dark-cursors && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Colloid-dark && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Colloid-Dark && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Colloid-Dark && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
@@ -1467,7 +1499,7 @@ fi
 if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Colloid-dark-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Dark" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Colloid-dark" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Colloid-Dark" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Colloid-Dark"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -1491,7 +1523,7 @@ function ColloidLight() {
 if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Colloid-Light && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Colloid-cursors && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Colloid-light && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Colloid-Light && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Colloid-Light && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
@@ -1499,7 +1531,7 @@ fi
 if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Colloid-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Colloid-Light" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Colloid-light" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Colloid-Light" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Colloid-Light"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
@@ -2256,7 +2288,7 @@ function demo() {
 
     for TESTTHEME in \
        ALDOS ALDOSDarker Adwaita Amber AmberCircle Andromeda Ant Arc ArcDarker BlueSky \
-       Chicago95 Cloudy ColloidDark ColloidLight Dracula DraculaCandy Fluent FluentDark \
+       Chicago95 Cloudy Colloid ColloidDark Dracula DraculaCandy Fluent FluentDark \
        Greybird Jasper JasperLight Juno Kimi LaStrange Lavanda Layan Materia MateriaDark \
        MojaveDark MojaveLight Nordic NordicPolar Numix NumixCircle NumixSquare Otis Plano \
        PlanoLight Qogir QogirDark QogirLight Redmond10 Redmond7 RedmondXP ShadesOfPurple \
