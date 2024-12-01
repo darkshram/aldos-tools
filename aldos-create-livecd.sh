@@ -217,7 +217,7 @@ cp -a \
     "${ISOLINUXFS}/syslinux/vmlinuz0"
 
 cp -a \
-    "${ROOTFS}/boot/initrd-plymouth.img" \
+    "${ROOTFS}/boot/initramfs-*.img" \
     "${ISOLINUXFS}/syslinux/initrd0.img"
 
 cp -a \
