@@ -27,6 +27,7 @@ ROOTFSDIR="/tmp/aldos-rootfs/mnt/livecd"
 EXT4FSIMG="/tmp/aldos-rootfs/aldos-ext4fs.img"
 SQUASHFSIMG="${ISOLINUXFS}/LiveOS/squashfs.img"
 FECHA="$(date +%Y%m%d)"
+LIVECDHOSTNAME="aldos-livecd.alcancelibre.org"
 DISTRONAME="ALDOS"
 LIVECDLABEL="ALDOS64${FECHA}"
 LIVECDWELCOME="Bienvenido a ${LIVECDTITLE}!"
@@ -194,6 +195,13 @@ sed -i \
     -e "s|rd.vconsole.keymap=.*|rd.vconsole.keymap=${LIVECDKEYMAP}|g" \
     -e "s|rd.vconsole.font=.*|rd.vconsole.font=${LIVECDSYSFONT}|g" \
     "${ROOTFS}"/etc/default/grub
+
+# Nombre de anfitrión predeterminado
+sed -i \
+    -e "s|HOSTNAME=.*|HOSTNAME=\"${LIVECDHOSTNAME}\"|g" \
+    /etc/sysconfig/network && \
+echo "${LIVECDHOSTNAME}" > /etc/hostname
+echo -e "127.0.0.1    ${LIVECDHOSTNAME}\n::1    ${LIVECDHOSTNAME}" >> /etc/hosts
 
 # Copiar el núcleo del sistema y lo necesario para iniciar el LiveCD.
 # Los nombres de los archivos se procuran de máximo 12 caracteres.
