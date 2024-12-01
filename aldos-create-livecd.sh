@@ -68,8 +68,8 @@ mkdir -p ${ROOTFSDIR}
 # Se monta la imagen de disco y vincula a directorios de dispositivos.
 # procesos y funciones del núcleo.
 dd if="/dev/zero" of="${ISOLINUXFS}/aldos-ext4fs.img" bs=4M count=2000 && \
-mkfs.ext4 "${ISOLINUXFS}"/aldos-ext4fs.img && \
-fsck -fyD "${ISOLINUXFS}"/aldos-ext4fs.img && \
+mkfs.ext4 "${ISOLINUXFS}/aldos-ext4fs.img" && \
+fsck -fyD "${ISOLINUXFS}/aldos-ext4fs.img" && \
 mkdir -p /lib/udev/rules.d && \
 echo 'SUBSYSTEM=="block", ENV{UDISKS_IGNORE}="1"' > /lib/udev/rules.d/90-udisks-inhibit.rules && \
 udevadm control --reload && \
