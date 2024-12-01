@@ -290,7 +290,9 @@ echo "full_cd/single" > "${ISOLINUXFS}/.disk/cd_type"
 echo "${LIVECDTITLE}" > "${ISOLINUXFS}/.disk/info"
 echo "${RELEASENOTESURL}" > "${ISOLINUXFS}/.disk/release_notes_url"
 
+pushd "${ISOLINUXFS}" || exit 1
 find . -type f -print0 | xargs -0 md5sum | grep -v "\./md5sum.txt" > md5sum.txt
+popd || exit 1
 
 # Forzar la escrita a sistema de archivos de todas las consignaciones
 # pendientes en el búfer de memoria.
