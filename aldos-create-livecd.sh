@@ -267,7 +267,7 @@ menu default
 label linux0
   menu label ${LABELBASIC}
   kernel vmlinuz0
-  append initrd=initrd0.img root=live:CDLABEL=${LIVECDLABEL} rootfstype=auto ro liveimg rd.locale.LANG=${LIVECDLOCALE} KEYBOARDTYPE=pc SYSFONT=${LIVECDSYSFONT} rd.vconsole.keymap=${LIVECDKEYMAP} rootflags=defaults,relatime,commit=60 selinux=0 nmi_watchdog=0 rd_NO_LUKS rd_NO_MD rd_NO_DM xdriver=vesa nomodeset quiet
+  append initrd=initrd0.img root=live:CDLABEL=${LIVECDLABEL} rootfstype=auto ro liveimg rd.locale.LANG=${LIVECDLOCALE} KEYBOARDTYPE=pc SYSFONT=${LIVECDSYSFONT} rd.vconsole.keymap=${LIVECDKEYMAP} rootflags=defaults,relatime,commit=60 selinux=0 nmi_watchdog=0 rd_NO_LUKS rd_NO_MD rd_NO_DM rd_NO_PLYMOUTH=1 xdriver=vesa nomodeset quiet
 label check0
   menu label ${LABELCHECK}
   kernel vmlinuz0
