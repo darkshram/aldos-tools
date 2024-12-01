@@ -22,6 +22,7 @@
 #
 ################################################################################
 
+PROYECTDIR="/home/jbarrios/Proyectos/ALDOS-LiveCD"
 ISOLINUXFS="/tmp/aldos-livecd"
 ROOTFSDIR="/tmp/aldos-rootfs/mnt/livecd"
 EXT4FSIMG="/tmp/aldos-rootfs/aldos-ext4fs.img"
@@ -42,13 +43,13 @@ LABELCHECK="Modo verificar e Iniciar"
 LABELLOCAL="Iniciar desde unidad local"
 COMMENTLIVEUSER="Usuario Sistema Vivo"
 INSTALLMSG="Instalar ALDOS"
-PACKAGELIST="/home/jbarrios/Proyectos/ALDOS-LiveCD/ALDOS-package-list.txt"
-LICENSEFILE="/home/jbarrios/Proyectos/ALDOS-LiveCD/Licencia.txt"
-READMEFILE="/home/jbarrios/Proyectos/ALDOS-LiveCD/LEEME.txt"
+PACKAGELIST="${PROYECTDIR}/ALDOS-package-list.txt"
+LICENSEFILE="${PROYECTDIR}/Licencia.txt"
+READMEFILE="${PROYECTDIR}/LEEME.txt"
 # Imagen que se mostrará en pantalla en el gestor de arranque del
 # disco vivo. Se prefiere sea en formato JPG para procurar
 # compatibilidad.
-SPLASHIMAGE="/home/jbarrios/Proyectos/ALDOS-LiveCD/syslinux-vesa-splash.jpg"
+SPLASHIMAGE="${PROYECTDIR}/syslinux-vesa-splash.jpg"
 
 # Generar estructura de directorios del LiveCD
 mkdir -p ${ISOLINUXFS}/{boot/grub/x86_64-efi,efi/boot,isolinux,LiveOS}
@@ -154,7 +155,7 @@ chroot "${ROOTFS}" /bin/chown polkitd /etc/polkit-1/rules.d > /dev/null 2>&1 ||:
 chroot "${ROOTFS}" /bin/chown polkitd /usr/share/polkit-1/rules.d  > /dev/null 2>&1 ||:
 # Generar la base de datos de whatis
 chroot "${ROOTFS}" /usr/sbin/makewhatis -w
-# Crear resolv.conf
+# Crear /etc/resolv.conf
 chroot "${ROOTFS}" /bin/touch /etc/resolv.conf
 # Limpieza de yum
 chroot "${ROOTFS}" /bin/rm -fr /var/lib/yum/{groups,history,repos,rpmdb-indexes,uuid,yumdb}
@@ -167,34 +168,34 @@ chroot "${ROOTFS}" /bin/rm -f /1
 # Desactivar SELinux
 sed -i \
     -e "s|SELINUX=.*|SELINUX=disabled|g" \
-    "${ROOTFS}"/etc/sysconfig/selinux
+    "${ROOTFS}/etc/sysconfig/selinux"
 
 # Establecer idioma, mapa de teclado y tipografía para la terminal
 sed -i \
     -e "s|LANG=.*|LANG=\"${LIVECDLOCALE}\"|g" \
     -e "s|LC_ALL=.*|LC_ALL=\"${LIVECDLOCALE}\"|g" \
     -e "s|SYSFONT=.*|SYSFONT=\"${LIVECDSYSFONT}\"|g" \
-    "${ROOTFS}"/etc/locale.conf \
-    "${ROOTFS}"/etc/environment
+    "${ROOTFS}/etc/locale.conf" \
+    "${ROOTFS}/etc/environment"
 
 sed -i \
     -e "LAYOUT=.*|LAYOUT=\"${LIVECDKEYMAP}\"|g" \
     -e "KEYTABLE=.*|LAYOUT=\"${LIVECDKEYMAP}\"|g" \
     -e "KEYMAP=.*|KEYMAP=\"${LIVECDKEYMAP}\"|g" \
     -e "ONT=.*|ONT=\"${LIVECDSYSFONT}\"|g" \
-    "${ROOTFS}"/etc/vconsole.conf
+    "${ROOTFS}/etc/vconsole.conf"
 
 sed -i \
     -e "s|value=\"es\"|value=\"${LIVECDKEYMAP}\"|g" \
     -e "s|Usuario Sistema Vivo|${COMMENTLIVEUSER}|g" \
     -e "s|Instalar ALDOS|${INSTALLMSG}|g" \
-    "${ROOTFS}"/etc/rc.d/init.d/livesys
+    "${ROOTFS}/etc/rc.d/init.d/livesys"
 
 sed -i \
     -e "s|rd.locale.LANG=.*|rd.locale.LANG=${LIVECDLOCALE}|g" \
     -e "s|rd.vconsole.keymap=.*|rd.vconsole.keymap=${LIVECDKEYMAP}|g" \
     -e "s|rd.vconsole.font=.*|rd.vconsole.font=${LIVECDSYSFONT}|g" \
-    "${ROOTFS}"/etc/default/grub
+    "${ROOTFS}/etc/default/grub"
 
 # Nombre de anfitrión predeterminado
 sed -i \
@@ -206,37 +207,38 @@ echo -e "127.0.0.1    ${LIVECDHOSTNAME}\n::1    ${LIVECDHOSTNAME}" >> /etc/hosts
 # Copiar el núcleo del sistema y lo necesario para iniciar el LiveCD.
 # Los nombres de los archivos se procuran de máximo 12 caracteres.
 cp -a \
-    "${ROOTFS}"/vmlinuz-* \
-    "${ISOLINUXFS}"/syslinux/vmlinuz0
+    "${ROOTFS}/vmlinuz-*" \
+    "${ISOLINUXFS}/syslinux/vmlinuz0"
 
 cp -a \
-    "${ROOTFS}"/boot/initrd-plymouth.img \
-    "${ISOLINUXFS}"/syslinux/initrd0.img
+    "${ROOTFS}/boot/initrd-plymouth.img" \
+    "${ISOLINUXFS}/syslinux/initrd0.img"
 
 cp -a \
-    "${ROOTFS}"/boot/efi/EFI/aldos/grubx64.efi \
-    efi/boot/grubx64.efi
+    "${ROOTFS}/boot/efi/EFI/aldos/grubx64.efi" \
+    "${ISOLINUXFS}/efi/boot/grubx64.efi"
 
 cp -a \
-    "${ROOTFS}"/usr/share/syslinux/isolinux.bin \
-    "${ISOLINUXFS}"/isolinux/isolinux.bin
+    "${ROOTFS}/usr/share/syslinux/isolinux.bin" \
+    "${ISOLINUXFS}/isolinux/isolinux.bin"
 
 cp -a \
-    "${ROOTFS}"/usr/share/syslinux/vesamenu.c32 \
-    "${ISOLINUXFS}"/isolinux/vesamenu.c32
+    "${ROOTFS}/usr/share/syslinux/vesamenu.c32" \
+    "${ISOLINUXFS}/isolinux/vesamenu.c32"
 
 cp -a \
     "${SPLASHIMAGE}" \
-    "${ISOLINUXFS}"/isolinux/splash.jpg
+    "${ISOLINUXFS}/isolinux/splash.jpg"
 
-# 
+# Copiar archivo de licencia
 cp -a \
     "${LICENSEFILE}" \
-    "${ISOLINUXFS}"/Licencia.txt
+    "${ISOLINUXFS}/Licencia.txt"
 
+# Copiar archivo LEEME.txt
 cp -a \
     "${READMEFILE}" \
-    "${ISOLINUXFS}"/LEEME.txt
+    "${ISOLINUXFS}/LEEME.txt"
 
 # Crear el menú de SysLinux (gestor de arranque del LiveCD)
 cat << EOF > "${ISOLINUXFS}"/isolinux/isolinux.cfg
@@ -275,25 +277,37 @@ label local
   localboot 0xffff
 EOF
 
+# Forzar la escrita a sistema de archivos de todas las consignaciones
+# pendientes en el búfer de memoria.
 sync
 
+# Desmontar sistemas de archivos
 umount "${ROOTFSDIR}"/sys
 umount "${ROOTFSDIR}"/proc
 umount "${ROOTFSDIR}"/dev
 umount "${ROOTFSDIR}"
+# Intentar liberar todos los dispositivos /dev/loopX
+losetup --detach-all
+
+# Eliminar regla temporal que impide montaje automático de unidades
+# de almacenamiento en el anfitrión
 rm -f /lib/udev/rules.d/90-udisks-inhibit.rules
 udevadm control --reload
 udevadm trigger --subsystem-match=block
+
+# Verificar y poner en cero los bloques vacíos
 fsck -fyD "${EXT4FSIMG}"
 zerofree -v "${EXT4FSIMG}"
 fsck -fyD "${EXT4FSIMG}"
 
+# Comprimir imagen de disco con squashfs y algoritmo xz.
 mksquashfs \
     "${ROOTFS}" \
     "${ISOLINUXFS}"/LiveOS/squashfs.img \
     -comp xz \
     -b 4M
 
+# Calcular tamaño de la imagen de disco comprimida
 MAXSIZE="2147483648"
 FILESIZE="$(stat -c%s ${SQUASHFSIMG})"
 
@@ -312,13 +326,16 @@ genisoimage \
     -joliet-long \
     -rock \
     -rational-rock \
+    -full-iso9660-filenames \
+    -isohybrid-mbr \
     -allow-limited-size \
     -udf \
     -appid "${DISTRONAME}" \
     -sysid LINUX \
     -volid "${LIVECDLABEL}" \
-    -full-iso9660-filenames \
-    -o "${LIVECDFILE}".iso
+    -copyright "Licencia.txt" \
+    -o "${LIVECDFILE}".iso \
+    "${ISOLINUXFS}"
 else
 xorrisofs \
     -no-emul-boot \
@@ -331,9 +348,20 @@ xorrisofs \
     -joliet-long \
     -rock \
     -rational-rock \
+    -full-iso9660-filenames \
+    -isohybrid-mbr \
     -appid "${DISTRONAME}" \
     -sysid LINUX \
     -volid "${LIVECDLABEL}" \
-    -full-iso9660-filenames \
-    -o "${LIVECDFILE}".iso
+    -copyright "Licencia.txt" \
+    -o "${PROYECTDIR}/${LIVECDFILE}.iso"\
+    "${ISOLINUXFS}"
+fi
+
+if [ -e "${LIVECDFILE}.iso" ]; then
+    pushd "${PROYECTDIR}" || exit 1
+    md5sum "${LIVECDFILE}.iso" > "${LIVECDFILE}.md5sum" || exit 1
+    sha256sum "${LIVECDFILE}.iso" > "${LIVECDFILE}.sha256sum" || exit 1
+    sha512sum "${LIVECDFILE}.iso" > "${LIVECDFILE}.sha512sum" || exit 1
+    popd || exit 1
 fi
