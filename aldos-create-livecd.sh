@@ -23,6 +23,7 @@
 ################################################################################
 
 PROYECTDIR="/home/jbarrios/Proyectos/ALDOS-LiveCD"
+PUBLISHER="Joel Barrios"
 ISOLINUXFS="/tmp/aldos-livecd"
 ROOTFSDIR="/tmp/aldos-rootfs/mnt/livecd"
 EXT4FSIMG="/tmp/aldos-rootfs/aldos-ext4fs.img"
@@ -43,9 +44,11 @@ LABELCHECK="Modo verificar e Iniciar"
 LABELLOCAL="Iniciar desde unidad local"
 COMMENTLIVEUSER="Usuario Sistema Vivo"
 INSTALLMSG="Instalar ALDOS"
+READMEFILENAME="LEEME.txt"
+LICENSEFILENAME="Licencia.txt"
 PACKAGELIST="${PROYECTDIR}/ALDOS-package-list.txt"
-LICENSEFILE="${PROYECTDIR}/Licencia.txt"
-READMEFILE="${PROYECTDIR}/LEEME.txt"
+LICENSEFILE="${PROYECTDIR}/${LICENSEFILENAME}"
+READMEFILE="${PROYECTDIR}/${READMEFILENAME}"
 # Imagen que se mostrará en pantalla en el gestor de arranque del
 # disco vivo. Se prefiere sea en formato JPG para procurar
 # compatibilidad.
@@ -233,12 +236,12 @@ cp -a \
 # Copiar archivo de licencia
 cp -a \
     "${LICENSEFILE}" \
-    "${ISOLINUXFS}/Licencia.txt"
+    "${ISOLINUXFS}/${LICENSEFILENAME}"
 
 # Copiar archivo LEEME.txt
 cp -a \
     "${READMEFILE}" \
-    "${ISOLINUXFS}/LEEME.txt"
+    "${ISOLINUXFS}/${READMEFILENAME}"
 
 # Crear el menú de SysLinux (gestor de arranque del LiveCD)
 cat << EOF > "${ISOLINUXFS}"/isolinux/isolinux.cfg
@@ -277,14 +280,23 @@ label local
   localboot 0xffff
 EOF
 
+touch "${ISOLINUXFS}/aldos"
+mkdir "${ISOLINUXFS}/.disk"
+touch "${ISOLINUXFS}/.disk/base_installable"
+echo "full_cd/single" > "${ISOLINUXFS}/.disk/cd_type"
+echo "ALDOS 1.4.19 ${FECHA}" > "${ISOLINUXFS}/.disk/info"
+echo "https://www.alcancelibre.org/noticias/disponible-aldos-1-4-19" > "${ISOLINUXFS}/.disk/release_notes_url"
+
+find . -type f -print0 | xargs -0 md5sum | grep -v "\./md5sum.txt" > md5sum.txt
+
 # Forzar la escrita a sistema de archivos de todas las consignaciones
 # pendientes en el búfer de memoria.
 sync
 
 # Desmontar sistemas de archivos
-umount "${ROOTFSDIR}"/sys
-umount "${ROOTFSDIR}"/proc
-umount "${ROOTFSDIR}"/dev
+umount "${ROOTFSDIR}/sys"
+umount "${ROOTFSDIR}/proc"
+umount "${ROOTFSDIR}/dev"
 umount "${ROOTFSDIR}"
 # Intentar liberar todos los dispositivos /dev/loopX
 losetup --detach-all
@@ -295,18 +307,25 @@ rm -f /lib/udev/rules.d/90-udisks-inhibit.rules
 udevadm control --reload
 udevadm trigger --subsystem-match=block
 
+if [ -e "${EXT4FSIMG}" ]; then
 # Verificar y poner en cero los bloques vacíos
 fsck -fyD "${EXT4FSIMG}"
 zerofree -v "${EXT4FSIMG}"
 fsck -fyD "${EXT4FSIMG}"
+fi
 
+if [ -e "${ROOTFS}" ]; then
 # Comprimir imagen de disco con squashfs y algoritmo xz.
 mksquashfs \
     "${ROOTFS}" \
-    "${ISOLINUXFS}"/LiveOS/squashfs.img \
+    "${ISOLINUXFS}/LiveOS/squashfs.img" \
     -comp xz \
     -b 4M
+else
+exit 1
+fi
 
+if [ -e "${SQUASHFSIMG}" ]; then
 # Calcular tamaño de la imagen de disco comprimida
 MAXSIZE="2147483648"
 FILESIZE="$(stat -c%s ${SQUASHFSIMG})"
@@ -333,7 +352,8 @@ genisoimage \
     -appid "${DISTRONAME}" \
     -sysid LINUX \
     -volid "${LIVECDLABEL}" \
-    -copyright "Licencia.txt" \
+    -copyright "${LICENSEFILENAME}" \
+    -publisher "${PUBLISHER}" \
     -o "${LIVECDFILE}".iso \
     "${ISOLINUXFS}"
 else
@@ -353,7 +373,8 @@ xorrisofs \
     -appid "${DISTRONAME}" \
     -sysid LINUX \
     -volid "${LIVECDLABEL}" \
-    -copyright "Licencia.txt" \
+    -copyright "${LICENSEFILENAME}" \
+    -publisher "${PUBLISHER}" \
     -o "${PROYECTDIR}/${LIVECDFILE}.iso"\
     "${ISOLINUXFS}"
 fi
@@ -364,4 +385,6 @@ if [ -e "${LIVECDFILE}.iso" ]; then
     sha256sum "${LIVECDFILE}.iso" > "${LIVECDFILE}.sha256sum" || exit 1
     sha512sum "${LIVECDFILE}.iso" > "${LIVECDFILE}.sha512sum" || exit 1
     popd || exit 1
+fi
+
 fi
