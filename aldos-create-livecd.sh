@@ -123,7 +123,8 @@ yum -y \
     install < "${PACKAGELIST}"
 
 # Instalar Calamares y herramienta para gestionar particiones y
-# Volúmenes lógicos
+# Volúmenes lógicos. Estos paquetes serán desinstalados después de
+# instalar el sistema vivo en el equipo.
 yum -y \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
@@ -166,7 +167,8 @@ chroot "${ROOTFS}" /bin/rm -fr /var/lib/yum/{groups,history,repos,rpmdb-indexes,
 chroot "${ROOTFS}" /bin/mkdir -p /var/lib/yum/{history,yumdb}
 # Limpieza de rpm
 chroot "${ROOTFS}" rm -f /var/lib/rpm/__db*
-# Algunos de los +2000 paquete crea ésto tras instalarse. Eliminamos.
+# Algunos de los +2000 paquete crea ésto tras instalarse. Eliminamos
+# mientras averiguo exactamente qué lo genera.
 chroot "${ROOTFS}" /bin/rm -f /1
 
 # Desactivar SELinux
@@ -319,7 +321,7 @@ if [ -e "${ROOTFS}" ]; then
 # Comprimir imagen de disco con squashfs y algoritmo xz.
 mksquashfs \
     "${ROOTFS}" \
-    "${ISOLINUXFS}/LiveOS/squashfs.img" \
+    "${SQUASHFSIMG}" \
     -comp xz \
     -b 4M
 else
@@ -355,7 +357,8 @@ genisoimage \
     -volid "${LIVECDLABEL}" \
     -copyright "${LICENSEFILENAME}" \
     -publisher "${PUBLISHER}" \
-    -o "${LIVECDFILE}".iso \
+    -checksum-list "md5sum.txt" \
+    -o "${LIVECDFILE}.iso" \
     "${ISOLINUXFS}"
 else
 xorrisofs \
@@ -376,7 +379,8 @@ xorrisofs \
     -volid "${LIVECDLABEL}" \
     -copyright "${LICENSEFILENAME}" \
     -publisher "${PUBLISHER}" \
-    -o "${PROYECTDIR}/${LIVECDFILE}.iso"\
+    -checksum-list "md5sum.txt" \
+    -o "${PROYECTDIR}/${LIVECDFILE}.iso" \
     "${ISOLINUXFS}"
 fi
 
