@@ -24,6 +24,7 @@
 
 PROYECTDIR="/home/jbarrios/Proyectos/ALDOS-LiveCD"
 PUBLISHER="Joel Barrios"
+RELEASENOTESURL="https://www.alcancelibre.org/noticias/disponible-aldos-1-4-19"
 ISOLINUXFS="/tmp/aldos-livecd"
 ROOTFSDIR="/tmp/aldos-rootfs/mnt/livecd"
 EXT4FSIMG="/tmp/aldos-rootfs/aldos-ext4fs.img"
@@ -164,7 +165,7 @@ chroot "${ROOTFS}" /bin/touch /etc/resolv.conf
 chroot "${ROOTFS}" /bin/rm -fr /var/lib/yum/{groups,history,repos,rpmdb-indexes,uuid,yumdb}
 chroot "${ROOTFS}" /bin/mkdir -p /var/lib/yum/{history,yumdb}
 # Limpieza de rpm
-rm -f /var/lib/rpm/__db*
+chroot "${ROOTFS}" rm -f /var/lib/rpm/__db*
 # Algunos de los +2000 paquete crea ésto tras instalarse. Eliminamos.
 chroot "${ROOTFS}" /bin/rm -f /1
 
@@ -284,8 +285,8 @@ touch "${ISOLINUXFS}/aldos"
 mkdir "${ISOLINUXFS}/.disk"
 touch "${ISOLINUXFS}/.disk/base_installable"
 echo "full_cd/single" > "${ISOLINUXFS}/.disk/cd_type"
-echo "ALDOS 1.4.19 ${FECHA}" > "${ISOLINUXFS}/.disk/info"
-echo "https://www.alcancelibre.org/noticias/disponible-aldos-1-4-19" > "${ISOLINUXFS}/.disk/release_notes_url"
+echo "${LIVECDTITLE}" > "${ISOLINUXFS}/.disk/info"
+echo "${RELEASENOTESURL}" > "${ISOLINUXFS}/.disk/release_notes_url"
 
 find . -type f -print0 | xargs -0 md5sum | grep -v "\./md5sum.txt" > md5sum.txt
 
