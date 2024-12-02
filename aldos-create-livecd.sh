@@ -564,8 +564,7 @@ echo -e "${green}${bold}Creando imagen de disco comprimida con Squashfs...${rese
 mksquashfs \
     "${ROOTFSDIR}" \
     "${SQUASHFSIMG}" \
-    -comp xz \
-    -b 4M > /dev/null
+    -quiet -comp xz -b 4096 > /dev/null
 else
 exit 1
 fi
@@ -581,7 +580,7 @@ echo -e "${green}${bold}Desmontando sistemas de archivos de imagen de disco...${
 umount "${ROOTFSDIR}" || \
 exit 1
 # Intentar liberar todos los dispositivos /dev/loopX
-losetup --detach-all
+losetup --detach-all || :
 
 # Eliminar regla temporal que impide montaje automático de unidades
 # de almacenamiento en el anfitrión
