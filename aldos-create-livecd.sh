@@ -31,7 +31,7 @@ ROOTFSDIR="${LIVECDTMPDIR}/aldos-rootfs/livecd"
 EXT4FSIMG="${LIVECDTMPDIR}/aldos-rootfs/aldos-ext4fs.img"
 SQUASHFSIMG="${ISOLINUXFS}/LiveOS/squashfs.img"
 FECHA="$(date +%Y%m%d)"
-LIVECDHOSTNAME="aldos-livecd.alcancelibre.org"
+LIVECDHOSTNAME="aldos-livecd"
 DISTRONAME="ALDOS"
 LIVECDLABEL="ALDOS64${FECHA}"
 LIVECDWELCOME="Bienvenido a ${LIVECDTITLE}!"
@@ -51,8 +51,8 @@ LICENSEFILENAME="Licencia.txt"
 PACKAGELIST="${PROYECTDIR}/ALDOS-package-list.txt"
 LICENSEFILE="${PROYECTDIR}/${LICENSEFILENAME}"
 READMEFILE="${PROYECTDIR}/${READMEFILENAME}"
-# Imagen que se mostrará en pantalla en el gestor de arranque del
-# disco vivo. Se prefiere sea en formato JPG para procurar
+# Imagen que se mostrará en pantalla en el gestor de arranque de la
+# imagen viva. Se prefiere sea en formato JPG para procurar
 # compatibilidad.
 SPLASHIMAGE="${PROYECTDIR}/syslinux-vesa-splash.jpg"
 
@@ -70,7 +70,7 @@ export reset="\e[0m"
 clear
 echo -e "##########################################################################"
 echo -e "${white}${bold}Datos para la creación de imagen viva:${reset}"
-echo -e " Título del LiveCD:               ${blue}${bold}${LIVECDTITLE}${reset}"
+echo -e " Título del Imagen Viva:          ${blue}${bold}${LIVECDTITLE}${reset}"
 echo -e " Archivo imagen ISO:              ${blue}${bold}${PROYECTDIR}/${LIVECDFILENAME}.iso${reset}"
 echo -e " Etiqueta de imagen ISO:          ${blue}${bold}${LIVECDLABEL}${reset}"
 echo -e " Idioma:                          ${blue}${bold}${LIVECDLOCALE}${reset}"
@@ -101,6 +101,7 @@ echo -e "${green}${bold}Iniciando proceso...${reset}"
 ######################################################################
 
 # Generar estructura de directorios del LiveCD
+echo -e "${green}${bold}Generando estructura de directorios de Imagen Viva...${reset}"
 mkdir -p ${ISOLINUXFS}/{boot/grub/x86_64-efi,efi/boot,isolinux,LiveOS}
 # Generar directorio donde se va a instalar el sistema operativo que
 # se utilizará posteriormente para el LiveCD
@@ -112,9 +113,14 @@ mkdir -p ${ROOTFSDIR}
 # otras aplicaciones interfieran con la gestión de la imagen de disco.
 # Se monta la imagen de disco y vincula a directorios de dispositivos.
 # procesos y funciones del núcleo.
+echo -e "${green}${bold}Generando imagen de disco y montando sistema de archivos...${reset}"
 dd if="/dev/zero" of="${ISOLINUXFS}/aldos-ext4fs.img" bs=4M count=2000 && \
 mkfs.ext4 "${ISOLINUXFS}/aldos-ext4fs.img" && \
-fsck -fyD "${ISOLINUXFS}/aldos-ext4fs.img" && \
+fsck -fyD "${ISOLINUXFS}/aldos-ext4fs.img" || \
+echo -e "${red}${bold}Algo salió mal...${reset}" || \
+exit 1
+
+echo -e "${green}${bold}Desactivando (temporalmente) montaje automático de unidades de almacenamiento...${reset}"
 mkdir -p /lib/udev/rules.d && \
 echo 'SUBSYSTEM=="block", ENV{UDISKS_IGNORE}="1"' > /lib/udev/rules.d/90-udisks-inhibit.rules && \
 udevadm control --reload && \
@@ -123,9 +129,12 @@ mount -o loop -t ext4 "${EXT4FSIMG}" "${ROOTFSDIR}" && \
 mkdir -p "${ROOTFSDIR}"/{dev,proc,sys} && \
 mount -o bind /dev "${ROOTFSDIR}"/dev && \
 mount -o bind /proc "${ROOTFSDIR}"/proc && \
-mount -o bind /sys "${ROOTFSDIR}"/sys
+mount -o bind /sys "${ROOTFSDIR}"/sys || \
+echo -e "${red}${bold}Algo salió mal...${reset}" || \
+exit 1
 
 # Instalar paquetes mínimos requeridos por los demás
+echo -e "${green}${bold}Instalando paquetes esenciales...${reset}"
 yum -q -y \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
@@ -135,10 +144,13 @@ yum -q -y \
     setup.noarch \
     filesystem.x86_64 \
     tzdata.noarch \
-    basesystem.noarch
+    basesystem.noarch > /dev/null || \
+    echo -e "${red}${bold}Algo salió mal...${reset}" || \
+    exit 1
 
 # Herramientas que se necesitan para la instalación de paquetes que
 # incluyen componentes que se asigna a un usuario o grupo.
+echo -e "${green}${bold}Instalando paquetes para gestión de permisos y pertenencias...${reset}"
 yum -q -y \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
@@ -146,10 +158,13 @@ yum -q -y \
     install \
     glibc-common.x84_64 \
     shadow-utils.x86_64 \
-    passwd.noarch > /dev/null
+    passwd.noarch > /dev/null || \
+    echo -e "${red}${bold}Algo salió mal...${reset}" || \
+    exit 1
 
 # Herramientas que se necesitan para la instalación de paquetes que
 # incluyen servicios.
+echo -e "${green}${bold}Instalando sistema de inicio y servicios esenciales...${reset}"
 yum -y \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
@@ -158,18 +173,24 @@ yum -y \
     chkconfig.x84_64 \
     initscripts-sysvinit.x86_64 \
     sysvinit.x86_64 \
-    sysvinit-default.noarch > /dev/null
+    sysvinit-default.noarch > /dev/null || \
+    echo -e "${red}${bold}Algo salió mal...${reset}" || \
+    exit 1
 
 # Instalar todos los paquetes que componen la instalación
+echo -e "${green}${bold}Instalando paquetería...${reset}"
 yum -y \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
-    install < "${PACKAGELIST}" > /dev/null
+    install < "${PACKAGELIST}" > /dev/null || \
+    echo -e "${red}${bold}Algo salió mal...${reset}" || \
+    exit 1
 
 # Instalar Calamares y herramienta para gestionar particiones y
 # Volúmenes lógicos. Estos paquetes serán desinstalados después de
 # instalar el sistema vivo en el equipo.
+echo -e "${green}${bold}Instalando Calamares y Partition Manager...${reset}"
 yum -y \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
@@ -177,13 +198,17 @@ yum -y \
     install \
     calamares.x86_64 \
     calamares-sysvinit.noarch \
-    kde-partitionmanager.x86_64 > /dev/null
+    kde-partitionmanager.x86_64 > /dev/null || \
+    echo -e "${red}${bold}Algo salió mal...${reset}" || \
+    exit 1
 
+echo -e "${green}${bold}Creando archivo fstab...${reset}"
 # El archivo fstab que utilizará el sistema vivo.
 cat << EOF > "${ROOTFS}"/etc/fstab
 /dev/root  /         ext4    defaults,noatime,nodiratime,commit=30,data=writeback 0 0
 EOF
 
+echo -e "${green}${bold}Personalizando el sistema...${reset}"
 mkdir -p "${ROOTFS}/boot/efi/System/Library/CoreServices/"
 cat << EOF > "${ROOTFS}/boot/efi/System/Library/CoreServices/SystemVersion.plist"
 <?xml version="1.0" encoding="UTF-8"?>
@@ -220,7 +245,7 @@ chroot "${ROOTFS}" /usr/sbin/groupadd -r vboxusers 2>&1 || :
 chroot "${ROOTFS}" /bin/chown polkitd /etc/polkit-1/rules.d > /dev/null 2>&1 ||:
 chroot "${ROOTFS}" /bin/chown polkitd /usr/share/polkit-1/rules.d  > /dev/null 2>&1 ||:
 # Generar la base de datos de whatis
-chroot "${ROOTFS}" /usr/sbin/makewhatis -w
+chroot "${ROOTFS}" /usr/sbin/makewhatis -w > /dev/null 2>&1 ||:
 # Crear /etc/resolv.conf
 chroot "${ROOTFS}" /bin/touch /etc/resolv.conf
 # Limpieza de yum
@@ -238,6 +263,7 @@ sed -i \
     "${ROOTFS}/etc/sysconfig/selinux"
 
 # Establecer idioma, mapa de teclado y tipografía para la terminal
+echo -e "${green}${bold}Configurando idioma y teclado...${reset}"
 sed -i \
     -e "s|LANG=.*|LANG=\"${LIVECDLOCALE}\"|g" \
     -e "s|LC_ALL=.*|LC_ALL=\"${LIVECDLOCALE}\"|g" \
@@ -265,6 +291,7 @@ sed -i \
     "${ROOTFS}/etc/default/grub"
 
 # Nombre de anfitrión predeterminado
+echo -e "${green}${bold}Estableciendo nombre de anfitrión del sistema...${reset}"
 sed -i \
     -e "s|HOSTNAME=.*|HOSTNAME=\"${LIVECDHOSTNAME}\"|g" \
     /etc/sysconfig/network && \
@@ -275,6 +302,7 @@ echo -e "127.0.0.1    ${LIVECDHOSTNAME}\n::1    ${LIVECDHOSTNAME}" >> /etc/hosts
 # Los nombres de los archivos se procuran de máximo 12 caracteres.
 
 # Archivos necesarios para iniciar con BIOS.
+echo -e "${green}${bold}Copiando archivos necesarios para el arranque de la imagen viva...${reset}"
 cp -a \
     "${ROOTFS}/boot/vmlinuz-*" \
     "${ISOLINUXFS}/syslinux/vmlinuz0"
@@ -378,16 +406,6 @@ cp -a \
     "${ISOLINUXFS}/boot/grub/grub.cfg" \
     "${ISOLINUXFS}/boot/grub/x86_64-efi/grub.cfg"
 
-# Copiar archivo de licencia
-cp -a \
-    "${LICENSEFILE}" \
-    "${ISOLINUXFS}/${LICENSEFILENAME}"
-
-# Copiar archivo LEEME.txt
-cp -a \
-    "${READMEFILE}" \
-    "${ISOLINUXFS}/${READMEFILENAME}"
-
 # Crear el menú de SysLinux (gestor de arranque del LiveCD)
 cat << EOF > "${ISOLINUXFS}"/isolinux/isolinux.cfg
 default vesamenu.c32
@@ -425,13 +443,27 @@ label local
   localboot 0xffff
 EOF
 
-touch "${ISOLINUXFS}/aldos"
-mkdir "${ISOLINUXFS}/.disk"
-touch "${ISOLINUXFS}/.disk/base_installable"
-echo "full_cd/single" > "${ISOLINUXFS}/.disk/cd_type"
-echo "${LIVECDTITLE}" > "${ISOLINUXFS}/.disk/info"
-echo "${RELEASENOTESURL}" > "${ISOLINUXFS}/.disk/release_notes_url"
+echo -e "${green}${bold}Creando archivos de identidad de la imagen viva...${reset}"
+# Copiar archivo de licencia
+cp -a \
+    "${LICENSEFILE}" \
+    "${ISOLINUXFS}/${LICENSEFILENAME}"
 
+# Copiar archivo LEEME.txt
+cp -a \
+    "${READMEFILE}" \
+    "${ISOLINUXFS}/${READMEFILENAME}"
+
+touch "${ISOLINUXFS}/aldos" && \
+mkdir "${ISOLINUXFS}/.disk" && \
+touch "${ISOLINUXFS}/.disk/base_installable" && \
+echo "full_cd/single" > "${ISOLINUXFS}/.disk/cd_type" && \
+echo "${LIVECDTITLE}" > "${ISOLINUXFS}/.disk/info" && \
+echo "${RELEASENOTESURL}" > "${ISOLINUXFS}/.disk/release_notes_url" || \
+echo -e "${red}${bold}Algo salió mal...${reset}" || \
+exit 1
+
+echo -e "${green}${bold}Generando archivo de sumas MD5...${reset}"
 pushd "${ISOLINUXFS}" || exit 1
 find . -type f -print0 | xargs -0 md5sum | grep -v "\./md5sum.txt" > md5sum.txt
 popd || exit 1
@@ -441,28 +473,36 @@ popd || exit 1
 sync
 
 # Desmontar sistemas de archivos
-umount "${ROOTFSDIR}/sys"
-umount "${ROOTFSDIR}/proc"
-umount "${ROOTFSDIR}/dev"
-umount "${ROOTFSDIR}"
+echo -e "${green}${bold}Desmontando sistemas de archivos de imagen de disco...${reset}"
+umount "${ROOTFSDIR}/sys" && \
+umount "${ROOTFSDIR}/proc" && \
+umount "${ROOTFSDIR}/dev" && \
+umount "${ROOTFSDIR}" || \
+echo -e "${red}${bold}Algo salió mal...${reset}" || \
+exit 1
 # Intentar liberar todos los dispositivos /dev/loopX
 losetup --detach-all
 
 # Eliminar regla temporal que impide montaje automático de unidades
 # de almacenamiento en el anfitrión
+echo -e "${green}${bold}Reactivando montaje automático de unidades de almacenamiento...${reset}"
 rm -f /lib/udev/rules.d/90-udisks-inhibit.rules
 udevadm control --reload
 udevadm trigger --subsystem-match=block
 
 if [ -e "${EXT4FSIMG}" ]; then
 # Verificar y poner en cero los bloques vacíos
-fsck -fyD "${EXT4FSIMG}"
-zerofree -v "${EXT4FSIMG}"
-fsck -fyD "${EXT4FSIMG}"
+echo -e "${green}${bold}Verificando sistema de archivos de imagen de disco...${reset}"
+fsck -fyD "${EXT4FSIMG}" > /dev/null && \
+zerofree "${EXT4FSIMG}" > /dev/null && \
+fsck -fyD "${EXT4FSIMG}" > /dev/null || \
+echo -e "${red}${bold}Algo salió mal...${reset}" || \
+exit 1
 fi
 
 if [ -e "${ROOTFS}" ]; then
 # Comprimir imagen de disco con squashfs y algoritmo xz.
+echo -e "${green}${bold}Creando imagen de disco comprimida con Squashfs...${reset}"
 mksquashfs \
     "${ROOTFS}" \
     "${SQUASHFSIMG}" \
@@ -472,6 +512,7 @@ else
 exit 1
 fi
 
+echo -e "${green}${bold}Creando imagen ISO final...${reset}"
 if [ -e "${SQUASHFSIMG}" ]; then
 # Calcular tamaño de la imagen de disco comprimida
 MAXSIZE="2147483648"
@@ -504,7 +545,9 @@ genisoimage \
     -checksum-list "md5sum.txt" \
     -o "${LIVECDFILENAME}.iso" \
     "${ISOLINUXFS}" && \
-    rm -fr "${LIVECDTMPDIR}"
+    rm -fr "${LIVECDTMPDIR}" || \
+    echo -e "${red}${bold}Algo salió mal...${reset}" || \
+    exit 1
 else
 xorrisofs \
     -no-emul-boot \
@@ -527,14 +570,19 @@ xorrisofs \
     -checksum-list "md5sum.txt" \
     -o "${PROYECTDIR}/${LIVECDFILENAME}.iso" \
     "${ISOLINUXFS}" && \
-    rm -fr "${LIVECDTMPDIR}"
+    rm -fr "${LIVECDTMPDIR}" || \
+    echo -e "${red}${bold}Algo salió mal...${reset}" || \
+    exit 1
 fi
 
 if [ -e "${LIVECDFILENAME}.iso" ]; then
+    echo -e "${green}${bold}Concluyendo proceso...${reset}"
     pushd ${PROYECTDIR} || exit 1
-    md5sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.md5sum" || exit 1
-    sha256sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.sha256sum" || exit 1
-    sha512sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.sha512sum" || exit 1
+    md5sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.md5sum" && \
+    sha256sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.sha256sum" && \
+    sha512sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.sha512sum" || \
+    echo -e "${red}${bold}Algo salió mal...${reset}" || \
+    exit 1
     clear
     echo -e "${white}${bold}Proceso concluido.${reset}\n"
     echo -e "${white}${bold}Archivos creados:${reset}"
