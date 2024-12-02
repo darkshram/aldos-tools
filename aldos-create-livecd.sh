@@ -23,6 +23,8 @@
 ################################################################################
 
 PROYECTDIR="/home/jbarrios/Proyectos/ALDOS-LiveCD"
+YUMCONFIG="file://${PROYECTDIR}/yum.conf"
+YUMREPO="file:///var/www/LIVECD/x86_64/"
 PUBLISHER="Joel Barrios"
 RELEASENOTESURL="https://www.alcancelibre.org/noticias/disponible-aldos-1-4-19"
 LIVECDTMPDIR="/tmp/aldos-livecd"
@@ -48,13 +50,40 @@ COMMENTLIVEUSER="Usuario Sistema Vivo"
 INSTALLMSG="Instalar ALDOS"
 READMEFILENAME="LEEME.txt"
 LICENSEFILENAME="Licencia.txt"
-PACKAGELIST="${PROYECTDIR}/ALDOS-package-list.txt"
+PACKAGELISTFILENAME="ALDOS-package-list.txt"
+PACKAGELIST="${PROYECTDIR}/${PACKAGELISTFILENAME}"
 LICENSEFILE="${PROYECTDIR}/${LICENSEFILENAME}"
 READMEFILE="${PROYECTDIR}/${READMEFILENAME}"
 # Imagen que se mostrará en pantalla en el gestor de arranque de la
 # imagen viva. Se prefiere sea en formato JPG para procurar
 # compatibilidad.
-SPLASHIMAGE="${PROYECTDIR}/syslinux-vesa-splash.jpg"
+SPLASHIMAGEFILENAME="syslinux-vesa-splash.jpg"
+SPLASHIMAGE="${PROYECTDIR}/${SPLASHIMAGEFILENAME}"
+if [ ! -e "${YUMCONFIG}" ]; then
+# Configuración de YUM.
+cat << EOF > "${YUMCONFIG}"
+[main]
+distroverpkg=aldos-release
+cachedir=/var/cache/yum/\$basearch/\$releasever
+keepcache=0
+debuglevel=2
+logfile=/var/log/yum.log
+exactarch=1
+obsoletes=1
+gpgcheck=1
+plugins=1
+installonly_limit=3
+clean_requirements_on_remove=1
+
+[ALDOS-livecd]
+name=ALDOS LiveCD 14 - \$basearch
+baseurl=${YUMREPO}
+gpgkey=file:///etc/pki/rpm-gpg/AL-RPM-KEY
+enabled=1
+gpgcheck=1
+
+EOF
+fi
 
 ######################################################################
 ######################################################################
@@ -65,35 +94,40 @@ export blue="\e[0;94m"
 export green="\e[0;92m"
 export purple="\e[1;95m"
 export white="\e[0;97m"
+#export blackbg="\e[0;40m"
 export bold="\e[1m"
 export reset="\e[0m"
 clear
-echo -e "##########################################################################"
-echo -e "${white}${bold}Datos para la creación de Imagen Viva:${reset}"
+echo -e "${green}${bold}$(printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -)${reset}"
+echo -e "${white}${bold}Datos para la creación de Imagen Viva de ${DISTRONAME}:${reset}"
 echo -e " Título del imagen ISO:           ${blue}${bold}${LIVECDTITLE}${reset}"
-echo -e " Archivo imagen ISO:              ${blue}${bold}${PROYECTDIR}/${LIVECDFILENAME}.iso${reset}"
+echo -e " Archivo imagen ISO:              ${blue}${bold}${LIVECDFILENAME}.iso${reset}"
 echo -e " Etiqueta de imagen ISO:          ${blue}${bold}${LIVECDLABEL}${reset}"
-echo -e " Idioma:                          ${blue}${bold}${LIVECDLOCALE}${reset}"
+echo -e " Localización:                    ${blue}${bold}${LIVECDLOCALE}${reset}"
 echo -e " Mapa de teclado:                 ${blue}${bold}${LIVECDKEYMAP}${reset}"
 echo -e " Tipografía de la consola:        ${blue}${bold}${LIVECDSYSFONT}${reset}"
 echo -e " Autor:                           ${blue}${bold}${PUBLISHER}${reset}"
-echo -e " Directorio del proyecto:         ${blue}${bold}${PROYECTDIR}${reset}"
+echo -e "\n${white}${bold}Archivos del proyecto:${reset}"
 echo -e " Directorio temporal:             ${blue}${bold}${LIVECDTMPDIR}${reset}"
-echo -e " Archivo con lista de paquetes:   ${blue}${bold}${PACKAGELIST}${reset}"
-echo -e " Archivo de licencia.txt:         ${blue}${bold}${LICENSEFILE}${reset}"
-echo -e " Archivo de LEEME.txt:            ${blue}${bold}${READMEFILE}${reset}"
-echo -e " Archivo de splash.jpg:           ${blue}${bold}${SPLASHIMAGE}${reset}"
+echo -e " Directorio del proyecto:         ${blue}${bold}${PROYECTDIR}${reset}"
+echo -e " Archivo con lista de paquetes:   ${blue}${bold}${PACKAGELISTFILENAME}${reset}"
+echo -e " Archivo de licencia.txt:         ${blue}${bold}${LICENSEFILENAME}${reset}"
+echo -e " Archivo de LEEME.txt:            ${blue}${bold}${READMEFILENAME}${reset}"
+echo -e " Archivo de splash.jpg:           ${blue}${bold}${SPLASHIMAGEFILENAME}${reset}"
 echo -e " Nombre de anfitrión:             ${blue}${bold}${LIVECDHOSTNAME}${reset}"
-echo -e "##########################################################################"
-echo -e "${white}${bold}¿Son correctos estos valores? (S/N) [s]${reset}"
+echo -e "\n${white}${bold}Gestión de paquetes RPM:${reset}"
+echo -e " Ruta configuración de YUM:       ${blue}${bold}${YUMCONFIG}${reset}"
+echo -e " Directorio con paquetes RPM:     ${blue}${bold}${YUMREPO}${reset}"
+echo -e "${green}${bold}$(printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -)${reset}"
+echo -e "${white}${bold}¿Son correctos estos valores? (s/n) [s]${reset}"
 read -r ok
-echo "${ok}"
+echo "${ok}" > /dev/null
 if  [[  "${ok}" == "n"  ]]  ||  [[  "${ok}" == "N"  ]]  ; then
-    echo -e "${red}${bold}Proceso cancelado. Por favor, corrija datos.${reset}"
+    echo -e "${red}${bold} * Proceso cancelado. Por favor, corrija datos.${reset}"
     exit ;
 fi
 if [ "$(id -u)" != "0" ]; then
-    echo -e "${red}${bold}Este programa sólo puede ser ejecutado como 'root'${reset}\n" 1>&2
+    echo -e "${red}${bold} * Este programa sólo puede ser ejecutado como 'root'${reset}\n" 1>&2
     exit 1
 fi
 clear
@@ -139,7 +173,9 @@ exit 1
 
 # Instalar paquetes mínimos requeridos por los demás
 echo -e "${green}${bold}Instalando paquetes esenciales...${reset}"
-yum -q -y \
+yum \
+    -q -y \
+    --config=${YUMCONFIG} \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
@@ -155,7 +191,9 @@ yum -q -y \
 # Herramientas que se necesitan para la instalación de paquetes que
 # incluyen componentes que se asigna a un usuario o grupo.
 echo -e "${green}${bold}Instalando paquetes para gestión de permisos y pertenencias...${reset}"
-yum -q -y \
+yum \
+    -q -y \
+    --config=${YUMCONFIG} \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
@@ -169,7 +207,9 @@ yum -q -y \
 # Herramientas que se necesitan para la instalación de paquetes que
 # incluyen servicios.
 echo -e "${green}${bold}Instalando sistema de inicio y servicios esenciales...${reset}"
-yum -y \
+yum \
+    -q -y \
+    --config=${YUMCONFIG} \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
@@ -401,14 +441,14 @@ export theme
 menuentry "${LABELBOOT}" {
     set gfxpayload=keep
     
-    linux /syslinux/vmlinuz0 root=live:CDLABEL=${LIVECDLABEL} rd.live.image rd.live.dir=/LiveOS rd.live.squashimg=${SQUASHFSIMG} selinux=0 rootfstype=auto rd.locale.LANG=${LIVECDLOCALE} KEYBOARDTYPE=pc rd.vconsole.keymap=${LIVECDKEYMAP} rootflags=defaults,relatime,commit=60 nmi_watchdog=0 rd_NO_LUKS rd_NO_MD rd_NO_DM auto noprompt priority=critical mitigations=off amd_pstate.enable=0 intel_pstate=disable loglevel=0 nowatchdog slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 loglevel=0 fsck.mode=skip quiet splash
+    linux /syslinux/vmlinuz0 root=live:CDLABEL=${LIVECDLABEL} rd.live.image rd.live.dir=/LiveOS rd.live.squashimg=${SQUASHFSIMG} liveimg selinux=0 rootfstype=auto rd.locale.LANG=${LIVECDLOCALE} KEYBOARDTYPE=pc rd.vconsole.keymap=${LIVECDKEYMAP} rootflags=defaults,relatime,commit=60 nmi_watchdog=0 rd_NO_LUKS rd_NO_MD rd_NO_DM auto noprompt priority=critical mitigations=off amd_pstate.enable=0 intel_pstate=disable loglevel=0 nowatchdog slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 loglevel=0 fsck.mode=skip quiet splash
     initrd /syslinux/initrd0.img
 }
 
 menuentry "${LABELBASIC}" {
     set gfxpayload=keep
     
-    linux /syslinux/vmlinuz0 root=live:CDLABEL=${LIVECDLABEL} rd.live.image rd.live.dir=/LiveOS rd.live.squashimg=${SQUASHFSIMG} selinux=0 rootfstype=auto rd.locale.LANG=${LIVECDLOCALE} KEYBOARDTYPE=pc rd.vconsole.keymap=${LIVECDKEYMAP} rootflags=defaults,relatime,commit=60 nmi_watchdog=0 rd_NO_LUKS rd_NO_MD rd_NO_DM auto noprompt priority=critical nomodeset apparmor=0 net.ifnames=0 noapic noapm nodma nomce nolapic nosmp vga=normal mitigations=off amd_pstate.enable=0 intel_pstate=disable loglevel=0 nowatchdog elevator=noop slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none debugfs=off oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 loglevel=0 fsck.mode=skip quiet splash 
+    linux /syslinux/vmlinuz0 root=live:CDLABEL=${LIVECDLABEL} rd.live.image rd.live.dir=/LiveOS rd.live.squashimg=${SQUASHFSIMG} liveimg selinux=0 rootfstype=auto rd.locale.LANG=${LIVECDLOCALE} KEYBOARDTYPE=pc rd.vconsole.keymap=${LIVECDKEYMAP} rootflags=defaults,relatime,commit=60 nmi_watchdog=0 rd_NO_LUKS rd_NO_MD rd_NO_DM auto noprompt priority=critical nomodeset apparmor=0 net.ifnames=0 noapic noapm nodma nomce nolapic nosmp vga=normal mitigations=off amd_pstate.enable=0 intel_pstate=disable loglevel=0 nowatchdog elevator=noop slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none debugfs=off oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 loglevel=0 fsck.mode=skip quiet splash 
     initrd /syslinux/initrd0.img
 }
 EOF
@@ -455,7 +495,7 @@ label local
   localboot 0xffff
 EOF
 
-echo -e "${green}${bold}Creando archivos de identidad de la imagen viva...${reset}"
+echo -e "${green}${bold}Copiando archivos de licencia y léeme en imagen viva...${reset}"
 # Copiar archivo de licencia
 cp -a \
     "${LICENSEFILE}" \
@@ -466,6 +506,7 @@ cp -a \
     "${READMEFILE}" \
     "${ISOLINUXFS}/${READMEFILENAME}"
 
+echo -e "${green}${bold}Creando archivos de identidad del Sistema Operativo en imagen viva...${reset}"
 touch "${ISOLINUXFS}/aldos" && \
 mkdir "${ISOLINUXFS}/.disk" && \
 touch "${ISOLINUXFS}/.disk/base_installable" && \
