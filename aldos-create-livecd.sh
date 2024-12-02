@@ -613,7 +613,10 @@ genisoimage \
     -publisher "${PUBLISHER}" \
     -checksum-list "md5sum.txt" \
     -o "${LIVECDFILENAME}.iso" \
-    "${ISOLINUXFS}" && \
+    "${ISOLINUXFS}" || \
+    echo -e "${red}${bold}Algo salió mal...${reset}" || \
+    exit 1
+    echo -e "${green}${bold}Eliminando ${LIVECDTMPDIR}...${reset}"
     rm -fr "${LIVECDTMPDIR}" || \
     echo -e "${red}${bold}Algo salió mal...${reset}" || \
     exit 1
@@ -638,7 +641,10 @@ xorrisofs \
     -publisher "${PUBLISHER}" \
     -checksum-list "md5sum.txt" \
     -o "${PROYECTDIR}/${LIVECDFILENAME}.iso" \
-    "${ISOLINUXFS}" && \
+    "${ISOLINUXFS}" || \
+    echo -e "${red}${bold}Algo salió mal...${reset}" || \
+    exit 1
+    echo -e "${green}${bold}Eliminando ${LIVECDTMPDIR}...${reset}"
     rm -fr "${LIVECDTMPDIR}" || \
     echo -e "${red}${bold}Algo salió mal...${reset}" || \
     exit 1
