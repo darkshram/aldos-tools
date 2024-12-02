@@ -126,10 +126,10 @@ echo -e " Nombre de anfitrión:             ${blue}${bold}${LIVECDHOSTNAME}${res
 echo -e "\n${white}${bold}Ruta y archivos del proyecto:${reset}"
 echo -e " Directorio temporal:             ${blue}${bold}${LIVECDTMPDIR}${reset}"
 echo -e " Directorio del proyecto:         ${blue}${bold}${PROYECTDIR}${reset}"
-echo -e " Archivo con lista de paquetes:   ${blue}${bold}${PACKAGELISTFILENAME}${reset}"
-echo -e " Archivo para licencia:           ${blue}${bold}${LICENSEFILENAME}${reset}"
-echo -e " Archivo para LÉEME:              ${blue}${bold}${READMEFILENAME}${reset}"
-echo -e " Archivo para splash.jpg:         ${blue}${bold}${SPLASHIMAGEFILENAME}${reset}"
+echo -e " Archivo con lista de paquetes:   ${blue}${bold} → ${PACKAGELISTFILENAME}${reset}"
+echo -e " Archivo para licencia:           ${blue}${bold} → ${LICENSEFILENAME}${reset}"
+echo -e " Archivo para LÉEME:              ${blue}${bold} → ${READMEFILENAME}${reset}"
+echo -e " Archivo para splash.jpg:         ${blue}${bold} → ${SPLASHIMAGEFILENAME}${reset}"
 echo -e "\n${white}${bold}Gestión de paquetes RPM:${reset}"
 echo -e " Ruta configuración de YUM:       ${blue}${bold}${YUMCONFIG}${reset}"
 echo -e " URL con paquetes RPM:            ${blue}${bold}${YUMREPO}${reset}"
@@ -675,14 +675,16 @@ if [ -e "${LIVECDFILENAME}.iso" ]; then
     echo -e "${red}${bold}Algo salió mal...${reset}" || \
     exit 1
     clear
-    echo -e "${white}${bold}Proceso concluido.${reset}\n"
+    echo -e "${green}${bold}$(printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -)${reset}"
+    echo -e "${green}${bold}Proceso concluido.${reset}\n"
     echo -e "${white}${bold}Archivos creados:${reset}"
     ISOFILENAME="${LIVECDFILENAME}.iso"
     ISOSIZE="$(stat -c%s "${ISOFILENAME}")"
-    echo -e "    1. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.iso${reset} (${ISOSIZE} bytes)"
+    echo -e "    1. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.iso${reset}${blue}${bold} (${ISOSIZE} bytes)${reset}"
     echo -e "    2. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.md5dum${reset}"
     echo -e "    3. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.256sum${reset}"
     echo -e "    4. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.512sum${reset}"
+    echo -e "${green}${bold}$(printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -)${reset}"
     popd || exit 1
 fi
 else
