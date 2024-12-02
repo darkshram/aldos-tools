@@ -74,11 +74,7 @@ PACKAGELISTFILENAME="PAQUETES.txt"
 # compatibilidad.
 SPLASHIMAGEFILENAME="syslinux-vesa-splash.jpg"
 
-# Archivo de configuración de YUM
-YUM_CONFIG="file://${PROYECTDIR}/yum.conf"
-# Puede ser un URL: http://mirror0.alcancelibre.org/aldos/1.4/livecd/x86_64/
-YUMREPO="file:///var/www/mirror0/public_html/aldos/1.4/livecd/x86_64/"
-export YUMREPO
+# Colores para algunas salidas.
 export red="\e[0;91m"
 export blue="\e[0;94m"
 export green="\e[0;92m"
@@ -131,12 +127,14 @@ SPLASHIMAGE="${PROYECTDIR}/${SPLASHIMAGEFILENAME}"
 ######################################################################
 
 function DESMONTAR() {
-umount "${ROOTFSDIR}/sys" && \
-umount "${ROOTFSDIR}/proc" && \
 umount "${ROOTFSDIR}/dev" && \
+umount "${ROOTFSDIR}/proc" && \
+umount "${ROOTFSDIR}/sys" && \
 umount "${ROOTFSDIR}" && \
-rm -fr ${LIVECDTMPDIR}
-echo -e "${red}${bold}Algo salió mal...${reset}"
+rm -fr "${LIVECDTMPDIR}"
+echo -e "${red}${bold}Se ha desmontado y eliminado ${LIVECDTMPDIR}...${reset}"
+umount "${ROOTFSDIR}"
+rm -fr "${LIVECDTMPDIR}"
 exit 1
 }
 
@@ -148,6 +146,12 @@ export white="\e[0;97m"
 #export blackbg="\e[0;40m"
 export bold="\e[1m"
 export reset="\e[0m"
+
+if [ -d "${LIVECDTMPDIR}" ]; then
+echo -e "${red}${bold}Directorio existe ${LIVECDTMPDIR}... Tendrá que eliminarlo y volver a ejecutar este programa.${reset}"
+     DESMONTAR
+fi
+
 clear
 echo -e "${green}${bold}$(printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -)${reset}"
 echo -e "${white}${bold}Datos para la creación de Imagen Viva de ${DISTRONAME}:${reset}"
@@ -168,9 +172,6 @@ echo -e " Archivo con lista de paquetes:   ${blue}${bold} → ${PACKAGELISTFILEN
 echo -e " Archivo para licencia:           ${blue}${bold} → ${LICENSEFILENAME}${reset}"
 echo -e " Archivo para LÉEME:              ${blue}${bold} → ${READMEFILENAME}${reset}"
 echo -e " Archivo para splash.jpg:         ${blue}${bold} → ${SPLASHIMAGEFILENAME}${reset}"
-echo -e "\n${white}${bold}Gestión de paquetes RPM:${reset}"
-echo -e " Ruta configuración de YUM:       ${blue}${bold}${YUM_CONFIG}${reset}"
-echo -e " URL con paquetes RPM:            ${blue}${bold}${YUMREPO}${reset}"
 echo -e "${green}${bold}$(printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -)${reset}"
 echo -e "${white}${bold}¿Son correctos estos valores? (s/n) [s]${reset}"
 read -r ok
@@ -234,19 +235,26 @@ yum \
     filesystem.x86_64 \
     tzdata.noarch \
     basesystem.noarch \
+    cups-filesystem.noarch \
+    emacs-filesystem.noarch \
+    firewalld-filesystem.noarch \
+    foomatic-db-filesystem.noarch \
+    mesa-filesystem.x86_64 \
+    vim-filesystem.noarch \
     DESMONTAR
 
-cp -a /bin/true ${ROOTFSDIR}/run/initctl
-
 # Instalar todos los paquetes que componen la instalación
-echo -e "${green}${bold}Instalando paquetería...${reset}"
-cat ${PACKAGELIST} |xargs yum \
+echo -e "${green}${bold}Instalando paquetería de acuerdo al archivo ${PACKAGELIST} ...${reset}"
+cat "${PACKAGELIST}" | xargs \
+  yum \
     -y \
     --installroot="${ROOTFSDIR}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
     install || \
     DESMONTAR
+
+killall cupsd || :
 
 echo -e "${green}${bold}Creando archivo fstab...${reset}"
 # El archivo fstab que utilizará el sistema vivo.
@@ -360,15 +368,15 @@ echo -e "127.0.0.1    ${LIVECDHOSTNAME}\n::1    ${LIVECDHOSTNAME}" >> /etc/hosts
 echo -e "${green}${bold}Copiando archivos necesarios para el arranque de la imagen viva...${reset}"
 cp -a \
     "${ROOTFSDIR}/boot/vmlinuz-*" \
-    "${ISOLINUXFS}/syslinux/vmlinuz0"
+    "${ISOLINUXFS}/isolinux/vmlinuz0"
 
-pushd "${ISOLINUXFS}/syslinux" || exit 1
+pushd "${ISOLINUXFS}/isolinux" || exit 1
     sha512hmac vmlinuz0 > .vmlinuz0.hmac
 popd || exit 1
 
 cp -a \
     "${ROOTFSDIR}/boot/initramfs-*.img" \
-    "${ISOLINUXFS}/syslinux/initrd0.img"
+    "${ISOLINUXFS}/isolinux/initrd0.img"
 
 cp -a \
     "${ROOTFSDIR}/usr/share/syslinux/isolinux.bin" \
@@ -530,6 +538,7 @@ sync
 
 # Desmontar sistemas de archivos
 echo -e "${green}${bold}Desmontando sistemas de archivos virtuales de imagen de disco...${reset}"
+killall cupsd || :
 umount "${ROOTFSDIR}/sys" && \
 umount "${ROOTFSDIR}/proc" && \
 umount "${ROOTFSDIR}/dev" && \
