@@ -311,7 +311,7 @@ loadfont \$prefix/grub/themes/system/DejaVuSans-12.pf2
 loadfont \$prefix/grub/themes/system/DejaVuSans-Bold-14.pf2
 loadfont \$prefix/grub/fonts/unicode.pf2
 insmod png
-set theme=($root)/grub2/themes/system/theme.txt
+set theme=\$prefix/grub/themes/system/theme.txt
 export theme
 
 menuentry "ALDOS 1.4.19 XFCE Live/Installation" {
