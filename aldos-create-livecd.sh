@@ -69,8 +69,8 @@ export bold="\e[1m"
 export reset="\e[0m"
 clear
 echo -e "##########################################################################"
-echo -e "${white}${bold}Datos para la creación de imagen viva:${reset}"
-echo -e " Título del Imagen Viva:          ${blue}${bold}${LIVECDTITLE}${reset}"
+echo -e "${white}${bold}Datos para la creación de Imagen Viva:${reset}"
+echo -e " Título del imagen ISO:           ${blue}${bold}${LIVECDTITLE}${reset}"
 echo -e " Archivo imagen ISO:              ${blue}${bold}${PROYECTDIR}/${LIVECDFILENAME}.iso${reset}"
 echo -e " Etiqueta de imagen ISO:          ${blue}${bold}${LIVECDLABEL}${reset}"
 echo -e " Idioma:                          ${blue}${bold}${LIVECDLOCALE}${reset}"
@@ -93,7 +93,7 @@ if  [[  "${ok}" == "n"  ]]  ||  [[  "${ok}" == "N"  ]]  ; then
     exit ;
 fi
 if [ "$(id -u)" != "0" ]; then
-    echo -e "${red}${bold}Este programa sólo puede ser ejecutado como 'root'${reset}" 1>&2
+    echo -e "${red}${bold}Este programa sólo puede ser ejecutado como 'root'${reset}\n" 1>&2
     exit 1
 fi
 clear
@@ -113,7 +113,7 @@ mkdir -p ${ROOTFSDIR}
 # otras aplicaciones interfieran con la gestión de la imagen de disco.
 # Se monta la imagen de disco y vincula a directorios de dispositivos.
 # procesos y funciones del núcleo.
-echo -e "${green}${bold}Generando imagen de disco y montando sistema de archivos...${reset}"
+echo -e "${green}${bold}Generando imagen de disco temporal...${reset}"
 dd if="/dev/zero" of="${ISOLINUXFS}/aldos-ext4fs.img" bs=4M count=2000 && \
 mkfs.ext4 "${ISOLINUXFS}/aldos-ext4fs.img" && \
 fsck -fyD "${ISOLINUXFS}/aldos-ext4fs.img" || \
@@ -124,7 +124,11 @@ echo -e "${green}${bold}Desactivando (temporalmente) montaje automático de unid
 mkdir -p /lib/udev/rules.d && \
 echo 'SUBSYSTEM=="block", ENV{UDISKS_IGNORE}="1"' > /lib/udev/rules.d/90-udisks-inhibit.rules && \
 udevadm control --reload && \
-udevadm trigger --subsystem-match=block && \
+udevadm trigger --subsystem-match=block || \
+echo -e "${red}${bold}Algo salió mal...${reset}" || \
+exit 1
+
+echo -e "${green}${bold}Montando sistema de archivos imagen de disco temporal...${reset}"
 mount -o loop -t ext4 "${EXT4FSIMG}" "${ROOTFSDIR}" && \
 mkdir -p "${ROOTFSDIR}"/{dev,proc,sys} && \
 mount -o bind /dev "${ROOTFSDIR}"/dev && \
@@ -226,28 +230,34 @@ cat << EOF > "${ROOTFS}/boot/efi/System/Library/CoreServices/SystemVersion.plist
 EOF
 
 # Personalizar sistema
+echo -e "${green}${bold}Configuando sistema de identificación y recursos de autenticación...${reset}"
 chroot "${ROOTFS}" /usr/bin/authselect check >/dev/null 2>&1 || :
 chroot "${ROOTFS}" /usr/bin/authselect select sssd --force
+echo -e "${green}${bold}Regenerando initramfs...${reset}"
 chroot "${ROOTFS}" /sbin/dracut -f --add-drivers="btrfs binfmt_misc squashfs xfs zstd zstd_compress zstd_decompress"
+echo -e "${green}${bold}Creando configuración de grub2...${reset}"
 chroot "${ROOTFS}" /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
 chroot "${ROOTFS}" /usr/sbin/grub2-mkconfig -o /boot/efi/EFI/aldos/grub.cfg
+echo -e "${green}${bold}Generando machine-id...${reset}"
 chroot "${ROOTFS}" /bin/dbus-uuidgen > /var/lib/dbus/machine-id
-# Activar la cuenta de root
+echo -e "${green}${bold}Eliminando contraseña de 'root'...${reset}"
 chroot "${ROOTFS}" /usr/bin/passwd -f -u root 2>&1 || :
 # Definir que root puede acceder sin contraseña
 chroot "${ROOTFS}" /usr/bin/passwd -d root
 # Crear grupos útiles para aplicaciones que pudiera instalar
 # posteriormente el usuario
+echo -e "${green}${bold}Generando grupos de usuarios adicionales...${reset}"
 chroot "${ROOTFS}" /usr/sbin/groupadd -r gamemode 2>&1 || :
 chroot "${ROOTFS}" /usr/sbin/groupadd -r seat 2>&1 || :
 chroot "${ROOTFS}" /usr/sbin/groupadd -r vboxusers 2>&1 || :
 # Asegurar las pertenencias de estos directorios
 chroot "${ROOTFS}" /bin/chown polkitd /etc/polkit-1/rules.d > /dev/null 2>&1 ||:
 chroot "${ROOTFS}" /bin/chown polkitd /usr/share/polkit-1/rules.d  > /dev/null 2>&1 ||:
-# Generar la base de datos de whatis
+echo -e "${green}${bold}Ajustes menores...${reset}"
 chroot "${ROOTFS}" /usr/sbin/makewhatis -w > /dev/null 2>&1 ||:
 # Crear /etc/resolv.conf
 chroot "${ROOTFS}" /bin/touch /etc/resolv.conf
+echo -e "${green}${bold}Limpieza de base de datos RPM y YUM...${reset}"
 # Limpieza de yum
 chroot "${ROOTFS}" /bin/rm -fr /var/lib/yum/{groups,history,repos,rpmdb-indexes,uuid,yumdb}
 chroot "${ROOTFS}" /bin/mkdir -p /var/lib/yum/{history,yumdb}
@@ -258,6 +268,7 @@ chroot "${ROOTFS}" rm -f /var/lib/rpm/__db*
 chroot "${ROOTFS}" /bin/rm -f /1
 
 # Desactivar SELinux
+echo -e "${green}${bold}Desactivando SELinux...${reset}"
 sed -i \
     -e "s|SELINUX=.*|SELINUX=disabled|g" \
     "${ROOTFS}/etc/sysconfig/selinux"
@@ -406,6 +417,7 @@ cp -a \
     "${ISOLINUXFS}/boot/grub/grub.cfg" \
     "${ISOLINUXFS}/boot/grub/x86_64-efi/grub.cfg"
 
+echo -e "${green}${bold}Creando configuración de gestor de arranque SysLinux...${reset}"
 # Crear el menú de SysLinux (gestor de arranque del LiveCD)
 cat << EOF > "${ISOLINUXFS}"/isolinux/isolinux.cfg
 default vesamenu.c32
@@ -592,5 +604,6 @@ if [ -e "${LIVECDFILENAME}.iso" ]; then
     echo -e "    - ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.512sum${reset}"
     popd || exit 1
 fi
-
+else
+echo -e "${red}${bold}Algo salió mal...${reset}"
 fi
