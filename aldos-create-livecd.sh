@@ -51,6 +51,7 @@ INSTALLMSG="Instalar ALDOS"
 READMEFILENAME="LEEME.txt"
 LICENSEFILENAME="Licencia.txt"
 PACKAGELISTFILENAME="ALDOS-package-list.txt"
+PLYMOUTHEME="spinfinity"
 PACKAGELIST="${PROYECTDIR}/${PACKAGELISTFILENAME}"
 LICENSEFILE="${PROYECTDIR}/${LICENSEFILENAME}"
 READMEFILE="${PROYECTDIR}/${READMEFILENAME}"
@@ -106,18 +107,19 @@ echo -e " Etiqueta de imagen ISO:          ${blue}${bold}${LIVECDLABEL}${reset}"
 echo -e " Localización:                    ${blue}${bold}${LIVECDLOCALE}${reset}"
 echo -e " Mapa de teclado:                 ${blue}${bold}${LIVECDKEYMAP}${reset}"
 echo -e " Tipografía de la consola:        ${blue}${bold}${LIVECDSYSFONT}${reset}"
-echo -e " Autor:                           ${blue}${bold}${PUBLISHER}${reset}"
-echo -e "\n${white}${bold}Archivos del proyecto:${reset}"
+echo -e " Tema para Plymouth:              ${blue}${bold}${PLYMOUTHEME}${reset}"
+echo -e " Autor de imagen ISO:             ${blue}${bold}${PUBLISHER}${reset}"
+echo -e "\n${white}${bold}Ruta y archivos del proyecto:${reset}"
 echo -e " Directorio temporal:             ${blue}${bold}${LIVECDTMPDIR}${reset}"
 echo -e " Directorio del proyecto:         ${blue}${bold}${PROYECTDIR}${reset}"
 echo -e " Archivo con lista de paquetes:   ${blue}${bold}${PACKAGELISTFILENAME}${reset}"
-echo -e " Archivo de licencia.txt:         ${blue}${bold}${LICENSEFILENAME}${reset}"
-echo -e " Archivo de LEEME.txt:            ${blue}${bold}${READMEFILENAME}${reset}"
-echo -e " Archivo de splash.jpg:           ${blue}${bold}${SPLASHIMAGEFILENAME}${reset}"
+echo -e " Archivo para licencia:           ${blue}${bold}${LICENSEFILENAME}${reset}"
+echo -e " Archivo para LÉEME:              ${blue}${bold}${READMEFILENAME}${reset}"
+echo -e " Archivo para splash.jpg:         ${blue}${bold}${SPLASHIMAGEFILENAME}${reset}"
 echo -e " Nombre de anfitrión:             ${blue}${bold}${LIVECDHOSTNAME}${reset}"
 echo -e "\n${white}${bold}Gestión de paquetes RPM:${reset}"
 echo -e " Ruta configuración de YUM:       ${blue}${bold}${YUMCONFIG}${reset}"
-echo -e " Directorio con paquetes RPM:     ${blue}${bold}${YUMREPO}${reset}"
+echo -e " URL con paquetes RPM:            ${blue}${bold}${YUMREPO}${reset}"
 echo -e "${green}${bold}$(printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -)${reset}"
 echo -e "${white}${bold}¿Son correctos estos valores? (s/n) [s]${reset}"
 read -r ok
@@ -270,9 +272,11 @@ cat << EOF > "${ROOTFS}/boot/efi/System/Library/CoreServices/SystemVersion.plist
 EOF
 
 # Personalizar sistema
-echo -e "${green}${bold}Configuando sistema de identificación y recursos de autenticación...${reset}"
+echo -e "${green}${bold}Configurando sistema de identificación y recursos de autenticación...${reset}"
 chroot "${ROOTFS}" /usr/bin/authselect check >/dev/null 2>&1 || :
-chroot "${ROOTFS}" /usr/bin/authselect select sssd --force
+chroot "${ROOTFS}" /usr/bin/authselect select sssd --force >/dev/null 2>&1 || :
+echo -e "${green}${bold}Estableciendo ${PLYMOUTHEME} como tema para Plymouth...${reset}"
+chroot "${ROOTFS}" /usr/sbin/plymouth-set-default-theme ${PLYMOUTHEME}
 echo -e "${green}${bold}Regenerando initramfs...${reset}"
 chroot "${ROOTFS}" /sbin/dracut -f --add-drivers="btrfs binfmt_misc squashfs xfs zstd zstd_compress zstd_decompress"
 echo -e "${green}${bold}Creando configuración de grub2...${reset}"
