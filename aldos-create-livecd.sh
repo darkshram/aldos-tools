@@ -677,7 +677,8 @@ if [ -e "${LIVECDFILENAME}.iso" ]; then
     clear
     echo -e "${white}${bold}Proceso concluido.${reset}\n"
     echo -e "${white}${bold}Archivos creados:${reset}"
-    ISOSIZE="$(stat -c%s ./*.iso)"
+    ISOFILENAME="${LIVECDFILENAME}.iso"
+    ISOSIZE="$(stat -c%s "${ISOFILENAME}")"
     echo -e "    1. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.iso${reset} (${ISOSIZE} bytes)"
     echo -e "    2. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.md5dum${reset}"
     echo -e "    3. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.256sum${reset}"
