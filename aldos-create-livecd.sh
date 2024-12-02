@@ -1,4 +1,5 @@
 #!/bin/bash
+#set -e
 ################################################################################
 # This is a bash script to automatically create an ALDOS LiveCD
 # First released on Dec 1, 2024
@@ -22,6 +23,10 @@
 #
 ################################################################################
 
+# Convierte la fecha a formato YYYYMMDD
+FECHA="$(date +%Y%m%d)"
+export FECHA
+
 ######################################################################
 ######################################################################
 ################                                      ################
@@ -32,6 +37,10 @@
 
 # Procurar sea un nombre conciso y corto
 DISTRONAME="ALDOS"
+# DISTRONAMELOWERCASE Convierte a minúsculas el valor de DISTRONAME
+# Sugiero evitar modificar el valor actual de esta variable.
+DISTRONAMELOWERCASE="$(echo ${DISTRONAME} | tr '[:upper:]' '[:lower:]')"
+export DISTRONAMELOWERCASE
 # Versión del lanzamiento
 DISTROVERSION="1.4.19"
 PUBLISHER="Joel Barrios"
@@ -59,57 +68,25 @@ PROYECTDIR="/home/jbarrios/Proyectos/${DISTRONAME}-LiveCD"
 # deben estar dentro de la ruta definida en PROYECTDIR
 READMEFILENAME="LEEME.txt"
 LICENSEFILENAME="Licencia.txt"
-PACKAGELISTFILENAME="ALDOS-package-list.txt"
+PACKAGELISTFILENAME="PAQUETES.txt"
 # Imagen que se mostrará en pantalla en el gestor de arranque de la
 # imagen viva. Se prefiere sea en formato JPG para procurar
 # compatibilidad.
 SPLASHIMAGEFILENAME="syslinux-vesa-splash.jpg"
 
 # Archivo de configuración de YUM
-YUMCONFIG="file://${PROYECTDIR}/yum.conf"
-# Puede ser un URL
-YUMREPO="file:///var/www/LIVECD/x86_64/"
-if [ ! -e "${YUMCONFIG}" ]; then
-# Configuración de YUM.
-cat << EOF > "${YUMCONFIG}"
-[main]
-distroverpkg=aldos-release
-cachedir=/var/cache/yum/\$basearch/\$releasever
-keepcache=0
-debuglevel=2
-logfile=/var/log/yum.log
-exactarch=1
-obsoletes=1
-gpgcheck=1
-plugins=1
-installonly_limit=3
-clean_requirements_on_remove=1
-
-######################################################################
-######################################################################
-################                                      ################
-################  Modificar a partir de aquí.         ################
-################                                      ################
-######################################################################
-######################################################################
-
-[ALDOS-livecd]
-name=ALDOS LiveCD 14 - \$basearch
-baseurl=${YUMREPO}
-gpgkey=file:///etc/pki/rpm-gpg/AL-RPM-KEY
-enabled=1
-gpgcheck=1
-
-######################################################################
-######################################################################
-#################                                     ################
-#################  Modificar sólo hasta aquí.         ################
-#################                                     ################
-######################################################################
-######################################################################
-
-EOF
-fi
+YUM_CONFIG="file://${PROYECTDIR}/yum.conf"
+# Puede ser un URL: http://mirror0.alcancelibre.org/aldos/1.4/livecd/x86_64/
+YUMREPO="file:///var/www/mirror0/public_html/aldos/1.4/livecd/x86_64/"
+export YUMREPO
+export red="\e[0;91m"
+export blue="\e[0;94m"
+export green="\e[0;92m"
+export purple="\e[1;95m"
+export white="\e[0;97m"
+#export blackbg="\e[0;40m"
+export bold="\e[1m"
+export reset="\e[0m"
 
 # Ruta donde se realizará todo el trabajo de crear una imagen de
 # disco, se montará como si fuera una partición, se instalará los
@@ -117,12 +94,6 @@ fi
 # Se recomienda sea un directorio montando un dispositivo tmpfs con
 # al menos 12 MB libres.
 LIVECDTMPDIR="/tmp/${DISTRONAMELOWERCASE}-livecd"
-
-# DISTRONAMELOWERCASE Convierte a minúsculas el valor de DISTRONAME
-# Sugiero evitar modificar el valor actual de esta variable.
-DISTRONAMELOWERCASE="$(echo ${DISTRONAME} | tr '[:upper:]' '[:lower:]')"
-# Convierte la fecha a formato YYYYMMDD
-FECHA="$(date +%Y%m%d)"
 
 ######################################################################
 ######################################################################
@@ -158,6 +129,17 @@ SPLASHIMAGE="${PROYECTDIR}/${SPLASHIMAGEFILENAME}"
 ################                                      ################
 ######################################################################
 ######################################################################
+
+function DESMONTAR() {
+umount "${ROOTFSDIR}/sys" && \
+umount "${ROOTFSDIR}/proc" && \
+umount "${ROOTFSDIR}/dev" && \
+umount "${ROOTFSDIR}" && \
+rm -fr ${LIVECDTMPDIR}
+echo -e "${red}${bold}Algo salió mal...${reset}"
+exit 1
+}
+
 export red="\e[0;91m"
 export blue="\e[0;94m"
 export green="\e[0;92m"
@@ -187,7 +169,7 @@ echo -e " Archivo para licencia:           ${blue}${bold} → ${LICENSEFILENAME}
 echo -e " Archivo para LÉEME:              ${blue}${bold} → ${READMEFILENAME}${reset}"
 echo -e " Archivo para splash.jpg:         ${blue}${bold} → ${SPLASHIMAGEFILENAME}${reset}"
 echo -e "\n${white}${bold}Gestión de paquetes RPM:${reset}"
-echo -e " Ruta configuración de YUM:       ${blue}${bold}${YUMCONFIG}${reset}"
+echo -e " Ruta configuración de YUM:       ${blue}${bold}${YUM_CONFIG}${reset}"
 echo -e " URL con paquetes RPM:            ${blue}${bold}${YUMREPO}${reset}"
 echo -e "${green}${bold}$(printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -)${reset}"
 echo -e "${white}${bold}¿Son correctos estos valores? (s/n) [s]${reset}"
@@ -207,7 +189,7 @@ echo -e "${green}${bold}Iniciando proceso...${reset}"
 
 # Generar estructura de directorios del LiveCD
 echo -e "${green}${bold}Generando estructura de directorios de Imagen Viva...${reset}"
-mkdir -p "${ISOLINUXFS}/{boot/grub/x86_64-efi,efi/boot,isolinux,LiveOS}"
+mkdir -p "${ISOLINUXFS}"/{boot/grub/x86_64-efi,efi/boot,isolinux,LiveOS}
 # Generar directorio donde se va a instalar el sistema operativo que
 # se utilizará posteriormente para el LiveCD
 mkdir -p "${ROOTFSDIR}"
@@ -220,9 +202,8 @@ mkdir -p "${ROOTFSDIR}"
 # procesos y funciones del núcleo.
 echo -e "${green}${bold}Generando imagen de disco temporal...${reset}"
 dd if="/dev/zero" of="${EXT4FSIMG}" bs=4M count=2000 && \
-mkfs.ext4 "${EXT4FSIMG}" && \
+mkfs.ext4 "${EXT4FSIMG}" > /dev/null && \
 fsck -fyD "${EXT4FSIMG}" || \
-echo -e "${red}${bold}Algo salió mal...${reset}" || \
 exit 1
 
 echo -e "${green}${bold}Desactivando (temporalmente) montaje automático de unidades de almacenamiento...${reset}"
@@ -230,7 +211,6 @@ mkdir -p /lib/udev/rules.d && \
 echo 'SUBSYSTEM=="block", ENV{UDISKS_IGNORE}="1"' > /lib/udev/rules.d/90-udisks-inhibit.rules && \
 udevadm control --reload && \
 udevadm trigger --subsystem-match=block || \
-echo -e "${red}${bold}Algo salió mal...${reset}" || \
 exit 1
 
 echo -e "${green}${bold}Montando sistema de archivos imagen de disco temporal...${reset}"
@@ -239,14 +219,12 @@ mkdir -p "${ROOTFSDIR}"/{dev,proc,sys} && \
 mount -o bind /dev "${ROOTFSDIR}"/dev && \
 mount -o bind /proc "${ROOTFSDIR}"/proc && \
 mount -o bind /sys "${ROOTFSDIR}"/sys || \
-echo -e "${red}${bold}Algo salió mal...${reset}" || \
 exit 1
 
 # Instalar paquetes mínimos requeridos por los demás
 echo -e "${green}${bold}Instalando paquetes esenciales...${reset}"
 yum \
-    -q -y \
-    --config=${YUMCONFIG} \
+    -y \
     --installroot="${ROOTFSDIR}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
@@ -255,67 +233,20 @@ yum \
     setup.noarch \
     filesystem.x86_64 \
     tzdata.noarch \
-    basesystem.noarch > /dev/null || \
-    echo -e "${red}${bold}Algo salió mal...${reset}" || \
-    exit 1
+    basesystem.noarch \
+    DESMONTAR
 
-# Herramientas que se necesitan para la instalación de paquetes que
-# incluyen componentes que se asigna a un usuario o grupo.
-echo -e "${green}${bold}Instalando paquetes para gestión de permisos y pertenencias...${reset}"
-yum \
-    -q -y \
-    --config=${YUMCONFIG} \
-    --installroot="${ROOTFSDIR}" \
-    --disablerepo=* \
-    --enablerepo=ALDOS-livecd \
-    install \
-    glibc-common.x84_64 \
-    shadow-utils.x86_64 \
-    passwd.noarch > /dev/null || \
-    echo -e "${red}${bold}Algo salió mal...${reset}" || \
-    exit 1
-
-# Herramientas que se necesitan para la instalación de paquetes que
-# incluyen servicios.
-echo -e "${green}${bold}Instalando sistema de inicio y servicios esenciales...${reset}"
-yum \
-    -q -y \
-    --config=${YUMCONFIG} \
-    --installroot="${ROOTFSDIR}" \
-    --disablerepo=* \
-    --enablerepo=ALDOS-livecd \
-    install \
-    chkconfig.x84_64 \
-    initscripts-sysvinit.x86_64 \
-    sysvinit.x86_64 \
-    sysvinit-default.noarch > /dev/null || \
-    echo -e "${red}${bold}Algo salió mal...${reset}" || \
-    exit 1
+cp -a /bin/true ${ROOTFSDIR}/run/initctl
 
 # Instalar todos los paquetes que componen la instalación
 echo -e "${green}${bold}Instalando paquetería...${reset}"
-yum -y \
+cat ${PACKAGELIST} |xargs yum \
+    -y \
     --installroot="${ROOTFSDIR}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
-    install < "${PACKAGELIST}" > /dev/null || \
-    echo -e "${red}${bold}Algo salió mal...${reset}" || \
-    exit 1
-
-# Instalar Calamares y herramienta para gestionar particiones y
-# Volúmenes lógicos. Estos paquetes serán desinstalados después de
-# instalar el sistema vivo en el equipo.
-echo -e "${green}${bold}Instalando Calamares y Partition Manager...${reset}"
-yum -y \
-    --installroot="${ROOTFSDIR}" \
-    --disablerepo=* \
-    --enablerepo=ALDOS-livecd \
-    install \
-    calamares.x86_64 \
-    calamares-sysvinit.noarch \
-    kde-partitionmanager.x86_64 > /dev/null || \
-    echo -e "${red}${bold}Algo salió mal...${reset}" || \
-    exit 1
+    install || \
+    DESMONTAR
 
 echo -e "${green}${bold}Creando archivo fstab...${reset}"
 # El archivo fstab que utilizará el sistema vivo.
@@ -586,7 +517,6 @@ touch "${ISOLINUXFS}/.disk/base_installable" && \
 echo "full_cd/single" > "${ISOLINUXFS}/.disk/cd_type" && \
 echo "${LIVECDTITLE}" > "${ISOLINUXFS}/.disk/info" && \
 echo "${RELEASENOTESURL}" > "${ISOLINUXFS}/.disk/release_notes_url" || \
-echo -e "${red}${bold}Algo salió mal...${reset}" || \
 exit 1
 
 echo -e "${green}${bold}Generando archivo de sumas MD5...${reset}"
@@ -604,7 +534,6 @@ umount "${ROOTFSDIR}/sys" && \
 umount "${ROOTFSDIR}/proc" && \
 umount "${ROOTFSDIR}/dev" && \
 umount "${ROOTFSDIR}" || \
-echo -e "${red}${bold}Algo salió mal...${reset}" || \
 exit 1
 
 if [ -e "${EXT4FSIMG}" ]; then
@@ -613,13 +542,11 @@ echo -e "${green}${bold}Verificando en 2 pasos sistema de archivos de imagen de 
 fsck -fyD "${EXT4FSIMG}" > /dev/null && \
 zerofree "${EXT4FSIMG}" > /dev/null && \
 fsck -fyD "${EXT4FSIMG}" > /dev/null || \
-echo -e "${red}${bold}Algo salió mal...${reset}" || \
 exit 1
 fi
 
 echo -e "${green}${bold}Montando nuevamente sistema de archivos imagen de disco temporal...${reset}"
 mount -o loop -t ext4 "${EXT4FSIMG}" "${ROOTFSDIR}" || \
-echo -e "${red}${bold}Algo salió mal...${reset}" || \
 exit 1
 
 if [ -e "${ROOTFSDIR}" ]; then
@@ -643,7 +570,6 @@ echo -e "${green}${bold}Concluido. Tamaño de ${SQUASHFSIMG} es ${FILESIZE} byte
 
 echo -e "${green}${bold}Desmontando sistemas de archivos de imagen de disco...${reset}"
 umount "${ROOTFSDIR}" || \
-echo -e "${red}${bold}Algo salió mal...${reset}" || \
 exit 1
 # Intentar liberar todos los dispositivos /dev/loopX
 losetup --detach-all
@@ -685,11 +611,9 @@ genisoimage \
     -checksum-list "md5sum.txt" \
     -o "${LIVECDFILENAME}.iso" \
     "${ISOLINUXFS}" || \
-    echo -e "${red}${bold}Algo salió mal...${reset}" || \
     exit 1
     echo -e "${green}${bold}Eliminando ${LIVECDTMPDIR}...${reset}"
     rm -fr "${LIVECDTMPDIR}" || \
-    echo -e "${red}${bold}Algo salió mal...${reset}" || \
     exit 1
 else
 echo -e "${green}${bold}Creando imagen ISO final con xorrisofs...${reset}"
@@ -714,11 +638,9 @@ xorrisofs \
     -checksum-list "md5sum.txt" \
     -o "${PROYECTDIR}/${LIVECDFILENAME}.iso" \
     "${ISOLINUXFS}" || \
-    echo -e "${red}${bold}Algo salió mal...${reset}" || \
     exit 1
     echo -e "${green}${bold}Eliminando ${LIVECDTMPDIR}...${reset}"
     rm -fr "${LIVECDTMPDIR}" || \
-    echo -e "${red}${bold}Algo salió mal...${reset}" || \
     exit 1
 fi
 
@@ -728,7 +650,6 @@ if [ -e "${LIVECDFILENAME}.iso" ]; then
     md5sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.md5sum" && \
     sha256sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.sha256sum" && \
     sha512sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.sha512sum" || \
-    echo -e "${red}${bold}Algo salió mal...${reset}" || \
     exit 1
     clear
     echo -e "${green}${bold}$(printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -)${reset}"
@@ -736,6 +657,7 @@ if [ -e "${LIVECDFILENAME}.iso" ]; then
     echo -e "${white}${bold}Archivos creados:${reset}"
     ISOFILENAME="${LIVECDFILENAME}.iso"
     ISOSIZE="$(stat -c%s "${ISOFILENAME}")"
+    export ISOSIZE
     echo -e "    1. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.iso${reset}${blue}${bold} (${ISOSIZE} bytes)${reset}"
     echo -e "    2. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.md5dum${reset}"
     echo -e "    3. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.256sum${reset}"
@@ -744,5 +666,5 @@ if [ -e "${LIVECDFILENAME}.iso" ]; then
     popd || exit 1
 fi
 else
-echo -e "${red}${bold}Algo salió mal...${reset}"
+    echo -e "${red}${bold}Algo salió mal...${reset}"
 fi
