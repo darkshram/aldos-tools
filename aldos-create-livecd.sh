@@ -535,7 +535,7 @@ sync
 echo -e "${green}${bold}Desmontando sistemas de archivos virtuales de imagen de disco...${reset}"
 umount "${ROOTFSDIR}/sys" && \
 umount "${ROOTFSDIR}/proc" && \
-umount "${ROOTFSDIR}/dev" &&
+umount "${ROOTFSDIR}/dev" && \
 umount "${ROOTFSDIR}" || \
 echo -e "${red}${bold}Algo salió mal...${reset}" || \
 exit 1
