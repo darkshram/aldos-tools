@@ -573,10 +573,17 @@ mksquashfs \
     "${ROOTFSDIR}" \
     "${SQUASHFSIMG}" \
     -comp xz \
-    -b 4M
+    -b 4M > /dev/null
 else
 exit 1
 fi
+
+if [ -e "${SQUASHFSIMG}" ]; then
+# Calcular tamaño de la imagen de disco comprimida
+MAXSIZE="2147483648"
+FILESIZE="$(stat -c%s ${SQUASHFSIMG})"
+
+echo -e "${green}${bold}Concluido. Tamaño de ${SQUASHFSIMG} es ${FILESIZE} bytes...${reset}"
 
 echo -e "${green}${bold}Desmontando sistemas de archivos de imagen de disco...${reset}"
 umount "${ROOTFSDIR}" || \
@@ -593,15 +600,12 @@ udevadm control --reload
 udevadm trigger --subsystem-match=block
 
 echo -e "${green}${bold}Creando imagen ISO final...${reset}"
-if [ -e "${SQUASHFSIMG}" ]; then
-# Calcular tamaño de la imagen de disco comprimida
-MAXSIZE="2147483648"
-FILESIZE="$(stat -c%s ${SQUASHFSIMG})"
 
 # xorriso is an actively mantained tool but...
 # genisoimage is the first choice if files are bigger than 2GB
 
 if (( FILESIZE > MAXSIZE )); then
+echo -e "${green}${bold}Creando imagen ISO final con genisoimage...${reset}"
 genisoimage \
     -no-emul-boot \
     -boot-load-size 4 \
@@ -632,6 +636,7 @@ genisoimage \
     echo -e "${red}${bold}Algo salió mal...${reset}" || \
     exit 1
 else
+echo -e "${green}${bold}Creando imagen ISO final con xorrisofs...${reset}"
 xorrisofs \
     -no-emul-boot \
     -boot-load-size 4 \
@@ -672,10 +677,11 @@ if [ -e "${LIVECDFILENAME}.iso" ]; then
     clear
     echo -e "${white}${bold}Proceso concluido.${reset}\n"
     echo -e "${white}${bold}Archivos creados:${reset}"
-    echo -e "    - ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.iso${reset}"
-    echo -e "    - ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.md5dum${reset}"
-    echo -e "    - ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.256sum${reset}"
-    echo -e "    - ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.512sum${reset}"
+    ISOSIZE="$(stat -c%s ./*.iso)"
+    echo -e "    1. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.iso${reset} (${ISOSIZE} bytes)"
+    echo -e "    2. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.md5dum${reset}"
+    echo -e "    3. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.256sum${reset}"
+    echo -e "    4. ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.512sum${reset}"
     popd || exit 1
 fi
 else
