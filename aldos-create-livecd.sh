@@ -25,9 +25,10 @@
 PROYECTDIR="/home/jbarrios/Proyectos/ALDOS-LiveCD"
 PUBLISHER="Joel Barrios"
 RELEASENOTESURL="https://www.alcancelibre.org/noticias/disponible-aldos-1-4-19"
-ISOLINUXFS="/tmp/aldos-livecd"
-ROOTFSDIR="/tmp/aldos-rootfs/mnt/livecd"
-EXT4FSIMG="/tmp/aldos-rootfs/aldos-ext4fs.img"
+LIVECDTMPDIR="/tmp/aldos-livecd"
+ISOLINUXFS="${LIVECDTMPDIR}/aldos-isolinuxfs"
+ROOTFSDIR="${LIVECDTMPDIR}/aldos-rootfs/livecd"
+EXT4FSIMG="${LIVECDTMPDIR}/aldos-rootfs/aldos-ext4fs.img"
 SQUASHFSIMG="${ISOLINUXFS}/LiveOS/squashfs.img"
 FECHA="$(date +%Y%m%d)"
 LIVECDHOSTNAME="aldos-livecd.alcancelibre.org"
@@ -38,7 +39,7 @@ LIVECDLOCALE="es_MX.UTF-8"
 LIVECDKEYMAP="es"
 LIVECDSYSFONT="latarcyrheb-sun16"
 LIVECDTITLE="ALDOS 1.4.19 ${FECHA}"
-LIVECDFILE="$(pwd)/ALDOS-1.4.19-${FECHA}.iso"
+LIVECDFILENAME="ALDOS-1.4.19-${FECHA}"
 LABELBOOT="Iniciar sistema vivo/Instalar sistema"
 LABELBASIC="Iniciar modo seguro (GPU bajos recursos)"
 LABELCHECK="Modo verificar e Iniciar"
@@ -54,6 +55,50 @@ READMEFILE="${PROYECTDIR}/${READMEFILENAME}"
 # disco vivo. Se prefiere sea en formato JPG para procurar
 # compatibilidad.
 SPLASHIMAGE="${PROYECTDIR}/syslinux-vesa-splash.jpg"
+
+######################################################################
+######################################################################
+################ No modificar a partir de este punto. ################
+######################################################################
+export red="\e[0;91m"
+export blue="\e[0;94m"
+export green="\e[0;92m"
+export purple="\e[1;95m"
+export white="\e[0;97m"
+export bold="\e[1m"
+export reset="\e[0m"
+clear
+echo -e "##########################################################################"
+echo -e "${white}${bold}Datos para la creación de imagen viva:${reset}"
+echo -e " Título del LiveCD:               ${blue}${bold}${LIVECDTITLE}${reset}"
+echo -e " Archivo imagen ISO:              ${blue}${bold}${PROYECTDIR}/${LIVECDFILENAME}.iso${reset}"
+echo -e " Etiqueta de imagen ISO:          ${blue}${bold}${LIVECDLABEL}${reset}"
+echo -e " Idioma:                          ${blue}${bold}${LIVECDLOCALE}${reset}"
+echo -e " Mapa de teclado:                 ${blue}${bold}${LIVECDKEYMAP}${reset}"
+echo -e " Tipografía de la consola:        ${blue}${bold}${LIVECDSYSFONT}${reset}"
+echo -e " Autor:                           ${blue}${bold}${PUBLISHER}${reset}"
+echo -e " Directorio del proyecto:         ${blue}${bold}${PROYECTDIR}${reset}"
+echo -e " Directorio temporal:             ${blue}${bold}${LIVECDTMPDIR}${reset}"
+echo -e " Archivo con lista de paquetes:   ${blue}${bold}${PACKAGELIST}${reset}"
+echo -e " Archivo de licencia.txt:         ${blue}${bold}${LICENSEFILE}${reset}"
+echo -e " Archivo de LEEME.txt:            ${blue}${bold}${READMEFILE}${reset}"
+echo -e " Archivo de splash.jpg:           ${blue}${bold}${SPLASHIMAGE}${reset}"
+echo -e " Nombre de anfitrión:             ${blue}${bold}${LIVECDHOSTNAME}${reset}"
+echo -e "##########################################################################"
+echo -e "${white}${bold}¿Son correctos estos valores? (S/N) [s]${reset}"
+read -r ok
+echo "${ok}"
+if  [[  "${ok}" == "n"  ]]  ||  [[  "${ok}" == "N"  ]]  ; then
+    echo -e "${red}${bold}Proceso cancelado. Por favor, corrija datos.${reset}"
+    exit ;
+fi
+if [ "$(id -u)" != "0" ]; then
+    echo -e "${red}${bold}Este programa sólo puede ser ejecutado como 'root'${reset}" 1>&2
+    exit 1
+fi
+clear
+echo -e "${green}${bold}Iniciando proceso...${reset}"
+######################################################################
 
 # Generar estructura de directorios del LiveCD
 mkdir -p ${ISOLINUXFS}/{boot/grub/x86_64-efi,efi/boot,isolinux,LiveOS}
@@ -81,7 +126,7 @@ mount -o bind /proc "${ROOTFSDIR}"/proc && \
 mount -o bind /sys "${ROOTFSDIR}"/sys
 
 # Instalar paquetes mínimos requeridos por los demás
-yum -y \
+yum -q -y \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
@@ -94,14 +139,14 @@ yum -y \
 
 # Herramientas que se necesitan para la instalación de paquetes que
 # incluyen componentes que se asigna a un usuario o grupo.
-yum -y \
+yum -q -y \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
     install \
     glibc-common.x84_64 \
     shadow-utils.x86_64 \
-    passwd.noarch
+    passwd.noarch > /dev/null
 
 # Herramientas que se necesitan para la instalación de paquetes que
 # incluyen servicios.
@@ -113,14 +158,14 @@ yum -y \
     chkconfig.x84_64 \
     initscripts-sysvinit.x86_64 \
     sysvinit.x86_64 \
-    sysvinit-default.noarch
+    sysvinit-default.noarch > /dev/null
 
 # Instalar todos los paquetes que componen la instalación
 yum -y \
     --installroot="${ROOTFS}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
-    install < "${PACKAGELIST}"
+    install < "${PACKAGELIST}" > /dev/null
 
 # Instalar Calamares y herramienta para gestionar particiones y
 # Volúmenes lógicos. Estos paquetes serán desinstalados después de
@@ -132,7 +177,7 @@ yum -y \
     install \
     calamares.x86_64 \
     calamares-sysvinit.noarch \
-    kde-partitionmanager.x86_64
+    kde-partitionmanager.x86_64 > /dev/null
 
 # El archivo fstab que utilizará el sistema vivo.
 cat << EOF > "${ROOTFS}"/etc/fstab
@@ -314,14 +359,14 @@ insmod png
 set theme=\$prefix/grub/themes/system/theme.txt
 export theme
 
-menuentry "ALDOS 1.4.19 XFCE Live/Installation" {
+menuentry "ALDOS 1.4.19 XFCE LiveCD/Instalar" {
     set gfxpayload=keep
     
     linux /syslinux/vmlinuz0 root=live:CDLABEL=${LIVECDLABEL} rd.live.image rd.live.dir=/LiveOS rd.live.squashimg=${SQUASHFSIMG} selinux=0 rootfstype=auto rd.locale.LANG=${LIVECDLOCALE} KEYBOARDTYPE=pc rd.vconsole.keymap=${LIVECDKEYMAP} rootflags=defaults,relatime,commit=60 nmi_watchdog=0 rd_NO_LUKS rd_NO_MD rd_NO_DM auto noprompt priority=critical mitigations=off amd_pstate.enable=0 intel_pstate=disable loglevel=0 nowatchdog slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 loglevel=0 fsck.mode=skip quiet splash
     initrd /syslinux/initrd0.img
 }
 
-menuentry "ALDOS 1.4.19 XFCE Safe Mode" {
+menuentry "ALDOS 1.4.19 XFCE Modo Seguro" {
     set gfxpayload=keep
     
     linux /syslinux/vmlinuz0 root=live:CDLABEL=${LIVECDLABEL} rd.live.image rd.live.dir=/LiveOS rd.live.squashimg=${SQUASHFSIMG} selinux=0 rootfstype=auto rd.locale.LANG=${LIVECDLOCALE} KEYBOARDTYPE=pc rd.vconsole.keymap=${LIVECDKEYMAP} rootflags=defaults,relatime,commit=60 nmi_watchdog=0 rd_NO_LUKS rd_NO_MD rd_NO_DM auto noprompt priority=critical nomodeset apparmor=0 net.ifnames=0 noapic noapm nodma nomce nolapic nosmp vga=normal mitigations=off amd_pstate.enable=0 intel_pstate=disable loglevel=0 nowatchdog elevator=noop slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none debugfs=off oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 loglevel=0 fsck.mode=skip quiet splash 
@@ -457,8 +502,9 @@ genisoimage \
     -copyright "${LICENSEFILENAME}" \
     -publisher "${PUBLISHER}" \
     -checksum-list "md5sum.txt" \
-    -o "${LIVECDFILE}.iso" \
-    "${ISOLINUXFS}"
+    -o "${LIVECDFILENAME}.iso" \
+    "${ISOLINUXFS}" && \
+    rm -fr "${LIVECDTMPDIR}"
 else
 xorrisofs \
     -no-emul-boot \
@@ -479,15 +525,23 @@ xorrisofs \
     -copyright "${LICENSEFILENAME}" \
     -publisher "${PUBLISHER}" \
     -checksum-list "md5sum.txt" \
-    -o "${PROYECTDIR}/${LIVECDFILE}.iso" \
-    "${ISOLINUXFS}"
+    -o "${PROYECTDIR}/${LIVECDFILENAME}.iso" \
+    "${ISOLINUXFS}" && \
+    rm -fr "${LIVECDTMPDIR}"
 fi
 
-if [ -e "${LIVECDFILE}.iso" ]; then
-    pushd "${PROYECTDIR}" || exit 1
-    md5sum "${LIVECDFILE}.iso" > "${LIVECDFILE}.md5sum" || exit 1
-    sha256sum "${LIVECDFILE}.iso" > "${LIVECDFILE}.sha256sum" || exit 1
-    sha512sum "${LIVECDFILE}.iso" > "${LIVECDFILE}.sha512sum" || exit 1
+if [ -e "${LIVECDFILENAME}.iso" ]; then
+    pushd ${PROYECTDIR} || exit 1
+    md5sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.md5sum" || exit 1
+    sha256sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.sha256sum" || exit 1
+    sha512sum "${LIVECDFILENAME}" > "${LIVECDFILENAME}.sha512sum" || exit 1
+    clear
+    echo -e "${white}${bold}Proceso concluido.${reset}\n"
+    echo -e "${white}${bold}Archivos creados:${reset}"
+    echo -e "    - ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.iso${reset}"
+    echo -e "    - ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.md5dum${reset}"
+    echo -e "    - ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.256sum${reset}"
+    echo -e "    - ${blue}${bold}${PROYECTDIR}/${purple}${LIVECDFILENAME}.512sum${reset}"
     popd || exit 1
 fi
 
