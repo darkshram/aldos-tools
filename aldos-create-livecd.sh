@@ -139,6 +139,22 @@ cat << EOF > "${ROOTFS}"/etc/fstab
 /dev/root  /         ext4    defaults,noatime,nodiratime,commit=30,data=writeback 0 0
 EOF
 
+mkdir -p "${ROOTFS}/boot/efi/System/Library/CoreServices/"
+cat << EOF > "${ROOTFS}/boot/efi/System/Library/CoreServices/SystemVersion.plist"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>ProductBuildVersion</key>
+        <string>${FECHA}</string>
+        <key>ProductName</key>
+        <string>Linux</string>
+        <key>ProductVersion</key>
+        <string>${LABELBOOT}</string>
+</dict>
+</plist>
+EOF
+
 # Personalizar sistema
 chroot "${ROOTFS}" /usr/bin/authselect check >/dev/null 2>&1 || :
 chroot "${ROOTFS}" /usr/bin/authselect select sssd --force
@@ -212,17 +228,19 @@ echo -e "127.0.0.1    ${LIVECDHOSTNAME}\n::1    ${LIVECDHOSTNAME}" >> /etc/hosts
 
 # Copiar el núcleo del sistema y lo necesario para iniciar el LiveCD.
 # Los nombres de los archivos se procuran de máximo 12 caracteres.
+
+# Archivos necesarios para iniciar con BIOS.
 cp -a \
-    "${ROOTFS}/vmlinuz-*" \
+    "${ROOTFS}/boot/vmlinuz-*" \
     "${ISOLINUXFS}/syslinux/vmlinuz0"
+
+pushd ${ISOLINUXFS}/syslinux || exit 1
+    sha512hmac vmlinuz0 > .vmlinuz0.hmac
+popd || exit 1
 
 cp -a \
     "${ROOTFS}/boot/initramfs-*.img" \
     "${ISOLINUXFS}/syslinux/initrd0.img"
-
-cp -a \
-    "${ROOTFS}/boot/efi/EFI/aldos/grubx64.efi" \
-    "${ISOLINUXFS}/efi/boot/grubx64.efi"
 
 cp -a \
     "${ROOTFS}/usr/share/syslinux/isolinux.bin" \
@@ -235,6 +253,85 @@ cp -a \
 cp -a \
     "${SPLASHIMAGE}" \
     "${ISOLINUXFS}/isolinux/splash.jpg"
+
+# TODO: Archivos requeridos para iniciar con EFI.
+cp -a \
+    "${ROOTFS}/boot/efi/EFI/aldos/grubx64.efi" \
+    "${ISOLINUXFS}/efi/boot/grubx64.efi"
+
+cp -a \
+    "${ROOTFS}/boot/efi/EFI/aldos/gcdx64.efi" \
+    "${ISOLINUXFS}/efi/boot/gcdx64.efi"
+
+cp -a \
+    "${ROOTFS}/boot/efi/EFI/aldos/grubenv" \
+    "${ISOLINUXFS}/efi/boot/grubenv"
+
+cp -a \
+    "${ROOTFS}/boot/efi/EFI/aldos/fonts/unicode.pf2" \
+    "${ISOLINUXFS}/efi/boot/unicode.pf2"
+
+cp -a \
+    "${ROOTFS}/boot/efi/mach_kernel" \
+    "${ISOLINUXFS}/efi/mach_kernel"
+
+cp -a \
+    "${ROOTFS}/boot/grub/splash*gz" \
+    "${ISOLINUXFS}/boot/grub/"
+
+cp -a \
+    "${ROOTFS}/boot/grub2/fonts/unicode.pf2" \
+    "${ISOLINUXFS}/boot/grub/"
+
+cp -a \
+    "${ROOTFS}/boot/grub2/themes" \
+    "${ISOLINUXFS}/boot/grub/"
+
+mkdir -p "${ISOLINUXFS}/efi/System/Library/CoreServices/"
+cp -a \
+    "${ROOTFS}/boot/efi/System/Library/CoreServices/SystemVersion.plist" \
+    "${ISOLINUXFS}/efi/System/Library/CoreServices/SystemVersion.plist"
+
+cat << EOF > ${ISOLINUXFS}/boot/grub/grub.cfg
+if loadfont \$prefix/unicode.pf2 ; then
+  set gfxmode=1024x768x32
+  insmod efi_gop
+  insmod efi_uga
+  insmod video_bochs
+  insmod video_cirrus
+  insmod gfxterm
+  insmod jpeg
+  insmod png
+  terminal_output gfxterm
+fi
+
+insmod gfxmenu
+loadfont \$prefix/grub/themes/system/DejaVuSans-10.pf2
+loadfont \$prefix/grub/themes/system/DejaVuSans-12.pf2
+loadfont \$prefix/grub/themes/system/DejaVuSans-Bold-14.pf2
+loadfont \$prefix/grub/fonts/unicode.pf2
+insmod png
+set theme=($root)/grub2/themes/system/theme.txt
+export theme
+
+menuentry "ALDOS 1.4.19 XFCE Live/Installation" {
+    set gfxpayload=keep
+    
+    linux /syslinux/vmlinuz0 root=live:CDLABEL=${LIVECDLABEL} rd.live.image rd.live.dir=/LiveOS rd.live.squashimg=${SQUASHFSIMG} selinux=0 rootfstype=auto rd.locale.LANG=${LIVECDLOCALE} KEYBOARDTYPE=pc rd.vconsole.keymap=${LIVECDKEYMAP} rootflags=defaults,relatime,commit=60 nmi_watchdog=0 rd_NO_LUKS rd_NO_MD rd_NO_DM auto noprompt priority=critical mitigations=off amd_pstate.enable=0 intel_pstate=disable loglevel=0 nowatchdog slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 loglevel=0 fsck.mode=skip quiet splash
+    initrd /syslinux/initrd0.img
+}
+
+menuentry "ALDOS 1.4.19 XFCE Safe Mode" {
+    set gfxpayload=keep
+    
+    linux /syslinux/vmlinuz0 root=live:CDLABEL=${LIVECDLABEL} rd.live.image rd.live.dir=/LiveOS rd.live.squashimg=${SQUASHFSIMG} selinux=0 rootfstype=auto rd.locale.LANG=${LIVECDLOCALE} KEYBOARDTYPE=pc rd.vconsole.keymap=${LIVECDKEYMAP} rootflags=defaults,relatime,commit=60 nmi_watchdog=0 rd_NO_LUKS rd_NO_MD rd_NO_DM auto noprompt priority=critical nomodeset apparmor=0 net.ifnames=0 noapic noapm nodma nomce nolapic nosmp vga=normal mitigations=off amd_pstate.enable=0 intel_pstate=disable loglevel=0 nowatchdog elevator=noop slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none debugfs=off oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 loglevel=0 fsck.mode=skip quiet splash 
+    initrd /syslinux/initrd0.img
+}
+EOF
+
+cp -a \
+    "${ISOLINUXFS}/boot/grub/grub.cfg" \
+    "${ISOLINUXFS}/boot/grub/x86_64-efi/grub.cfg"
 
 # Copiar archivo de licencia
 cp -a \
