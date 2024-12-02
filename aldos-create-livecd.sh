@@ -35,6 +35,7 @@ SQUASHFSIMG="${ISOLINUXFS}/LiveOS/squashfs.img"
 FECHA="$(date +%Y%m%d)"
 LIVECDHOSTNAME="aldos-livecd"
 DISTRONAME="ALDOS"
+DISTRONAMELOWERCASE="$(echo ${DISTRONAME} | tr '[:upper:]' '[:lower:]')"
 LIVECDLABEL="ALDOS64${FECHA}"
 LIVECDWELCOME="Bienvenido a ${LIVECDTITLE}!"
 LIVECDLOCALE="es_MX.UTF-8"
@@ -101,14 +102,16 @@ export reset="\e[0m"
 clear
 echo -e "${green}${bold}$(printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -)${reset}"
 echo -e "${white}${bold}Datos para la creación de Imagen Viva de ${DISTRONAME}:${reset}"
-echo -e " Título del imagen ISO:           ${blue}${bold}${LIVECDTITLE}${reset}"
+echo -e " Título de imagen ISO:            ${blue}${bold}${LIVECDTITLE}${reset}"
 echo -e " Archivo imagen ISO:              ${blue}${bold}${LIVECDFILENAME}.iso${reset}"
 echo -e " Etiqueta de imagen ISO:          ${blue}${bold}${LIVECDLABEL}${reset}"
+echo -e " Autor de imagen ISO:             ${blue}${bold}${PUBLISHER}${reset}"
+echo -e "\n${white}${bold}Configuración de sistema operativo en Imagen Viva:${reset}"
 echo -e " Localización:                    ${blue}${bold}${LIVECDLOCALE}${reset}"
 echo -e " Mapa de teclado:                 ${blue}${bold}${LIVECDKEYMAP}${reset}"
 echo -e " Tipografía de la consola:        ${blue}${bold}${LIVECDSYSFONT}${reset}"
 echo -e " Tema para Plymouth:              ${blue}${bold}${PLYMOUTHEME}${reset}"
-echo -e " Autor de imagen ISO:             ${blue}${bold}${PUBLISHER}${reset}"
+echo -e " Nombre de anfitrión:             ${blue}${bold}${LIVECDHOSTNAME}${reset}"
 echo -e "\n${white}${bold}Ruta y archivos del proyecto:${reset}"
 echo -e " Directorio temporal:             ${blue}${bold}${LIVECDTMPDIR}${reset}"
 echo -e " Directorio del proyecto:         ${blue}${bold}${PROYECTDIR}${reset}"
@@ -116,7 +119,6 @@ echo -e " Archivo con lista de paquetes:   ${blue}${bold}${PACKAGELISTFILENAME}$
 echo -e " Archivo para licencia:           ${blue}${bold}${LICENSEFILENAME}${reset}"
 echo -e " Archivo para LÉEME:              ${blue}${bold}${READMEFILENAME}${reset}"
 echo -e " Archivo para splash.jpg:         ${blue}${bold}${SPLASHIMAGEFILENAME}${reset}"
-echo -e " Nombre de anfitrión:             ${blue}${bold}${LIVECDHOSTNAME}${reset}"
 echo -e "\n${white}${bold}Gestión de paquetes RPM:${reset}"
 echo -e " Ruta configuración de YUM:       ${blue}${bold}${YUMCONFIG}${reset}"
 echo -e " URL con paquetes RPM:            ${blue}${bold}${YUMREPO}${reset}"
@@ -150,9 +152,9 @@ mkdir -p ${ROOTFSDIR}
 # Se monta la imagen de disco y vincula a directorios de dispositivos.
 # procesos y funciones del núcleo.
 echo -e "${green}${bold}Generando imagen de disco temporal...${reset}"
-dd if="/dev/zero" of="${ISOLINUXFS}/aldos-ext4fs.img" bs=4M count=2000 && \
-mkfs.ext4 "${ISOLINUXFS}/aldos-ext4fs.img" && \
-fsck -fyD "${ISOLINUXFS}/aldos-ext4fs.img" || \
+dd if="/dev/zero" of="${EXT4FSIMG}" bs=4M count=2000 && \
+mkfs.ext4 "${EXT4FSIMG}" && \
+fsck -fyD "${EXT4FSIMG}" || \
 echo -e "${red}${bold}Algo salió mal...${reset}" || \
 exit 1
 
@@ -178,7 +180,7 @@ echo -e "${green}${bold}Instalando paquetes esenciales...${reset}"
 yum \
     -q -y \
     --config=${YUMCONFIG} \
-    --installroot="${ROOTFS}" \
+    --installroot="${ROOTFSDIR}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
     install \
@@ -196,7 +198,7 @@ echo -e "${green}${bold}Instalando paquetes para gestión de permisos y pertenen
 yum \
     -q -y \
     --config=${YUMCONFIG} \
-    --installroot="${ROOTFS}" \
+    --installroot="${ROOTFSDIR}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
     install \
@@ -212,7 +214,7 @@ echo -e "${green}${bold}Instalando sistema de inicio y servicios esenciales...${
 yum \
     -q -y \
     --config=${YUMCONFIG} \
-    --installroot="${ROOTFS}" \
+    --installroot="${ROOTFSDIR}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
     install \
@@ -226,7 +228,7 @@ yum \
 # Instalar todos los paquetes que componen la instalación
 echo -e "${green}${bold}Instalando paquetería...${reset}"
 yum -y \
-    --installroot="${ROOTFS}" \
+    --installroot="${ROOTFSDIR}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
     install < "${PACKAGELIST}" > /dev/null || \
@@ -238,7 +240,7 @@ yum -y \
 # instalar el sistema vivo en el equipo.
 echo -e "${green}${bold}Instalando Calamares y Partition Manager...${reset}"
 yum -y \
-    --installroot="${ROOTFS}" \
+    --installroot="${ROOTFSDIR}" \
     --disablerepo=* \
     --enablerepo=ALDOS-livecd \
     install \
@@ -250,13 +252,13 @@ yum -y \
 
 echo -e "${green}${bold}Creando archivo fstab...${reset}"
 # El archivo fstab que utilizará el sistema vivo.
-cat << EOF > "${ROOTFS}"/etc/fstab
+cat << EOF > "${ROOTFSDIR}"/etc/fstab
 /dev/root  /         ext4    defaults,noatime,nodiratime,commit=30,data=writeback 0 0
 EOF
 
 echo -e "${green}${bold}Personalizando el sistema...${reset}"
-mkdir -p "${ROOTFS}/boot/efi/System/Library/CoreServices/"
-cat << EOF > "${ROOTFS}/boot/efi/System/Library/CoreServices/SystemVersion.plist"
+mkdir -p "${ROOTFSDIR}/boot/efi/System/Library/CoreServices/"
+cat << EOF > "${ROOTFSDIR}/boot/efi/System/Library/CoreServices/SystemVersion.plist"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -273,49 +275,49 @@ EOF
 
 # Personalizar sistema
 echo -e "${green}${bold}Configurando sistema de identificación y recursos de autenticación...${reset}"
-chroot "${ROOTFS}" /usr/bin/authselect check >/dev/null 2>&1 || :
-chroot "${ROOTFS}" /usr/bin/authselect select sssd --force >/dev/null 2>&1 || :
+chroot "${ROOTFSDIR}" /usr/bin/authselect check >/dev/null 2>&1 || :
+chroot "${ROOTFSDIR}" /usr/bin/authselect select sssd --force >/dev/null 2>&1 || :
 echo -e "${green}${bold}Estableciendo ${PLYMOUTHEME} como tema para Plymouth...${reset}"
-chroot "${ROOTFS}" /usr/sbin/plymouth-set-default-theme ${PLYMOUTHEME}
+chroot "${ROOTFSDIR}" /usr/sbin/plymouth-set-default-theme ${PLYMOUTHEME}
 echo -e "${green}${bold}Regenerando initramfs...${reset}"
-chroot "${ROOTFS}" /sbin/dracut -f --add-drivers="btrfs binfmt_misc squashfs xfs zstd zstd_compress zstd_decompress"
+chroot "${ROOTFSDIR}" /sbin/dracut -f --add-drivers="btrfs binfmt_misc squashfs xfs zstd zstd_compress zstd_decompress"
 echo -e "${green}${bold}Creando configuración de grub2...${reset}"
-chroot "${ROOTFS}" /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
-chroot "${ROOTFS}" /usr/sbin/grub2-mkconfig -o /boot/efi/EFI/aldos/grub.cfg
+chroot "${ROOTFSDIR}" /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
+chroot "${ROOTFSDIR}" /usr/sbin/grub2-mkconfig -o /boot/efi/EFI/aldos/grub.cfg
 echo -e "${green}${bold}Generando machine-id...${reset}"
-chroot "${ROOTFS}" /bin/dbus-uuidgen > /var/lib/dbus/machine-id
+chroot "${ROOTFSDIR}" /bin/dbus-uuidgen > /var/lib/dbus/machine-id
 echo -e "${green}${bold}Eliminando contraseña de 'root'...${reset}"
-chroot "${ROOTFS}" /usr/bin/passwd -f -u root 2>&1 || :
+chroot "${ROOTFSDIR}" /usr/bin/passwd -f -u root 2>&1 || :
 # Definir que root puede acceder sin contraseña
-chroot "${ROOTFS}" /usr/bin/passwd -d root
+chroot "${ROOTFSDIR}" /usr/bin/passwd -d root
 # Crear grupos útiles para aplicaciones que pudiera instalar
 # posteriormente el usuario
 echo -e "${green}${bold}Generando grupos de usuarios adicionales...${reset}"
-chroot "${ROOTFS}" /usr/sbin/groupadd -r gamemode 2>&1 || :
-chroot "${ROOTFS}" /usr/sbin/groupadd -r seat 2>&1 || :
-chroot "${ROOTFS}" /usr/sbin/groupadd -r vboxusers 2>&1 || :
+chroot "${ROOTFSDIR}" /usr/sbin/groupadd -r gamemode 2>&1 || :
+chroot "${ROOTFSDIR}" /usr/sbin/groupadd -r seat 2>&1 || :
+chroot "${ROOTFSDIR}" /usr/sbin/groupadd -r vboxusers 2>&1 || :
 # Asegurar las pertenencias de estos directorios
-chroot "${ROOTFS}" /bin/chown polkitd /etc/polkit-1/rules.d > /dev/null 2>&1 ||:
-chroot "${ROOTFS}" /bin/chown polkitd /usr/share/polkit-1/rules.d  > /dev/null 2>&1 ||:
+chroot "${ROOTFSDIR}" /bin/chown polkitd /etc/polkit-1/rules.d > /dev/null 2>&1 ||:
+chroot "${ROOTFSDIR}" /bin/chown polkitd /usr/share/polkit-1/rules.d  > /dev/null 2>&1 ||:
 echo -e "${green}${bold}Ajustes menores...${reset}"
-chroot "${ROOTFS}" /usr/sbin/makewhatis -w > /dev/null 2>&1 ||:
+chroot "${ROOTFSDIR}" /usr/sbin/makewhatis -w > /dev/null 2>&1 ||:
 # Crear /etc/resolv.conf
-chroot "${ROOTFS}" /bin/touch /etc/resolv.conf
+chroot "${ROOTFSDIR}" /bin/touch /etc/resolv.conf
 echo -e "${green}${bold}Limpieza de base de datos RPM y YUM...${reset}"
 # Limpieza de yum
-chroot "${ROOTFS}" /bin/rm -fr /var/lib/yum/{groups,history,repos,rpmdb-indexes,uuid,yumdb}
-chroot "${ROOTFS}" /bin/mkdir -p /var/lib/yum/{history,yumdb}
+chroot "${ROOTFSDIR}" /bin/rm -fr /var/lib/yum/{groups,history,repos,rpmdb-indexes,uuid,yumdb}
+chroot "${ROOTFSDIR}" /bin/mkdir -p /var/lib/yum/{history,yumdb}
 # Limpieza de rpm
-chroot "${ROOTFS}" rm -f /var/lib/rpm/__db*
+chroot "${ROOTFSDIR}" rm -f /var/lib/rpm/__db*
 # Algunos de los +2000 paquete crea ésto tras instalarse. Eliminamos
 # mientras averiguo exactamente qué lo genera.
-chroot "${ROOTFS}" /bin/rm -f /1
+chroot "${ROOTFSDIR}" /bin/rm -f /1
 
 # Desactivar SELinux
 echo -e "${green}${bold}Desactivando SELinux...${reset}"
 sed -i \
     -e "s|SELINUX=.*|SELINUX=disabled|g" \
-    "${ROOTFS}/etc/sysconfig/selinux"
+    "${ROOTFSDIR}/etc/sysconfig/selinux"
 
 # Establecer idioma, mapa de teclado y tipografía para la terminal
 echo -e "${green}${bold}Configurando idioma y teclado...${reset}"
@@ -323,27 +325,27 @@ sed -i \
     -e "s|LANG=.*|LANG=\"${LIVECDLOCALE}\"|g" \
     -e "s|LC_ALL=.*|LC_ALL=\"${LIVECDLOCALE}\"|g" \
     -e "s|SYSFONT=.*|SYSFONT=\"${LIVECDSYSFONT}\"|g" \
-    "${ROOTFS}/etc/locale.conf" \
-    "${ROOTFS}/etc/environment"
+    "${ROOTFSDIR}/etc/locale.conf" \
+    "${ROOTFSDIR}/etc/environment"
 
 sed -i \
     -e "LAYOUT=.*|LAYOUT=\"${LIVECDKEYMAP}\"|g" \
     -e "KEYTABLE=.*|LAYOUT=\"${LIVECDKEYMAP}\"|g" \
     -e "KEYMAP=.*|KEYMAP=\"${LIVECDKEYMAP}\"|g" \
     -e "ONT=.*|ONT=\"${LIVECDSYSFONT}\"|g" \
-    "${ROOTFS}/etc/vconsole.conf"
+    "${ROOTFSDIR}/etc/vconsole.conf"
 
 sed -i \
     -e "s|value=\"es\"|value=\"${LIVECDKEYMAP}\"|g" \
     -e "s|Usuario Sistema Vivo|${COMMENTLIVEUSER}|g" \
     -e "s|Instalar ALDOS|${INSTALLMSG}|g" \
-    "${ROOTFS}/etc/rc.d/init.d/livesys"
+    "${ROOTFSDIR}/etc/rc.d/init.d/livesys"
 
 sed -i \
     -e "s|rd.locale.LANG=.*|rd.locale.LANG=${LIVECDLOCALE}|g" \
     -e "s|rd.vconsole.keymap=.*|rd.vconsole.keymap=${LIVECDKEYMAP}|g" \
     -e "s|rd.vconsole.font=.*|rd.vconsole.font=${LIVECDSYSFONT}|g" \
-    "${ROOTFS}/etc/default/grub"
+    "${ROOTFSDIR}/etc/default/grub"
 
 # Nombre de anfitrión predeterminado
 echo -e "${green}${bold}Estableciendo nombre de anfitrión del sistema...${reset}"
@@ -359,7 +361,7 @@ echo -e "127.0.0.1    ${LIVECDHOSTNAME}\n::1    ${LIVECDHOSTNAME}" >> /etc/hosts
 # Archivos necesarios para iniciar con BIOS.
 echo -e "${green}${bold}Copiando archivos necesarios para el arranque de la imagen viva...${reset}"
 cp -a \
-    "${ROOTFS}/boot/vmlinuz-*" \
+    "${ROOTFSDIR}/boot/vmlinuz-*" \
     "${ISOLINUXFS}/syslinux/vmlinuz0"
 
 pushd ${ISOLINUXFS}/syslinux || exit 1
@@ -367,15 +369,15 @@ pushd ${ISOLINUXFS}/syslinux || exit 1
 popd || exit 1
 
 cp -a \
-    "${ROOTFS}/boot/initramfs-*.img" \
+    "${ROOTFSDIR}/boot/initramfs-*.img" \
     "${ISOLINUXFS}/syslinux/initrd0.img"
 
 cp -a \
-    "${ROOTFS}/usr/share/syslinux/isolinux.bin" \
+    "${ROOTFSDIR}/usr/share/syslinux/isolinux.bin" \
     "${ISOLINUXFS}/isolinux/isolinux.bin"
 
 cp -a \
-    "${ROOTFS}/usr/share/syslinux/vesamenu.c32" \
+    "${ROOTFSDIR}/usr/share/syslinux/vesamenu.c32" \
     "${ISOLINUXFS}/isolinux/vesamenu.c32"
 
 cp -a \
@@ -384,40 +386,40 @@ cp -a \
 
 # TODO: Archivos requeridos para iniciar con EFI.
 cp -a \
-    "${ROOTFS}/boot/efi/EFI/aldos/grubx64.efi" \
+    "${ROOTFSDIR}/boot/efi/EFI/aldos/grubx64.efi" \
     "${ISOLINUXFS}/efi/boot/grubx64.efi"
 
 cp -a \
-    "${ROOTFS}/boot/efi/EFI/aldos/gcdx64.efi" \
+    "${ROOTFSDIR}/boot/efi/EFI/aldos/gcdx64.efi" \
     "${ISOLINUXFS}/efi/boot/gcdx64.efi"
 
 cp -a \
-    "${ROOTFS}/boot/efi/EFI/aldos/grubenv" \
+    "${ROOTFSDIR}/boot/efi/EFI/aldos/grubenv" \
     "${ISOLINUXFS}/efi/boot/grubenv"
 
 cp -a \
-    "${ROOTFS}/boot/efi/EFI/aldos/fonts/unicode.pf2" \
+    "${ROOTFSDIR}/boot/efi/EFI/aldos/fonts/unicode.pf2" \
     "${ISOLINUXFS}/efi/boot/unicode.pf2"
 
 cp -a \
-    "${ROOTFS}/boot/efi/mach_kernel" \
+    "${ROOTFSDIR}/boot/efi/mach_kernel" \
     "${ISOLINUXFS}/efi/mach_kernel"
 
 cp -a \
-    "${ROOTFS}/boot/grub/splash*gz" \
+    "${ROOTFSDIR}/boot/grub/splash*gz" \
     "${ISOLINUXFS}/boot/grub/"
 
 cp -a \
-    "${ROOTFS}/boot/grub2/fonts/unicode.pf2" \
+    "${ROOTFSDIR}/boot/grub2/fonts/unicode.pf2" \
     "${ISOLINUXFS}/boot/grub/"
 
 cp -a \
-    "${ROOTFS}/boot/grub2/themes" \
+    "${ROOTFSDIR}/boot/grub2/themes" \
     "${ISOLINUXFS}/boot/grub/"
 
 mkdir -p "${ISOLINUXFS}/efi/System/Library/CoreServices/"
 cp -a \
-    "${ROOTFS}/boot/efi/System/Library/CoreServices/SystemVersion.plist" \
+    "${ROOTFSDIR}/boot/efi/System/Library/CoreServices/SystemVersion.plist" \
     "${ISOLINUXFS}/efi/System/Library/CoreServices/SystemVersion.plist"
 
 cat << EOF > ${ISOLINUXFS}/boot/grub/grub.cfg
@@ -511,7 +513,7 @@ cp -a \
     "${ISOLINUXFS}/${READMEFILENAME}"
 
 echo -e "${green}${bold}Creando archivos de identidad del Sistema Operativo en imagen viva...${reset}"
-touch "${ISOLINUXFS}/aldos" && \
+touch "${ISOLINUXFS}/${DISTRONAMELOWERCASE}" && \
 mkdir "${ISOLINUXFS}/.disk" && \
 touch "${ISOLINUXFS}/.disk/base_installable" && \
 echo "full_cd/single" > "${ISOLINUXFS}/.disk/cd_type" && \
@@ -530,10 +532,42 @@ popd || exit 1
 sync
 
 # Desmontar sistemas de archivos
-echo -e "${green}${bold}Desmontando sistemas de archivos de imagen de disco...${reset}"
+echo -e "${green}${bold}Desmontando sistemas de archivos virtuales de imagen de disco...${reset}"
 umount "${ROOTFSDIR}/sys" && \
 umount "${ROOTFSDIR}/proc" && \
-umount "${ROOTFSDIR}/dev" && \
+umount "${ROOTFSDIR}/dev" &&
+umount "${ROOTFSDIR}" || \
+echo -e "${red}${bold}Algo salió mal...${reset}" || \
+exit 1
+
+if [ -e "${EXT4FSIMG}" ]; then
+# Verificar y poner en cero los bloques vacíos
+echo -e "${green}${bold}Verificando en 2 pasos sistema de archivos de imagen de disco...${reset}"
+fsck -fyD "${EXT4FSIMG}" > /dev/null && \
+zerofree "${EXT4FSIMG}" > /dev/null && \
+fsck -fyD "${EXT4FSIMG}" > /dev/null || \
+echo -e "${red}${bold}Algo salió mal...${reset}" || \
+exit 1
+fi
+
+echo -e "${green}${bold}Montando nuevamente sistema de archivos imagen de disco temporal...${reset}"
+mount -o loop -t ext4 "${EXT4FSIMG}" "${ROOTFSDIR}" || \
+echo -e "${red}${bold}Algo salió mal...${reset}" || \
+exit 1
+
+if [ -e "${ROOTFSDIR}" ]; then
+# Comprimir imagen de disco con squashfs y algoritmo xz.
+echo -e "${green}${bold}Creando imagen de disco comprimida con Squashfs...${reset}"
+mksquashfs \
+    "${ROOTFSDIR}" \
+    "${SQUASHFSIMG}" \
+    -comp xz \
+    -b 4M
+else
+exit 1
+fi
+
+echo -e "${green}${bold}Desmontando sistemas de archivos de imagen de disco...${reset}"
 umount "${ROOTFSDIR}" || \
 echo -e "${red}${bold}Algo salió mal...${reset}" || \
 exit 1
@@ -546,28 +580,6 @@ echo -e "${green}${bold}Reactivando montaje automático de unidades de almacenam
 rm -f /lib/udev/rules.d/90-udisks-inhibit.rules
 udevadm control --reload
 udevadm trigger --subsystem-match=block
-
-if [ -e "${EXT4FSIMG}" ]; then
-# Verificar y poner en cero los bloques vacíos
-echo -e "${green}${bold}Verificando sistema de archivos de imagen de disco...${reset}"
-fsck -fyD "${EXT4FSIMG}" > /dev/null && \
-zerofree "${EXT4FSIMG}" > /dev/null && \
-fsck -fyD "${EXT4FSIMG}" > /dev/null || \
-echo -e "${red}${bold}Algo salió mal...${reset}" || \
-exit 1
-fi
-
-if [ -e "${ROOTFS}" ]; then
-# Comprimir imagen de disco con squashfs y algoritmo xz.
-echo -e "${green}${bold}Creando imagen de disco comprimida con Squashfs...${reset}"
-mksquashfs \
-    "${ROOTFS}" \
-    "${SQUASHFSIMG}" \
-    -comp xz \
-    -b 4M
-else
-exit 1
-fi
 
 echo -e "${green}${bold}Creando imagen ISO final...${reset}"
 if [ -e "${SQUASHFSIMG}" ]; then
