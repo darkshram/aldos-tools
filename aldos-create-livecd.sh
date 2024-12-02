@@ -30,45 +30,45 @@
 ######################################################################
 ######################################################################
 
-PROYECTDIR="/home/jbarrios/Proyectos/ALDOS-LiveCD"
-YUMCONFIG="file://${PROYECTDIR}/yum.conf"
-YUMREPO="file:///var/www/LIVECD/x86_64/"
+# Procurar sea un nombre conciso y corto
+DISTRONAME="ALDOS"
+# Versión del lanzamiento
+DISTROVERSION="1.4.19"
 PUBLISHER="Joel Barrios"
 RELEASENOTESURL="https://www.alcancelibre.org/noticias/disponible-aldos-1-4-19"
-LIVECDTMPDIR="/tmp/aldos-livecd"
-ISOLINUXFS="${LIVECDTMPDIR}/aldos-isolinuxfs"
-ROOTFSDIR="${LIVECDTMPDIR}/aldos-rootfs/livecd"
-EXT4FSIMG="${LIVECDTMPDIR}/aldos-rootfs/aldos-ext4fs.img"
-SQUASHFSIMG="${ISOLINUXFS}/LiveOS/squashfs.img"
-FECHA="$(date +%Y%m%d)"
-LIVECDHOSTNAME="aldos-livecd"
-DISTRONAME="ALDOS"
-DISTRONAMELOWERCASE="$(echo ${DISTRONAME} | tr '[:upper:]' '[:lower:]')"
-LIVECDLABEL="ALDOS64${FECHA}"
-LIVECDWELCOME="Bienvenido a ${LIVECDTITLE}!"
+# Opciones de localización, mapa de teclado, tipografía para la
+# consola, tema para Plymouth y nombre de anfitrión
 LIVECDLOCALE="es_MX.UTF-8"
 LIVECDKEYMAP="es"
 LIVECDSYSFONT="latarcyrheb-sun16"
-LIVECDTITLE="ALDOS 1.4.19 ${FECHA}"
-LIVECDFILENAME="ALDOS-1.4.19-${FECHA}"
+PLYMOUTHEME="spinfinity"
+LIVECDHOSTNAME="aldos-livecd"
+
+# Cadenas para traducir o personalizar
+LIVECDWELCOME="Bienvenido a ${LIVECDTITLE}!"
 LABELBOOT="Iniciar sistema vivo/Instalar sistema"
 LABELBASIC="Iniciar modo seguro (GPU bajos recursos)"
 LABELCHECK="Modo verificar e Iniciar"
 LABELLOCAL="Iniciar desde unidad local"
 COMMENTLIVEUSER="Usuario Sistema Vivo"
-INSTALLMSG="Instalar ALDOS"
+INSTALLMSG="Instalar ${DISTRONAME}"
+
+# PROYECTDIR debe ser una ruta absoluta
+PROYECTDIR="/home/jbarrios/Proyectos/${DISTRONAME}-LiveCD"
+# Archivos LEEME, Licencia, lista de paquetes e imagen a continuación
+# deben estar dentro de la ruta definida en PROYECTDIR
 READMEFILENAME="LEEME.txt"
 LICENSEFILENAME="Licencia.txt"
 PACKAGELISTFILENAME="ALDOS-package-list.txt"
-PLYMOUTHEME="spinfinity"
-PACKAGELIST="${PROYECTDIR}/${PACKAGELISTFILENAME}"
-LICENSEFILE="${PROYECTDIR}/${LICENSEFILENAME}"
-READMEFILE="${PROYECTDIR}/${READMEFILENAME}"
 # Imagen que se mostrará en pantalla en el gestor de arranque de la
 # imagen viva. Se prefiere sea en formato JPG para procurar
 # compatibilidad.
 SPLASHIMAGEFILENAME="syslinux-vesa-splash.jpg"
-SPLASHIMAGE="${PROYECTDIR}/${SPLASHIMAGEFILENAME}"
+
+# Archivo de configuración de YUM
+YUMCONFIG="file://${PROYECTDIR}/yum.conf"
+# Puede ser un URL
+YUMREPO="file:///var/www/LIVECD/x86_64/"
 if [ ! -e "${YUMCONFIG}" ]; then
 # Configuración de YUM.
 cat << EOF > "${YUMCONFIG}"
@@ -85,6 +85,14 @@ plugins=1
 installonly_limit=3
 clean_requirements_on_remove=1
 
+######################################################################
+######################################################################
+################                                      ################
+################  Modificar a partir de aquí.         ################
+################                                      ################
+######################################################################
+######################################################################
+
 [ALDOS-livecd]
 name=ALDOS LiveCD 14 - \$basearch
 baseurl=${YUMREPO}
@@ -94,6 +102,38 @@ gpgcheck=1
 
 EOF
 fi
+
+# Ruta donde se realizará todo el trabajo de crear una imagen de
+# disco, se montará como si fuera una partición, se instalará los
+# paquetes y finalmente se comprimirá con Squashfs.
+# Se recomienda sea un directorio montando un dispositivo tmpfs con
+# al menos 12 MB libres.
+LIVECDTMPDIR="/tmp/${DISTRONAMELOWERCASE}-livecd"
+
+# DISTRONAMELOWERCASE Convierte a minúsculas el valor de DISTRONAME
+# Sugiero evitar modificar el valor actual de esta variable.
+DISTRONAMELOWERCASE="$(echo ${DISTRONAME} | tr '[:upper:]' '[:lower:]')"
+# Convierte la fecha a formato YYYYMMDD
+FECHA="$(date +%Y%m%d)"
+
+######################################################################
+######################################################################
+############                                              ############
+############ Variables que se sugiere se evite modificar. ############
+############                                              ############
+######################################################################
+######################################################################
+ISOLINUXFS="${LIVECDTMPDIR}/${DISTRONAMELOWERCASE}-isolinuxfs"
+ROOTFSDIR="${LIVECDTMPDIR}/${DISTRONAMELOWERCASE}-rootfs/livecd"
+EXT4FSIMG="${LIVECDTMPDIR}/${DISTRONAMELOWERCASE}-rootfs/${DISTRONAMELOWERCASE}-ext4fs.img"
+SQUASHFSIMG="${ISOLINUXFS}/LiveOS/squashfs.img"
+LIVECDLABEL="${DISTRONAME}64${FECHA}"
+LIVECDTITLE="${DISTRONAME} ${DISTROVERSION} ${FECHA}"
+LIVECDFILENAME="${DISTRONAME}-${DISTROVERSION}-${FECHA}"
+PACKAGELIST="${PROYECTDIR}/${PACKAGELISTFILENAME}"
+LICENSEFILE="${PROYECTDIR}/${LICENSEFILENAME}"
+READMEFILE="${PROYECTDIR}/${READMEFILENAME}"
+SPLASHIMAGE="${PROYECTDIR}/${SPLASHIMAGEFILENAME}"
 
 ######################################################################
 ######################################################################
@@ -151,10 +191,10 @@ echo -e "${green}${bold}Iniciando proceso...${reset}"
 
 # Generar estructura de directorios del LiveCD
 echo -e "${green}${bold}Generando estructura de directorios de Imagen Viva...${reset}"
-mkdir -p ${ISOLINUXFS}/{boot/grub/x86_64-efi,efi/boot,isolinux,LiveOS}
+mkdir -p "${ISOLINUXFS}/{boot/grub/x86_64-efi,efi/boot,isolinux,LiveOS}"
 # Generar directorio donde se va a instalar el sistema operativo que
 # se utilizará posteriormente para el LiveCD
-mkdir -p ${ROOTFSDIR}
+mkdir -p "${ROOTFSDIR}"
 
 # Crear imagen de disco, darle formato y verificar ésta.
 # Se desactiva temporalmente la detección de nuevas unidades de
@@ -375,7 +415,7 @@ cp -a \
     "${ROOTFSDIR}/boot/vmlinuz-*" \
     "${ISOLINUXFS}/syslinux/vmlinuz0"
 
-pushd ${ISOLINUXFS}/syslinux || exit 1
+pushd "${ISOLINUXFS}/syslinux" || exit 1
     sha512hmac vmlinuz0 > .vmlinuz0.hmac
 popd || exit 1
 
@@ -433,7 +473,7 @@ cp -a \
     "${ROOTFSDIR}/boot/efi/System/Library/CoreServices/SystemVersion.plist" \
     "${ISOLINUXFS}/efi/System/Library/CoreServices/SystemVersion.plist"
 
-cat << EOF > ${ISOLINUXFS}/boot/grub/grub.cfg
+cat << EOF > "${ISOLINUXFS}/boot/grub/grub.cfg"
 if loadfont \$prefix/unicode.pf2 ; then
   set gfxmode=1024x768x32
   insmod efi_gop
@@ -476,7 +516,7 @@ cp -a \
 
 echo -e "${green}${bold}Creando configuración de gestor de arranque SysLinux...${reset}"
 # Crear el menú de SysLinux (gestor de arranque del LiveCD)
-cat << EOF > "${ISOLINUXFS}"/isolinux/isolinux.cfg
+cat << EOF > "${ISOLINUXFS}/isolinux/isolinux.cfg"
 default vesamenu.c32
 timeout 500
 
@@ -581,7 +621,7 @@ fi
 if [ -e "${SQUASHFSIMG}" ]; then
 # Calcular tamaño de la imagen de disco comprimida
 MAXSIZE="2147483648"
-FILESIZE="$(stat -c%s ${SQUASHFSIMG})"
+FILESIZE="$(stat -c%s "${SQUASHFSIMG}")"
 
 echo -e "${green}${bold}Concluido. Tamaño de ${SQUASHFSIMG} es ${FILESIZE} bytes...${reset}"
 
