@@ -291,7 +291,7 @@ chroot "${ROOTFSDIR}" /usr/bin/authselect select sssd --force >/dev/null 2>&1 ||
 echo -e "${green}${bold}Estableciendo ${PLYMOUTHEME} como tema para Plymouth...${reset}"
 chroot "${ROOTFSDIR}" /usr/sbin/plymouth-set-default-theme ${PLYMOUTHEME}
 echo -e "${green}${bold}Regenerando initramfs...${reset}"
-chroot "${ROOTFSDIR}" /sbin/dracut -f --add-drivers="btrfs binfmt_misc squashfs xfs zstd zstd_compress zstd_decompress"
+chroot "${ROOTFSDIR}" /sbin/dracut -f --add-drivers="btrfs binfmt_misc squashfs udf xfs zstd zstd_compress zstd_decompress"
 echo -e "${green}${bold}Creando configuración de grub2...${reset}"
 chroot "${ROOTFSDIR}" /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
 chroot "${ROOTFSDIR}" /usr/sbin/grub2-mkconfig -o /boot/efi/EFI/aldos/grub.cfg
