@@ -1,6 +1,7 @@
 #!/bin/bash
 
 FECHA="$(date +%Y%m%d)"
+export FECHA
 
 pushd /home/jbarrios/Proyectos/ALDOS-LiveCD/aldos-liveimg/ || exit 1
 fsck.ext4 -p   squashfs/LiveOS/ext3fs.img && \
@@ -31,6 +32,7 @@ rm -fr rootfs/var/lib/yum/{groups,history,repos,rpmdb-indexes,uuid,yumdb}
 rm -fr rootfs/var/cache/yum/*
 rm -f  rootfs/var/lib/rpm/__db*
 mkdir -p rootfs/var/lib/yum/{history,yumdb}
+echo > rootfs/root/.bash_history
 
 sync && \
 umount rootfs/sys && \
@@ -86,6 +88,8 @@ pushd /home/jbarrios/Proyectos/ALDOS-LiveCD/aldos-liveimg/ || exit 1
 chown -R jbarrios:jbarrios isofs/
 mkdir -p ISOS
 
+FECHA="$(date +%Y%m%d)"
+export FECHA
 rm -f ISOS/ALDOS-1.4.19-x86_64-${FECHA}.iso && \
 xorriso -as mkisofs -graft-points \
   -V 'ALDOS-1-4-19' \
