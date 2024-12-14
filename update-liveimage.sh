@@ -4,7 +4,6 @@ FECHA="$(date +%Y%m%d)"
 export FECHA
 
 pushd /home/jbarrios/Proyectos/ALDOS-LiveCD/aldos-liveimg/ || exit 1
-fsck.ext4 -p   squashfs/LiveOS/ext3fs.img && \
 fsck.ext4 -fyD squashfs/LiveOS/ext3fs.img && \
 fsck.ext4 -p   squashfs/LiveOS/ext3fs.img && \
 mount -o loop -t ext4 squashfs/LiveOS/ext3fs.img rootfs && \
@@ -16,6 +15,7 @@ cp -a /home/jbarrios/Proyectos/ALDOS-LiveCD/ALDOS-livecd.repo rootfs/etc/yum.rep
 yum -y --installroot="$(pwd)/rootfs/" --disablerepo=* --enablerepo=ALDOS-livecd update
 # yum -y --installroot="$(pwd)/rootfs/" --disablerepo=* --enablerepo=ALDOS-livecd install kmod-VirtualBox
 # yum -y --installroot="$(pwd)/rootfs/" --disablerepo=* --enablerepo=ALDOS-livecd remove xxxx
+# find /usr/share/locale/ -type f |xargs rpm -qf |grep "no es propiedad" |cut -d " " -f 3 |xargs rm -fv
 
 for GROUP in core base printing hardware-support x11 xfce-desktop xfce-desktop xfce-apps xfce-extra-plugins sound-and-video x11
 do
@@ -38,12 +38,14 @@ sync && \
 umount rootfs/sys && \
 umount rootfs/proc && \
 umount rootfs/dev && \
-umount rootfs || exit 1
+umount rootfs && \
+sync || exit 1
 
 # blockdev -q --getsz /dev/loop0 || exit 1
 zerofree  -v   squashfs/LiveOS/ext3fs.img && \
 fsck.ext4 -fyD squashfs/LiveOS/ext3fs.img && \
-fsck.ext4 -p   squashfs/LiveOS/ext3fs.img || exit 1
+fsck.ext4 -p   squashfs/LiveOS/ext3fs.img && \
+sync || exit 1
 
 # losetup -f
 # losetup /dev/loop0 squashfs/LiveOS/ext3fs.img -r
@@ -56,9 +58,9 @@ rm -f isofs/LiveOS/squashfs.img && \
 mksquashfs \
     squashfs \
     isofs/LiveOS/squashfs.img \
-    -quiet -comp xz -b 16384 -Xdict-size 100% || exit 1
-
-chown -R jbarrios:jbarrios isofs/ squashfs/
+    -quiet -comp xz -b 16384 -Xdict-size 100% && \
+sync && \
+chown -R jbarrios:jbarrios isofs/ squashfs/ || exit 1
 
 popd || exit 1
 
