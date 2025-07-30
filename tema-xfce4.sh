@@ -338,40 +338,40 @@ fi
 function Cloudy() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme cloudy-gtk-theme papirus-icon-theme || \
+        nordic-cursor-theme cloudy-gtk-theme tela-icon-theme-nord || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme cloudy-gtk-theme papirus-icon-theme
+        nordic-cursor-theme cloudy-gtk-theme tela-icon-theme-nord
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme cloudy-gtk-theme papirus-icon-theme && \
+        nordic-cursor-theme cloudy-gtk-theme tela-icon-theme-nord && \
 if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Cloudy && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Cloudy && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
-        gsettings set org.cinnamon.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.cinnamon.desktop.interface gtk-theme "Cloudy" && \
-        gsettings set org.cinnamon.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "Cloudy" && \
         gsettings set org.cinnamon.theme name "Arc"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
-        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Cloudy" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Cloudy"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
-        gsettings set org.mate.interface icon-theme "Papirus" && \
+        gsettings set org.mate.interface icon-theme "Tela-nord" && \
         gsettings set org.mate.interface gtk-theme "Cloudy"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
-        gsettings set org.mate.peripherals-mouse cursor-theme "Adwaita"
+        gsettings set org.mate.peripherals-mouse cursor-theme "Nordic-cursors"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
         gsettings set org.mate.Marco.general theme "Cloudy"
