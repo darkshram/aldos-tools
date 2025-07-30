@@ -358,7 +358,7 @@ if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]
         gsettings set org.cinnamon.desktop.interface gtk-theme "Cloudy" && \
         gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "Cloudy" && \
-        gsettings set org.cinnamon.theme name "Arc"
+        gsettings set org.cinnamon.theme name "Cloudy"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
