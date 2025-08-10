@@ -1038,40 +1038,40 @@ fi
 function Andromeda() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        andromeda-gtk-theme zafiro-icon-theme adwaita-cursor-theme || \
+        andromeda-gtk-theme tela-icon-theme-nord nordzy-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        andromeda-gtk-theme zafiro-icon-theme adwaita-cursor-theme
+        andromeda-gtk-theme tela-icon-theme-nord nordzy-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        andromeda-gtk-theme zafiro-icon-theme adwaita-cursor-theme && \
+        andromeda-gtk-theme tela-icon-theme-nord nordzy-cursor-theme && \
 if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Andromeda && \
-        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons && \
+        xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordzy-cursors && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Andromeda  && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
-        gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.gnome.desktop.interface cursor-theme "Nordzy-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Andromeda" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Andromeda"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
-        gsettings set org.cinnamon.desktop.interface cursor-theme "Adwaita" && \
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Nordzy-cursors" && \
         gsettings set org.cinnamon.desktop.interface gtk-theme "Andromeda" && \
-        gsettings set org.cinnamon.desktop.interface icon-theme "Zafiro-icons" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "Andromeda" && \
         gsettings set org.cinnamon.theme name "Andromeda"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
-        gsettings set org.mate.interface icon-theme "Zafiro-icons" && \
-        gsettings set org.mate.interface gtk-theme "Andromeda"
+        gsettings set org.mate.interface icon-theme "Tela-nord" && \
+        gsettings set org.mate.interface gtk-theme "Nordzy-cursors"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
-        gsettings set org.mate.peripherals-mouse cursor-theme "Adwaita"
+        gsettings set org.mate.peripherals-mouse cursor-theme "Nordzy-cursors"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
         gsettings set org.mate.Marco.general theme "Andromeda"
