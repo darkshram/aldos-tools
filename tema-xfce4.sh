@@ -1577,17 +1577,17 @@ fi
 function Nordic() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme nordic-cursor-theme || \
+        numix-cursor-theme nordic-gtk-theme tela-icon-theme-nord nordic-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme nordic-cursor-theme
+        numix-cursor-theme nordic-gtk-theme tela-icon-theme-nord nordic-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-gtk-theme zafiro-icon-theme nordic-cursor-theme && \
+        numix-cursor-theme nordic-gtk-theme tela-icon-theme-nord nordic-cursor-theme && \
 if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Nordic && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nordic && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
@@ -1595,8 +1595,25 @@ fi
 if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Nordic" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Nordic"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Nordic-cursors" && \
+        gsettings set org.cinnamon.desktop.interface gtk-theme "Nordic" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord" && \
+        gsettings set org.cinnamon.desktop.wm.preferences theme "Nordic" && \
+        gsettings set org.cinnamon.theme name "Nordic"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Tela-nord" && \
+        gsettings set org.mate.interface gtk-theme "Nordic"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Nordic-cursors"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "Nordic"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
@@ -1609,17 +1626,17 @@ fi
 function NordicPolar() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordic-cursor-theme || \
+        numix-cursor-theme nordic-polar-gtk-theme tela-icon-theme-nord nordic-cursor-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordic-cursor-theme
+        numix-cursor-theme nordic-polar-gtk-theme tela-icon-theme-nord nordic-cursor-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        numix-cursor-theme nordic-polar-gtk-theme zafiro-icon-theme nordic-cursor-theme && \
+        numix-cursor-theme nordic-polar-gtk-theme tela-icon-theme-nord nordic-cursor-theme && \
 if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Nordic-Polar && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Nordic-cursors && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Zafiro-icons-Light && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela-nord && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Nordic-Polar && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
@@ -1627,8 +1644,25 @@ fi
 if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Nordic-cursors" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Nordic-Polar" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Zafiro-icons-Light" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela-nord" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Nordic-Polar"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
+        gsettings set org.cinnamon.desktop.interface cursor-theme "Nordic-cursors" && \
+        gsettings set org.cinnamon.desktop.interface gtk-theme "Nordic-Polar" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela-nord" && \
+        gsettings set org.cinnamon.desktop.wm.preferences theme "Nordic-Polar" && \
+        gsettings set org.cinnamon.theme name "Nordic-Polar"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
+        gsettings set org.mate.interface icon-theme "Tela-nord" && \
+        gsettings set org.mate.interface gtk-theme "Nordic-Polar"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
+        gsettings set org.mate.peripherals-mouse cursor-theme "Nordic-cursors"
+fi
+if [ -e /usr/share/glib-2.0/schemas/org.mate.marco.gschema.xml ]; then
+        gsettings set org.mate.Marco.general theme "Nordic-Polar"
 fi
         echo -n -e "${white}${bold}Corrigiendo iconos de algunas aplicaciones con hardcode-tray..." && \
         sudo hardcode-tray --apply > /dev/null && \
