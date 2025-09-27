@@ -240,17 +240,17 @@ fi
 function BlueSky() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme bluesky-gtk-theme papirus-icon-theme || \
+        adwaita-cursor-theme bluesky-gtk-theme tela-icon-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme bluesky-gtk-theme papirus-icon-theme
+        adwaita-cursor-theme bluesky-gtk-theme tela-icon-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme bluesky-gtk-theme papirus-icon-theme && \
+        adwaita-cursor-theme bluesky-gtk-theme tela-icon-theme && \
 if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s BlueSky && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s BlueSky && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
@@ -258,18 +258,18 @@ fi
 if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
         gsettings set org.cinnamon.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.cinnamon.desktop.interface gtk-theme "BlueSky" && \
-        gsettings set org.cinnamon.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "BlueSky" && \
         gsettings set org.cinnamon.theme name "BlueSky"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "BlueSky" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela" && \
         gsettings set org.gnome.desktop.wm.preferences theme "BlueSky"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
-        gsettings set org.mate.interface icon-theme "Papirus" && \
+        gsettings set org.mate.interface icon-theme "Tela" && \
         gsettings set org.mate.interface gtk-theme "BlueSky"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
@@ -387,17 +387,17 @@ fi
 function Bubble() {
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme bubble-gtk-theme papirus-icon-theme || \
+        adwaita-cursor-theme bubble-gtk-theme tela-icon-theme || \
         pkcon -y install \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme bubble-gtk-theme papirus-icon-theme
+        adwaita-cursor-theme bubble-gtk-theme tela-icon-theme
     rpm -q --quiet \
         hardcode-tray sound-theme-smooth \
-        adwaita-cursor-theme bubble-gtk-theme papirus-icon-theme && \
+        adwaita-cursor-theme bubble-gtk-theme tela-icon-theme && \
 if [ -e /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
         xfconf-query -t string -c xfwm4 -p /general/theme -s Bubble && \
         xfconf-query -t string -c xsettings -p /Gtk/CursorThemeName -s Adwaita && \
-        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Papirus && \
+        xfconf-query -t string -c xsettings -p /Net/IconThemeName -s Tela && \
         xfconf-query -t string -c xsettings -p /Net/ThemeName -s Bubble && \
         xfconf-query -t string -c xsettings -p /Net/SoundThemeName -s Smooth && \
         xfconf-query -n -t string -c thunar -p /last-side-pane -s ThunarShortcutsPane
@@ -405,18 +405,18 @@ fi
 if [ -e /usr/share/glib-2.0/schemas/org.cinnamon.desktop.interface.gschema.xml ]; then
         gsettings set org.cinnamon.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.cinnamon.desktop.interface gtk-theme "Bubble" && \
-        gsettings set org.cinnamon.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.cinnamon.desktop.interface icon-theme "Tela" && \
         gsettings set org.cinnamon.desktop.wm.preferences theme "Bubble" && \
         gsettings set org.cinnamon.theme name "Bubble"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.gnome.desktop.interface.gschema.xml ]; then
         gsettings set org.gnome.desktop.interface cursor-theme "Adwaita" && \
         gsettings set org.gnome.desktop.interface gtk-theme "Bubble" && \
-        gsettings set org.gnome.desktop.interface icon-theme "Papirus" && \
+        gsettings set org.gnome.desktop.interface icon-theme "Tela" && \
         gsettings set org.gnome.desktop.wm.preferences theme "Bubble"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.mate.interface.gschema.xml ]; then
-        gsettings set org.mate.interface icon-theme "Papirus" && \
+        gsettings set org.mate.interface icon-theme "Tela" && \
         gsettings set org.mate.interface gtk-theme "Bubble"
 fi
 if [ -e /usr/share/glib-2.0/schemas/org.mate.peripherals-mouse.gschema.xml ]; then
