@@ -8,7 +8,7 @@
 #
 # Autor: Joel Barrios Dueñas
 # Proyecto: ALDOS - Alcance Libre
-# Licencia: GPL v3 o posterior
+# Licencia: GPL-3.0-or-later
 # ============================================================================
 
 # ----------------------------------------------------------------------------
@@ -159,12 +159,12 @@ validar_dependencias() {
     done
     
     # Dependencia crítica: tema-xfce4.sh
-    if [ ! -f "$TEMA_XFCE4_RUTA" ]; then
-        echo "[ERROR] No se encuentra: $TEMA_XFCE4_SH"
-        echo "[INFO] Descárgalo de: https://github.com/darkshram/aldos-tools/blob/main/$TEMA_XFCE4_SH"
+    if [ ! -f "${TEMA_XFCE4_RUTA}" ]; then
+        echo "[ERROR] No se encuentra: ${TEMA_XFCE4_SH}"
+        echo "[INFO] Descárgalo de: https://github.com/darkshram/aldos-tools/blob/main/${TEMA_XFCE4_SH}"
         exit 1
     else
-        echo "[INFO] $TEMA_XFCE4_SH encontrado."
+        echo "[INFO] ${TEMA_XFCE4_SH} encontrado."
     fi
     
     # Verificar si hay faltantes
@@ -249,10 +249,10 @@ aplicar_tema() {
     local tema="$1"
     
     echo "[INFO] Aplicando tema: $tema"
-    if [ -f "$TEMA_XFCE4_RUTA" ]; then
-        bash "$TEMA_XFCE4_RUTA" "$tema"
+    if [ -f "${TEMA_XFCE4_RUTA}" ]; then
+        bash "${TEMA_XFCE4_RUTA}" "$tema"
     else
-        echo "[ERROR] No se puede encontrar: $TEMA_XFCE4_SH"
+        echo "[ERROR] No se puede encontrar: ${TEMA_XFCE4_SH}"
         exit 1
     fi
 }
@@ -334,13 +334,13 @@ grabar_ffmpeg() {
     local archivo_salida="demo-temas-${timestamp}.mp4"
     
     echo "[INFO] Iniciando grabación con FFmpeg..."
-    echo "[INFO] El video se guardará como: $archivo_salida"
+    echo "[INFO] El video se guardará como: ${archivo_salida}"
     echo "[INFO] Presiona 'q' en la terminal de FFmpeg para finalizar la grabación."
     echo ""
     
     ffmpeg -f x11grab -video_size "${ancho}x${alto}" -framerate 30 -i :0.0 \
            -vcodec libx264 -preset fast -pix_fmt yuv420p \
-           "$archivo_salida" 2>/dev/null &
+           "${archivo_salida}" 2>/dev/null &
     
     FFMPEG_PID=$!
     echo "[INFO] FFmpeg iniciado (PID: $FFMPEG_PID)"
