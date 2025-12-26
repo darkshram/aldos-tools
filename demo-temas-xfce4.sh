@@ -21,12 +21,13 @@ set -u  # Tratar variables no definidas como errores
 TIEMPO_OBSERVACION=4.0
 TIEMPO_OSD_TRANSICION=5.0
 
-# Lista de temas GTK+ a demostrar
+# Lista de temas GTK+ a demostrar, con la nomenclatura usada en tema-xfce4.sh
 TEMAS_GTK=(
     "Adwaita"
-    "Adwaita-dark"
-    "HighContrast"
-    "HighContrastInverse"
+    "Nordic"
+    "NordicPolar"
+    "Dracula"
+    "ALDOS"
 )
 
 # Aplicaciones de demostración (se abren y cierran para mostrar el tema)
@@ -295,16 +296,16 @@ prueba_osd() {
     obtener_resolucion
     
     echo "[INFO] 1. OSD de transición (cambio de tema)..."
-    mostrar_osd_transicion "Adwaita" "Adwaita-dark"
+    mostrar_osd_transicion "NordicPolar" "Nordic"
     
     echo "[INFO] 2. OSD de aplicación (Acerca de Xfce)..."
-    mostrar_osd_aplicacion "Acerca de Xfce" "Adwaita"
+    mostrar_osd_aplicacion "Acerca de Xfce" "NordicPolar"
     
     echo "[INFO] 3. OSD de aplicación (Thunar)..."
-    mostrar_osd_aplicacion "Thunar" "Adwaita-dark"
+    mostrar_osd_aplicacion "Thunar" "Nordic"
     
     echo "[INFO] 4. OSD de aplicación (Mousepad)..."
-    mostrar_osd_aplicacion "Mousepad" "Adwaita"
+    mostrar_osd_aplicacion "Mousepad" "NordicPolar"
     
     echo "[INFO] Prueba OSD completada. Si viste todos los mensajes EN SECUENCIA, el sistema está funcionando."
     echo ""
