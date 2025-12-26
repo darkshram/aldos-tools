@@ -80,6 +80,34 @@ obtener_resolucion() {
     echo "$resolucion_ajustada"
 }
 
+# Función para identificar la ventana desde la que se ejecuta este script
+obtener_ventana_control() {
+    local pid_actual="$$"
+    local max_nivel=5
+    local nivel=0
+    local ventana=""
+    local nombre_proceso=""
+
+    info "Buscando ventana de control (PID actual: $$)..."
+    
+    while [[ $nivel -lt $max_nivel ]] && [[ -n "$pid_actual" ]] && [[ "$pid_actual" != "1" ]]; do
+        # Buscar ventanas asociadas a este PID
+        ventana=$(xdotool search --pid "$pid_actual" 2>/dev/null | head -1)
+        if [[ -n "$ventana" ]]; then
+            nombre_proceso=$(ps -o comm= -p "$pid_actual" 2>/dev/null | head -1)
+            info "  Encontrada ventana para PID $pid_actual ($nombre_proceso): $ventana"
+            echo "$ventana"
+            return 0
+        fi
+        # Subir un nivel en la jerarquía de procesos
+        pid_actual=$(ps -o ppid= -p "$pid_actual" 2>/dev/null | tr -d ' ')
+        nivel=$((nivel + 1))
+    done
+    
+    info "  No se pudo identificar ventana de control. Se cerrarán todas las ventanas coincidentes."
+    echo ""
+}
+
 # Función para precargar GTK3 y reducir latencia al lanzar aplicaciones
 precargar_gtk3() {
     if command -v gtk3-demo >/dev/null 2>&1; then
@@ -160,28 +188,30 @@ restaurar_composicion() {
     fi
 }
 
-# Función para cerrar TODAS las ventanas de aplicaciones de demostración (VERSIÓN SEGURA)
+# Función para cerrar TODAS las ventanas de aplicaciones de demostración (VERSIÓN MEJORADA)
 cerrar_aplicaciones() {
     local tema="$1"
-    local terminal_actual="$2"  # ID de la terminal de ejecución a excluir
-    
     info "Cerrando aplicaciones del tema $tema..."
+    
+    # Identificar ventana de control (desde donde se ejecuta este script)
+    local ventana_control
+    ventana_control=$(obtener_ventana_control)
     
     # Pausa crucial para que las ventanas estén listas
     espera_aleatoria 0.8 1.2
     
-    # 1. Cerrar terminales de demostración (excluyendo la terminal actual)
+    # 1. Cerrar terminales de demostración (excluyendo la ventana de control si se identificó)
     local ventanas_terminal
     ventanas_terminal=$(xdotool search --onlyvisible --class "Xfce4-terminal" --name "Terminal - Tema $tema" 2>/dev/null || true)
     if [[ -n "$ventanas_terminal" ]]; then
         while IFS= read -r ventana_id; do
-            if [[ "$ventana_id" == "$terminal_actual" ]]; then
-                info "  Saltando terminal de ejecución (ID: $ventana_id)."
+            if [[ -n "$ventana_control" ]] && [[ "$ventana_id" == "$ventana_control" ]]; then
+                info "  Saltando ventana de control del guión (ID: $ventana_id)."
                 continue
             fi
             xdotool windowactivate --sync "$ventana_id"
             espera_aleatoria 0.1 0.3
-            xdotool key --clearmodifiers Alt+F4
+            xdotool windowclose "$ventana_id"
             info "  Ventana 'Terminal - Tema $tema' cerrada (ID: $ventana_id)."
             espera_aleatoria 0.1 0.2
         done <<< "$ventanas_terminal"
@@ -194,7 +224,7 @@ cerrar_aplicaciones() {
         while IFS= read -r ventana_id; do
             xdotool windowactivate --sync "$ventana_id"
             espera_aleatoria 0.1 0.3
-            xdotool key --clearmodifiers Alt+F4
+            xdotool windowclose "$ventana_id"
             info "  Ventana 'Thunar' cerrada (ID: $ventana_id)."
             espera_aleatoria 0.1 0.2
         done <<< "$ventanas_thunar"
@@ -207,7 +237,7 @@ cerrar_aplicaciones() {
         while IFS= read -r ventana_id; do
             xdotool windowactivate --sync "$ventana_id"
             espera_aleatoria 0.1 0.3
-            xdotool key --clearmodifiers Alt+F4
+            xdotool windowclose "$ventana_id"
             info "  Ventana 'Mousepad' cerrada (ID: $ventana_id)."
             espera_aleatoria 0.1 0.2
         done <<< "$ventanas_mousepad"
@@ -353,12 +383,11 @@ detener_grabacion_ssr() {
 # Cambiar tema y mostrar aplicaciones
 demo_tema() {
     local tema="$1"
-    local terminal_actual="$2"  # Recibir ID de terminal de ejecución
     info "Cambiando al tema: $tema"
     
     # Primero cerrar cualquier ventana residual del tema anterior
     if [[ -n "${tema_anterior:-}" ]]; then
-        cerrar_aplicaciones "$tema_anterior" "$terminal_actual"
+        cerrar_aplicaciones "$tema_anterior"
     fi
     
     # Aplicar el nuevo tema
@@ -463,15 +492,6 @@ main() {
     
     validar_dependencias
     
-    # OBTENER ID DE LA TERMINAL DE EJECUCIÓN (para excluirla de los cierres)
-    local TERMINAL_ACTUAL
-    TERMINAL_ACTUAL=$(xdotool getactivewindow 2>/dev/null || echo "")
-    if [[ -n "$TERMINAL_ACTUAL" ]]; then
-        info "Terminal de ejecución identificada (ID de ventana: $TERMINAL_ACTUAL). Será excluida del cierre."
-    else
-        info "No se pudo identificar la terminal de ejecución. Se procede con precaución."
-    fi
-    
     # Precalentar sudo y pkcon
     precalentar_sudo_pkcon
     
@@ -537,12 +557,12 @@ main() {
     for tema in "${temas[@]}"; do
         echo ""
         info "=== DEMOSTRANDO TEMA: $tema ==="
-        demo_tema "$tema" "$TERMINAL_ACTUAL"
+        demo_tema "$tema"
     done
     
     # Cerrar aplicaciones del último tema
     if [[ -n "${tema_anterior:-}" ]]; then
-        cerrar_aplicaciones "$tema_anterior" "$TERMINAL_ACTUAL"
+        cerrar_aplicaciones "$tema_anterior"
     fi
     
     # Detener grabación (si no es modo "no grabar")
