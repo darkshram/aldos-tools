@@ -102,6 +102,81 @@ obtener_resolucion() {
 }
 
 # ============================================================================
+# FUNCIONES DE PRECARGA Y CONFIGURACIÓN DEL SISTEMA
+# ============================================================================
+
+precargar_gtk3() {
+    if command -v gtk3-demo >/dev/null 2>&1; then
+        LD_BIND_NOW=1 gtk3-demo --version >/dev/null 2>&1 &
+        local pid=$!
+        sleep 0.5
+        kill "$pid" 2>/dev/null || true
+    fi
+    LD_BIND_NOW=1 gsettings list-schemas >/dev/null 2>&1
+    espera_aleatoria 0.2 0.4
+}
+
+precalentar_sudo_pkcon() {
+    info "Precalentando sudo y pkcon..."
+    
+    if command -v sudo >/dev/null 2>&1; then
+        sudo -v
+        if [[ $? -eq 0 ]]; then
+            info "sudo precargado correctamente."
+        fi
+    fi
+    
+    if command -v pkcon >/dev/null 2>&1; then
+        pkcon get-updates 2>/dev/null || true
+        info "pkcon precargado."
+    fi
+    
+    if command -v gsettings >/dev/null 2>&1; then
+        gsettings list-schemas >/dev/null 2>&1 || true
+    fi
+    
+    exito "Precalentamiento completado."
+    espera_aleatoria 0.5 1.0
+}
+
+gestionar_composicion() {
+    if command -v xfconf-query >/dev/null 2>&1; then
+        COMPOSICION_ORIGINAL=$(xfconf-query -c xfwm4 -p /general/use_compositing 2>/dev/null || echo "true")
+        if [[ "$COMPOSICION_ORIGINAL" == "true" ]]; then
+            info "Composición de xfwm4 actualmente ACTIVADA."
+            
+            echo ""
+            echo "Con composición activa, algunos temas complejos pueden causar"
+            echo "que ventanas con decoraciones de cliente cambien de tamaño."
+            echo ""
+            echo -n "¿Deshabilitar temporalmente la composición para esta demostración? [s/N]: "
+            read -r respuesta
+            
+            if [[ "${respuesta,,}" == "s"* ]]; then
+                info "Deshabilitando composición de xfwm4..."
+                xfconf-query -c xfwm4 -p /general/use_compositing -s false
+                exito "Composición deshabilitada. Se restaurará al finalizar."
+                trap 'restaurar_composicion' EXIT INT TERM
+            else
+                info "Composición se mantendrá activa."
+            fi
+        else
+            info "Composición de xfwm4 ya está DESACTIVADA."
+        fi
+    else
+        info "xfconf-query no disponible. No se puede gestionar composición."
+    fi
+    echo ""
+}
+
+restaurar_composicion() {
+    if [[ -n "$COMPOSICION_ORIGINAL" ]] && command -v xfconf-query >/dev/null 2>&1; then
+        info "Restaurando composición de xfwm4 a estado original ($COMPOSICION_ORIGINAL)..."
+        xfconf-query -c xfwm4 -p /general/use_compositing -s "$COMPOSICION_ORIGINAL" 2>/dev/null || true
+    fi
+}
+
+# ============================================================================
 # FUNCIONES DE OSD CORREGIDAS
 # ============================================================================
 
@@ -223,7 +298,7 @@ rotar_foco_aplicaciones_fijo() {
 }
 
 # ============================================================================
-# FUNCIONES DE GESTIÓN DE VENTANAS (ACTUALIZADAS)
+# FUNCIONES DE GESTIÓN DE VENTANAS
 # ============================================================================
 
 obtener_ventana_control() {
@@ -333,49 +408,92 @@ cerrar_aplicaciones() {
 }
 
 # ============================================================================
-# FUNCIONES DE DEMOSTRACIÓN PRINCIPAL (ACTUALIZADAS)
+# FUNCIONES DE GRABACIÓN
 # ============================================================================
 
-demo_tema() {
-    local tema="$1"
-    local indice="$2"
-    local total="$3"
+iniciar_grabacion_ffmpeg() {
+    local dir_videos
+    dir_videos="$(xdg-user-dir VIDEOS 2>/dev/null || echo "$HOME/Videos")"
+    mkdir -p "$dir_videos"
     
-    info "=== DEMOSTRANDO TEMA: $tema ($indice/$total) ==="
+    local archivo="$dir_videos/demo-temas-$(date +%Y%m%d-%H%M%S).mp4"
+    info "Grabando con ffmpeg en: $archivo"
     
-    mostrar_osd_transicion "$tema" "$indice" "$total"
-    sleep 0.8
+    local resolucion
+    resolucion=$(obtener_resolucion) || return 1
     
-    if ! tema-xfce4.sh "$tema"; then
-        error "No se pudo cambiar al tema $tema"
+    if [[ ! "$resolucion" =~ ^[0-9]+x[0-9]+$ ]]; then
+        error "Resolución obtenida tiene formato inválido: '$resolucion'"
         return 1
     fi
-    exito "Tema $tema aplicado."
     
-    sleep $TIEMPO_REDIBUJO
+    info "Resolución final para grabación: $resolucion"
     
-    precargar_gtk3
+    LD_BIND_NOW= ffmpeg \
+        -video_size "$resolucion" \
+        -framerate 30 \
+        -f x11grab \
+        -i :0.0+0,0 \
+        -c:v libx264 \
+        -preset ultrafast \
+        -crf 28 \
+        -pix_fmt yuv420p \
+        "$archivo" 2>/tmp/ffmpeg_error.log &
     
-    info "Abriendo aplicaciones de demostración..."
-    xfce4-about &
-    sleep $TIEMPO_APERTURA_APPS
+    FFMPEG_PID=$!
+    sleep 2
     
-    thunar ~/ &
-    sleep $TIEMPO_APERTURA_APPS
+    if kill -0 "$FFMPEG_PID" 2>/dev/null; then
+        exito "Grabación con ffmpeg iniciada (PID: $FFMPEG_PID)"
+        echo "$archivo" > /tmp/ffmpeg_output.txt
+        if [[ -s /tmp/ffmpeg_error.log ]]; then
+            info "Log de ffmpeg (primeras líneas):"
+            head -5 /tmp/ffmpeg_error.log >&2
+        fi
+    else
+        error "Fallo al iniciar ffmpeg. Consultar /tmp/ffmpeg_error.log:"
+        [[ -f /tmp/ffmpeg_error.log ]] && cat /tmp/ffmpeg_error.log >&2
+        return 1
+    fi
+}
+
+detener_grabacion_ffmpeg() {
+    if [[ -n "$FFMPEG_PID" ]] && kill -0 "$FFMPEG_PID" 2>/dev/null; then
+        info "Deteniendo grabación ffmpeg (PID: $FFMPEG_PID)..."
+        kill -INT "$FFMPEG_PID"
+        wait "$FFMPEG_PID" 2>/dev/null || true
+        exito "Grabación ffmpeg detenida."
+        
+        local archivo
+        archivo=$(cat /tmp/ffmpeg_output.txt 2>/dev/null || echo "desconocido")
+        info "Video guardado en: $archivo"
+    fi
+}
+
+iniciar_grabacion_ssr() {
+    info "Iniciando la grabación en 5 segundos... Prepárate."
+    for i in {5..1}; do
+        echo -n "$i... "
+        sleep 1
+    done
+    echo "¡Grabando!"
     
-    mousepad --disable-server &
-    sleep $TIEMPO_APERTURA_APPS
-    
-    info "Mostrando menú de aplicaciones..."
-    xdotool key Super
-    espera_aleatoria 0.8 1.2
-    
-    info "Rotando foco entre aplicaciones..."
-    rotar_foco_aplicaciones_fijo "$tema"
-    
-    cerrar_aplicaciones "$tema"
-    
-    exito "Demostración del tema $tema completada."
+    info "Activando atajo de teclado para iniciar grabación (Ctrl+Shift+R)."
+    xdotool key ctrl+shift+r
+    if [[ $? -eq 0 ]]; then
+        exito "Grabación iniciada (asumiendo que el atajo está configurado)."
+        espera_aleatoria 0.5 1.0
+    else
+        error "No se pudo simular el atajo."
+        exit 1
+    fi
+}
+
+detener_grabacion_ssr() {
+    info "Deteniendo la grabación (Ctrl+Shift+R)..."
+    xdotool key ctrl+shift+r
+    exito "Grabación detenida."
+    espera_aleatoria 0.5 1.0
 }
 
 # ============================================================================
@@ -490,12 +608,50 @@ modo_test_osd() {
 }
 
 # ============================================================================
-# FUNCIONES EXISTENTES (se mantienen igual)
+# FUNCIÓN PRINCIPAL DE DEMOSTRACIÓN
 # ============================================================================
-# Las funciones precargar_gtk3, precalentar_sudo_pkcon, gestionar_composicion,
-# restaurar_composicion, iniciar_grabacion_ffmpeg, detener_grabacion_ffmpeg,
-# iniciar_grabacion_ssr, detener_grabacion_ssr se mantienen idénticas a tu
-# versión anterior y se omiten aquí por brevedad. Deben incluirse en el script final.
+
+demo_tema() {
+    local tema="$1"
+    local indice="$2"
+    local total="$3"
+    
+    info "=== DEMOSTRANDO TEMA: $tema ($indice/$total) ==="
+    
+    mostrar_osd_transicion "$tema" "$indice" "$total"
+    sleep 0.8
+    
+    if ! tema-xfce4.sh "$tema"; then
+        error "No se pudo cambiar al tema $tema"
+        return 1
+    fi
+    exito "Tema $tema aplicado."
+    
+    sleep $TIEMPO_REDIBUJO
+    
+    precargar_gtk3
+    
+    info "Abriendo aplicaciones de demostración..."
+    xfce4-about &
+    sleep $TIEMPO_APERTURA_APPS
+    
+    thunar ~/ &
+    sleep $TIEMPO_APERTURA_APPS
+    
+    mousepad --disable-server &
+    sleep $TIEMPO_APERTURA_APPS
+    
+    info "Mostrando menú de aplicaciones..."
+    xdotool key Super
+    espera_aleatoria 0.8 1.2
+    
+    info "Rotando foco entre aplicaciones..."
+    rotar_foco_aplicaciones_fijo "$tema"
+    
+    cerrar_aplicaciones "$tema"
+    
+    exito "Demostración del tema $tema completada."
+}
 
 # ============================================================================
 # FLUJO PRINCIPAL
