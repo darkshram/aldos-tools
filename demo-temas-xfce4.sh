@@ -20,7 +20,7 @@ readonly TIEMPO_OSD_TRANSICION=5.0       # OSD de cambio de tema
 readonly TIEMPO_REDIBUJO=1.5             # Redibujo tras cambio de tema
 readonly TIEMPO_APERTURA_APPS=1.0        # Tiempo fijo para abrir cada app
 
-# Configuración de AOSD_CAT
+# Configuración de AOSD_CAT (VALORES FIJOS - NO MODIFICAR SIN PRUEBAS)
 readonly FUENTE_OSD="Montserrat Black 32"
 readonly COLOR_BORDE="orange"
 readonly COLOR_SOMBRA="black"
@@ -90,7 +90,7 @@ obtener_resolucion() {
     alto="${BASH_REMATCH[2]}"
     ancho_ajustado=$(( ancho - (ancho % 2) ))
     alto_ajustado=$(( alto - (alto % 2) ))
-    resolucion_ajustada="${ancho_ajustado}x${alto_ajustado}"  # ¡CORRECCIÓN: "alto_ajustado" con O!
+    resolucion_ajustada="${ancho_ajustado}x${alto_ajustado}"  # CORREGIDO: alto_ajustado
 
     if [[ "$resolucion_raw" != "$resolucion_ajustada" ]]; then
         info "Resolución ajustada a dimensiones pares para H.264: $resolucion_raw -> $resolucion_ajustada"
@@ -177,7 +177,7 @@ restaurar_composicion() {
 }
 
 # ============================================================================
-# FUNCIONES DE OSD CORREGIDAS
+# FUNCIONES DE OSD CORREGIDAS (VERSIÓN ROBUSTA)
 # ============================================================================
 
 calcular_posicion_y_osd() {
@@ -203,8 +203,8 @@ mostrar_osd_aplicacion() {
     local aplicacion="$1"
     local tema="$2"
     local mensaje=""
+    local duracion_ms=4500  # VALOR FIJO: TIEMPO_OSD_APLICACION (4.5s * 1000)
     
-    # Verificar que aosd_cat esté disponible
     if ! command -v aosd_cat >/dev/null 2>&1; then
         advertencia "aosd_cat no está disponible. OSD no se mostrará."
         return 1
@@ -228,15 +228,7 @@ mostrar_osd_aplicacion() {
     local pos_y_dinamica
     pos_y_dinamica=$(calcular_posicion_y_osd)
     
-    echo -e "$mensaje" | aosd_cat \
-        -n "$FUENTE_OSD" \
-        -u $(echo "$TIEMPO_OSD_APLICACION * 1000" | bc) \
-        -o "$OSD_OPACIDAD" \
-        -R "$COLOR_BORDE" \
-        -S "$COLOR_SOMBRA" \
-        -f "$OSD_FADE" \
-        -x "$POS_X" -y "$pos_y_dinamica" \
-        -t "$OSD_TEXTO_GROSOR" -e "$OSD_BORDE_GROSOR" &
+    echo -e "$mensaje" | aosd_cat -n "$FUENTE_OSD" -u "$duracion_ms" -o 300 -R orange -S black -f 300 -x 50 -y "$pos_y_dinamica" -t 2 -e 5 &
     
     OSD_PID=$!
     sleep 0.1
@@ -251,8 +243,8 @@ mostrar_osd_transicion() {
     local indice="$2"
     local total="$3"
     local mensaje="🎨  Cambiando a: $tema_siguiente\n($indice/$total)"
+    local duracion_ms=5000  # VALOR FIJO: TIEMPO_OSD_TRANSICION (5.0s * 1000)
     
-    # Verificar que aosd_cat esté disponible
     if ! command -v aosd_cat >/dev/null 2>&1; then
         advertencia "aosd_cat no está disponible. OSD no se mostrará."
         return 1
@@ -261,15 +253,7 @@ mostrar_osd_transicion() {
     local pos_y_dinamica
     pos_y_dinamica=$(calcular_posicion_y_osd)
     
-    echo -e "$mensaje" | aosd_cat \
-        -n "$FUENTE_OSD" \
-        -u $(echo "$TIEMPO_OSD_TRANSICION * 1000" | bc) \
-        -o "$OSD_OPACIDAD" \
-        -R "$COLOR_BORDE" \
-        -S "$COLOR_SOMBRA" \
-        -f "$OSD_FADE" \
-        -x "$POS_X" -y "$pos_y_dinamica" \
-        -t "$OSD_TEXTO_GROSOR" -e "$OSD_BORDE_GROSOR" &
+    echo -e "$mensaje" | aosd_cat -n "$FUENTE_OSD" -u "$duracion_ms" -o 300 -R orange -S black -f 300 -x 50 -y "$pos_y_dinamica" -t 2 -e 5 &
     
     OSD_PID=$!
     sleep 0.1
@@ -363,7 +347,6 @@ cerrar_aplicaciones() {
     
     espera_aleatoria 0.8 1.2
     
-    # Cerrar xfce4-about
     local ventanas_about
     ventanas_about=$(xdotool search --onlyvisible --class "Xfce4-about" 2>/dev/null || true)
     if [[ -n "$ventanas_about" ]]; then
