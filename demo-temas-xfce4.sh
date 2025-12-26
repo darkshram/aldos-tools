@@ -1,3 +1,4 @@
+```bash
 #!/bin/bash
 
 # demo-temas-xfce4.sh - Demostración grabada de temas GTK+ en Xfce 4.20
@@ -45,6 +46,39 @@ espera_aleatoria() {
     sleep "$delay"
 }
 
+# Función para obtener resolución de pantalla ajustada a dimensiones pares
+obtener_resolucion() {
+    local resolucion_raw resolucion_ajustada ancho alto
+
+    # 1. Detectar resolución (xdpyinfo es primario, xrandr es respaldo)
+    resolucion_raw=$(xdpyinfo 2>/dev/null | awk -F': ' '/dimensions:/{split($2, d, " "); print d[1]}')
+    if [[ -z "$resolucion_raw" ]] || ! [[ "$resolucion_raw" =~ ^[0-9]+x[0-9]+$ ]]; then
+        resolucion_raw=$(xrandr --current 2>/dev/null | grep '*' | head -1 | awk '{print $1}')
+    fi
+
+    # Validación básica del formato
+    if [[ ! "$resolucion_raw" =~ ^([0-9]+)x([0-9]+)$ ]]; then
+        error "No se pudo obtener una resolución válida del sistema: '$resolucion_raw'"
+        return 1
+    fi
+
+    # 2. Ajustar a dimensiones pares (requisito de H.264 YUV420)
+    ancho="${BASH_REMATCH[1]}"
+    alto="${BASH_REMATCH[2]}"
+    ancho_ajustado=$(( ancho - (ancho % 2) ))
+    alto_ajustado=$(( alto - (alto % 2) ))
+    resolucion_ajustada="${ancho_ajustado}x${alto_ajustado}"
+
+    # 3. Informar si hubo cambio
+    if [[ "$resolucion_raw" != "$resolucion_ajustada" ]]; then
+        info "Resolución ajustada a dimensiones pares para H.264: $resolucion_raw -> $resolucion_ajustada"
+    else
+        info "Resolución detectada (ya es par): $resolucion_ajustada"
+    fi
+
+    echo "$resolucion_ajustada"
+}
+
 # Función para precargar GTK3 y reducir latencia al lanzar aplicaciones
 precargar_gtk3() {
     if command -v gtk3-demo >/dev/null 2>&1; then
@@ -84,41 +118,43 @@ precalentar_sudo_pkcon() {
     espera_aleatoria 0.5 1.0
 }
 
-# Función para cerrar aplicaciones usando Alt+F4 (comportamiento natural)
+# Función para cerrar TODAS las ventanas de aplicaciones de demostración
 cerrar_aplicaciones() {
     local tema="$1"
     
     info "Cerrando aplicaciones del tema $tema..."
     
-    # Pausa crucial para que las ventanas estén listas y enfocadas
+    # Pausa crucial para que las ventanas estén listas
     espera_aleatoria 0.8 1.2
     
-    # Estrategia combinada: primero intentar cerrar ventanas específicas
-    # Buscar y cerrar la terminal específica del tema por su TÍTULO COMPLETO
-    if xdotool search --name "Terminal - Tema $tema" >/dev/null 2>&1; then
+    # Cerrar TODAS las terminales con el título específico del tema
+    while xdotool search --name "Terminal - Tema $tema" >/dev/null 2>&1; do
         xdotool search --name "Terminal - Tema $tema" windowactivate --sync
         espera_aleatoria 0.1 0.3
         xdotool key --clearmodifiers Alt+F4
         info "  Ventana 'Terminal - Tema $tema' cerrada."
-    fi
+        espera_aleatoria 0.1 0.2 # Breve pausa entre cierres
+    done
     
-    # Cerrar Thunar por su CLASE (más confiable que por nombre)
-    if xdotool search --class "Thunar" >/dev/null 2>&1; then
+    # Cerrar TODAS las ventanas de Thunar
+    while xdotool search --class "Thunar" >/dev/null 2>&1; do
         xdotool search --class "Thunar" windowactivate --sync
         espera_aleatoria 0.1 0.3
         xdotool key --clearmodifiers Alt+F4
         info "  Ventana 'Thunar' cerrada."
-    fi
+        espera_aleatoria 0.1 0.2
+    done
     
-    # Cerrar Mousepad por su CLASE
-    if xdotool search --class "Mousepad" >/dev/null 2>&1; then
+    # Cerrar TODAS las ventanas de Mousepad
+    while xdotool search --class "Mousepad" >/dev/null 2>&1; do
         xdotool search --class "Mousepad" windowactivate --sync
         espera_aleatoria 0.1 0.3
         xdotool key --clearmodifiers Alt+F4
         info "  Ventana 'Mousepad' cerrada."
-    fi
+        espera_aleatoria 0.1 0.2
+    done
     
-    # Pausa final para asegurar el cierre completo antes de continuar
+    # Pausa final para asegurar el cierre completo
     espera_aleatoria 0.5 0.8
 }
 
@@ -157,7 +193,7 @@ enfocar_ventana() {
 
 # Función para grabar con ffmpeg (alternativa opcional)
 iniciar_grabacion_ffmpeg() {
-    # Usar el directorio estándar de vídeos del usuario (portable)
+    # Usar el directorio estándar de vídeos del usuario
     local dir_videos
     dir_videos="$(xdg-user-dir VIDEOS 2>/dev/null || echo "$HOME/Videos")"
     mkdir -p "$dir_videos"
@@ -165,34 +201,41 @@ iniciar_grabacion_ffmpeg() {
     local archivo="$dir_videos/demo-temas-$(date +%Y%m%d-%H%M%S).mp4"
     info "Grabando con ffmpeg en: $archivo"
     
-    # Obtener resolución de la pantalla de manera robusta
+    # Obtener resolución ajustada a pares
     local resolucion
-    resolucion=$(xdpyinfo | awk -F': ' '/dimensions:/{split($2, d, " "); print d[1]}')
+    resolucion=$(obtener_resolucion) || return 1
     
-    # Validar el formato (debe ser 'ANCHOxALTO')
-    if [[ -z "$resolucion" ]] || ! [[ "$resolucion" =~ ^[0-9]+x[0-9]+$ ]]; then
-        error "No se pudo detectar una resolución de pantalla válida. Se obtuvo: '$resolucion'"
-        return 1
-    fi
-    info "Resolución detectada: $resolucion"
+    info "Resolución final para grabación: $resolucion"
     
-    # Iniciar grabación en segundo plano - SIN LD_BIND_NOW en el entorno
-    # Se usa env -i para iniciar con un entorno limpio, pero eso podría ser excesivo.
-    # En su lugar, aseguramos que LD_BIND_NOW no esté establecido para ffmpeg.
-    # Simplemente no lo exportamos; pero como se usó en precargar_gtk3, puede persistir.
-    # Por lo tanto, lo desactivamos explícitamente para ffmpeg.
-    LD_BIND_NOW= ffmpeg -video_size "$resolucion" -framerate 30 -f x11grab -i :0.0+0,0 \
-           -c:v libx264 -preset ultrafast -crf 28 -pix_fmt yuv420p \
-           "$archivo" 2>/dev/null &
+    # Iniciar grabación en segundo plano. 
+    # Asegurar que LD_BIND_NOW no esté establecido para este proceso.
+    # Redirigir stderr a un archivo de log para diagnóstico.
+    LD_BIND_NOW= ffmpeg \
+        -video_size "$resolucion" \
+        -framerate 30 \
+        -f x11grab \
+        -i :0.0+0,0 \
+        -c:v libx264 \
+        -preset ultrafast \
+        -crf 28 \
+        -pix_fmt yuv420p \
+        "$archivo" 2>/tmp/ffmpeg_error.log &
     
     FFMPEG_PID=$!
-    sleep 2
+    sleep 2 # Dar tiempo a que ffmpeg se inicie
     
+    # Verificar si el proceso se está ejecutando
     if kill -0 "$FFMPEG_PID" 2>/dev/null; then
         exito "Grabación con ffmpeg iniciada (PID: $FFMPEG_PID)"
         echo "$archivo" > /tmp/ffmpeg_output.txt
+        # Mostrar primeras líneas de log en caso de advertencias
+        if [[ -s /tmp/ffmpeg_error.log ]]; then
+            info "Log de ffmpeg (primeras líneas):"
+            head -5 /tmp/ffmpeg_error.log
+        fi
     else
-        error "Fallo al iniciar ffmpeg"
+        error "Fallo al iniciar ffmpeg. Consultar /tmp/ffmpeg_error.log:"
+        [[ -f /tmp/ffmpeg_error.log ]] && cat /tmp/ffmpeg_error.log
         return 1
     fi
 }
