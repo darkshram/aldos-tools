@@ -88,34 +88,67 @@ precalentar_sudo_pkcon() {
 cerrar_aplicaciones() {
     local tema="$1"
     
-    info "Cerrando aplicaciones del tema $tema (Alt+F4)..."
+    info "Cerrando aplicaciones del tema $tema..."
     
-    # Esperar un momento para asegurar que las ventanas estén listas
-    espera_aleatoria 0.2 0.4
+    # Pausa crucial para que las ventanas estén listas y enfocadas
+    espera_aleatoria 0.8 1.2
     
-    # Cerrar xfce4-terminal específica del tema (por título)
-    xdotool search --name "Terminal - Tema $tema" windowactivate --sync key --clearmodifiers alt+F4 2>/dev/null || true
+    # Estrategia combinada: primero intentar cerrar ventanas específicas
+    # Buscar y cerrar la terminal específica del tema por su TÍTULO COMPLETO
+    if xdotool search --name "Terminal - Tema $tema" >/dev/null 2>&1; then
+        xdotool search --name "Terminal - Tema $tema" windowactivate --sync
+        espera_aleatoria 0.1 0.3
+        xdotool key --clearmodifiers Alt+F4
+        info "  Ventana 'Terminal - Tema $tema' cerrada."
+    fi
     
-    # Cerrar Thunar (por clase)
-    xdotool search --class "Thunar" windowactivate --sync key --clearmodifiers alt+F4 2>/dev/null || true
+    # Cerrar Thunar por su CLASE (más confiable que por nombre)
+    if xdotool search --class "Thunar" >/dev/null 2>&1; then
+        xdotool search --class "Thunar" windowactivate --sync
+        espera_aleatoria 0.1 0.3
+        xdotool key --clearmodifiers Alt+F4
+        info "  Ventana 'Thunar' cerrada."
+    fi
     
-    # Cerrar Mousepad (por clase)
-    xdotool search --class "Mousepad" windowactivate --sync key --clearmodifiers alt+F4 2>/dev/null || true
+    # Cerrar Mousepad por su CLASE
+    if xdotool search --class "Mousepad" >/dev/null 2>&1; then
+        xdotool search --class "Mousepad" windowactivate --sync
+        espera_aleatoria 0.1 0.3
+        xdotool key --clearmodifiers Alt+F4
+        info "  Ventana 'Mousepad' cerrada."
+    fi
     
-    # Respaldo con pkill para casos donde Alt+F4 no funcione
-    pkill -f "xfce4-terminal.*Tema $tema" 2>/dev/null || true
-    pkill -f "thunar" 2>/dev/null || true
-    pkill -f "mousepad" 2>/dev/null || true
-    
-    # Esperar a que se cierren completamente
-    espera_aleatoria 0.3 0.6
+    # Pausa final para asegurar el cierre completo antes de continuar
+    espera_aleatoria 0.5 0.8
 }
 
-# Función para enfocar una ventana (placeholder para futura modularización)
+# Función para enfocar una ventana (para futura modularización)
 enfocar_ventana() {
-    # TODO: Implementar lógica para enfocar ventana específica
-    # Esta función servirá como punto de partida para la fase de modularización
-    echo "Función enfocar_ventana() - Pendiente de implementación"
+    local criterio="$1"
+    local tipo="${2:-"title"}"
+    local timeout="${3:-10}"
+    local start_time=$(date +%s)
+    local ventana_id=""
+    
+    while [[ -z "$ventana_id" ]] && (( $(date +%s) - start_time < timeout )); do
+        case $tipo in
+            "title") ventana_id=$(xdotool search --onlyvisible --name "$criterio" 2>/dev/null | head -1) ;;
+            "class") ventana_id=$(xdotool search --onlyvisible --class "$criterio" 2>/dev/null | head -1) ;;
+            "classname") ventana_id=$(xdotool search --onlyvisible --classname "$criterio" 2>/dev/null | head -1) ;;
+        esac
+        
+        if [[ -n "$ventana_id" ]]; then
+            xdotool windowactivate --sync "$ventana_id" 2>/dev/null
+            xdotool windowfocus --sync "$ventana_id" 2>/dev/null
+            
+            local active_win=$(xdotool getactivewindow 2>/dev/null)
+            if [[ "$active_win" == "$ventana_id" ]]; then
+                return 0
+            fi
+        fi
+        sleep 0.3
+    done
+    return 1
 }
 
 # ============================================================================
@@ -143,8 +176,12 @@ iniciar_grabacion_ffmpeg() {
     fi
     info "Resolución detectada: $resolucion"
     
-    # Iniciar grabación en segundo plano
-    ffmpeg -video_size "$resolucion" -framerate 30 -f x11grab -i :0.0+0,0 \
+    # Iniciar grabación en segundo plano - SIN LD_BIND_NOW en el entorno
+    # Se usa env -i para iniciar con un entorno limpio, pero eso podría ser excesivo.
+    # En su lugar, aseguramos que LD_BIND_NOW no esté establecido para ffmpeg.
+    # Simplemente no lo exportamos; pero como se usó en precargar_gtk3, puede persistir.
+    # Por lo tanto, lo desactivamos explícitamente para ffmpeg.
+    LD_BIND_NOW= ffmpeg -video_size "$resolucion" -framerate 30 -f x11grab -i :0.0+0,0 \
            -c:v libx264 -preset ultrafast -crf 28 -pix_fmt yuv420p \
            "$archivo" 2>/dev/null &
     
