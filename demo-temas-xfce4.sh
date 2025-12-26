@@ -25,14 +25,14 @@ error() {
     echo -e "${COLOR_ROJO}[ERROR]${COLOR_RESET} $*" >&2
 }
 
-# Función para mensajes informativos
+# Función para mensajes informativos (a stderr para no interferir con capturas)
 info() {
-    echo -e "${COLOR_AZUL}[INFO]${COLOR_RESET} $*"
+    echo -e "${COLOR_AZUL}[INFO]${COLOR_RESET} $*" >&2
 }
 
-# Función para mensajes de éxito
+# Función para mensajes de éxito (a stderr para no interferir con capturas)
 exito() {
-    echo -e "${COLOR_VERDE}[ÉXITO]${COLOR_RESET} $*"
+    echo -e "${COLOR_VERDE}[ÉXITO]${COLOR_RESET} $*" >&2
 }
 
 # Función para espera aleatoria entre min y max segundos (con decimales)
@@ -69,13 +69,14 @@ obtener_resolucion() {
     alto_ajustado=$(( alto - (alto % 2) ))
     resolucion_ajustada="${ancho_ajustado}x${alto_ajustado}"
 
-    # 3. Informar si hubo cambio
+    # 3. Informar si hubo cambio (a stderr, para no contaminar la salida)
     if [[ "$resolucion_raw" != "$resolucion_ajustada" ]]; then
         info "Resolución ajustada a dimensiones pares para H.264: $resolucion_raw -> $resolucion_ajustada"
     else
         info "Resolución detectada (ya es par): $resolucion_ajustada"
     fi
 
+    # 4. Devolver SOLO la resolución por stdout (sin mensajes, sin colores)
     echo "$resolucion_ajustada"
 }
 
@@ -246,6 +247,12 @@ iniciar_grabacion_ffmpeg() {
     local resolucion
     resolucion=$(obtener_resolucion) || return 1
     
+    # Validación explícita del formato antes de usar
+    if [[ ! "$resolucion" =~ ^[0-9]+x[0-9]+$ ]]; then
+        error "Resolución obtenida tiene formato inválido: '$resolucion'"
+        return 1
+    fi
+    
     info "Resolución final para grabación: $resolucion"
     
     # Iniciar grabación en segundo plano. 
@@ -272,11 +279,11 @@ iniciar_grabacion_ffmpeg() {
         # Mostrar primeras líneas de log en caso de advertencias
         if [[ -s /tmp/ffmpeg_error.log ]]; then
             info "Log de ffmpeg (primeras líneas):"
-            head -5 /tmp/ffmpeg_error.log
+            head -5 /tmp/ffmpeg_error.log >&2
         fi
     else
         error "Fallo al iniciar ffmpeg. Consultar /tmp/ffmpeg_error.log:"
-        [[ -f /tmp/ffmpeg_error.log ]] && cat /tmp/ffmpeg_error.log
+        [[ -f /tmp/ffmpeg_error.log ]] && cat /tmp/ffmpeg_error.log >&2
         return 1
     fi
 }
