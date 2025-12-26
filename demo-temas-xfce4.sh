@@ -90,7 +90,7 @@ obtener_resolucion() {
     alto="${BASH_REMATCH[2]}"
     ancho_ajustado=$(( ancho - (ancho % 2) ))
     alto_ajustado=$(( alto - (alto % 2) ))
-    resolucion_ajustada="${ancho_ajustado}x${alto_ajustada}"
+    resolucion_ajustada="${ancho_ajustado}x${alto_ajustado}"  # ¡CORRECCIÓN: "alto_ajustado" con O!
 
     if [[ "$resolucion_raw" != "$resolucion_ajustada" ]]; then
         info "Resolución ajustada a dimensiones pares para H.264: $resolucion_raw -> $resolucion_ajustada"
