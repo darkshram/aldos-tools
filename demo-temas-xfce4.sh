@@ -1,4 +1,3 @@
-```bash
 #!/bin/bash
 
 # demo-temas-xfce4.sh - Demostración grabada de temas GTK+ en Xfce 4.20
@@ -13,8 +12,9 @@ readonly COLOR_VERDE='\033[1;32m'
 readonly COLOR_AMARILLO='\033[1;33m'
 readonly COLOR_AZUL='\033[1;34m'
 
-# Variable global para el PID de ffmpeg
+# Variables globales
 FFMPEG_PID=""
+COMPOSICION_ORIGINAL=""  # Para restaurar estado de composición
 
 # ============================================================================
 # FUNCIONES AUXILIARES
@@ -116,6 +116,47 @@ precalentar_sudo_pkcon() {
     
     exito "Precalentamiento completado."
     espera_aleatoria 0.5 1.0
+}
+
+# Función para gestionar composición de xfwm4
+gestionar_composicion() {
+    # Obtener estado actual
+    if command -v xfconf-query >/dev/null 2>&1; then
+        COMPOSICION_ORIGINAL=$(xfconf-query -c xfwm4 -p /general/use_compositing 2>/dev/null || echo "true")
+        if [[ "$COMPOSICION_ORIGINAL" == "true" ]]; then
+            info "Composición de xfwm4 actualmente ACTIVADA."
+            
+            echo ""
+            echo "Con composición activa, algunos temas complejos (ej. Vince Luice) pueden causar"
+            echo "que ventanas con decoraciones de cliente (Firefox, etc.) cambien de tamaño."
+            echo ""
+            echo -n "¿Deshabilitar temporalmente la composición para esta demostración? [s/N]: "
+            read -r respuesta
+            
+            if [[ "${respuesta,,}" == "s"* ]]; then
+                info "Deshabilitando composición de xfwm4..."
+                xfconf-query -c xfwm4 -p /general/use_compositing -s false
+                exito "Composición deshabilitada. Se restaurará al finalizar."
+                # Capturar señal para restaurar al salir
+                trap 'restaurar_composicion' EXIT INT TERM
+            else
+                info "Composición se mantendrá activa. Puede haber problemas con grabación o redimensionamiento."
+            fi
+        else
+            info "Composición de xfwm4 ya está DESACTIVADA."
+        fi
+    else
+        info "xfconf-query no disponible. No se puede gestionar composición."
+    fi
+    echo ""
+}
+
+# Función para restaurar composición original
+restaurar_composicion() {
+    if [[ -n "$COMPOSICION_ORIGINAL" ]] && command -v xfconf-query >/dev/null 2>&1; then
+        info "Restaurando composición de xfwm4 a estado original ($COMPOSICION_ORIGINAL)..."
+        xfconf-query -c xfwm4 -p /general/use_compositing -s "$COMPOSICION_ORIGINAL" 2>/dev/null || true
+    fi
 }
 
 # Función para cerrar TODAS las ventanas de aplicaciones de demostración
@@ -400,6 +441,9 @@ main() {
     # Precalentar sudo y pkcon
     precalentar_sudo_pkcon
     
+    # Gestionar composición de xfwm4
+    gestionar_composicion
+    
     # Lista de temas a demostrar (en orden)
     local temas=("Adwaita" "Nordic" "NordicPolar" "Dracula" "ALDOS")
     info "Temas a demostrar: ${temas[*]}"
@@ -408,12 +452,19 @@ main() {
     # Preguntar por método de grabación
     echo ""
     echo "Selecciona el método de grabación:"
-    echo "1) simplescreenrecorder (Ctrl+Shift+R)"
-    echo "2) ffmpeg (requiere instalación)"
-    echo -n "Opción [1/2]: "
+    echo "1) simplescreenrecorder (Ctrl+Shift+R) - Grabación con atajo"
+    echo "2) ffmpeg - Grabación directa con codificación H.264"
+    echo "3) No grabar (solo demostración) - Para pruebas o grabación externa"
+    echo ""
+    echo "Nota: La función de grabación nativa de VirtualBox es inestable."
+    echo "      Para grabación confiable, use ffmpeg o simplescreenrecorder."
+    echo ""
+    echo -n "Opción [1/2/3]: "
     read -r opcion
     
     local usar_ffmpeg=false
+    local no_grabar=false
+    
     case "$opcion" in
         2)
             if command -v ffmpeg >/dev/null 2>&1; then
@@ -424,16 +475,28 @@ main() {
                 usar_ffmpeg=false
             fi
             ;;
+        3)
+            no_grabar=true
+            info "Modo sin grabación. Solo demostración."
+            echo ""
+            info "Nota: Si planeas grabar esta demostración con VirtualBox, ten en cuenta"
+            info "      que su función de grabación puede ser inestable entre versiones."
+            ;;
         *)
             info "Usando simplescreenrecorder."
             ;;
     esac
     
-    # Iniciar grabación
-    if $usar_ffmpeg; then
-        iniciar_grabacion_ffmpeg
+    # Iniciar grabación (si no es modo "no grabar")
+    if ! $no_grabar; then
+        if $usar_ffmpeg; then
+            iniciar_grabacion_ffmpeg || exit 1
+        else
+            iniciar_grabacion_ssr
+        fi
     else
-        iniciar_grabacion_ssr
+        info "Iniciando demostración sin grabación en 3 segundos..."
+        sleep 3
     fi
     
     # Bucle por cada tema
@@ -444,24 +507,31 @@ main() {
     done
     
     # Cerrar aplicaciones del último tema
-    if [[ -n "$tema_anterior" ]]; then
+    if [[ -n "${tema_anterior:-}" ]]; then
         cerrar_aplicaciones "$tema_anterior"
     fi
     
-    # Detener grabación
-    if $usar_ffmpeg; then
-        detener_grabacion_ffmpeg
-    else
-        detener_grabacion_ssr
+    # Detener grabación (si no es modo "no grabar")
+    if ! $no_grabar; then
+        if $usar_ffmpeg; then
+            detener_grabacion_ffmpeg
+        else
+            detener_grabacion_ssr
+        fi
     fi
+    
+    # Restaurar composición si se cambió
+    restaurar_composicion
     
     echo ""
     exito "Demostración completada."
     
-    if $usar_ffmpeg; then
-        info "El video se guardó en el directorio estándar de vídeos del usuario."
-    else
-        info "El video se guardó en la ubicación configurada en simplescreenrecorder."
+    if ! $no_grabar; then
+        if $usar_ffmpeg; then
+            info "El video se guardó en el directorio estándar de vídeos del usuario."
+        else
+            info "El video se guardó en la ubicación configurada en simplescreenrecorder."
+        fi
     fi
     
     info "Tema restaurado a ALDOS (predeterminado)."
