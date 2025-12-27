@@ -157,11 +157,13 @@ aplicar_tema() {
         fin=$(date +%s)
         duracion=$((fin - inicio))
         
-        if [ $resultado -eq 0 ]; then
+        # Código 0: Éxito normal | Código 1: Tema ya instalado (no es error crítico para la demo)
+        if [ $resultado -eq 0 ] || [ $resultado -eq 1 ]; then
             echo "[ÉXITO] Tema aplicado en ${duracion} segundos"
             return 0
         else
-            echo "[ERROR] No se pudo aplicar el tema (código: $resultado)"
+            # Cualquier otro código (2+) se considera un fallo que podría requerir atención
+            echo "[ERROR] Fallo crítico al aplicar el tema (código de retorno: $resultado)"
             return 1
         fi
     else
