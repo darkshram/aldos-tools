@@ -17,9 +17,10 @@
 set -e  # Salir inmediatamente si cualquier comando falla
 set -u  # Tratar variables no definidas como errores
 
-# Tiempos didácticos fijos (en segundos)
-TIEMPO_OBSERVACION=4.0
-TIEMPO_OSD_TRANSICION=5.0
+# Tiempos didácticos ajustados (en segundos)
+TIEMPO_OBSERVACION=2.5
+TIEMPO_OSD_TRANSICION=3.0
+TIEMPO_ENTRE_APPS=0.5
 
 # Lista de temas GTK+ a demostrar, con la nomenclatura usada en tema-xfce4.sh
 TEMAS_GTK=(
@@ -48,6 +49,9 @@ ancho=""            # Ancho de pantalla detectado
 alto=""             # Alto de pantalla detectado
 pos_y_dinamica=""   # Posición Y dinámica para OSD (negativa desde el fondo)
 OSD_PID=""          # PID del último OSD mostrado (para posible terminación)
+FFMPEG_PID=""       # PID del proceso FFmpeg si se está grabando
+ACTIVE_WIN=""       # Ventana activa actual (para restaurar después de mostrar escritorio)
+TERMINAL_WIN=""     # Ventana del terminal (para minimizar al inicio)
 
 # ----------------------------------------------------------------------------
 # FUNCIONES AUXILIARES Y DE CONFIGURACIÓN
@@ -97,8 +101,8 @@ mostrar_osd_aplicacion() {
     # Mostrar nuevo OSD y capturar su PID
     echo "$mensaje" | aosd_cat \
         -n "Montserrat Black 32" \
-        -u 4500 \
-        -o 300 \
+        -u 3000 \
+        -o 200 \
         -R white \
         -S "#2D2D2D" \
         -f 300 \
@@ -125,8 +129,8 @@ mostrar_osd_transicion() {
     # Mostrar nuevo OSD y capturar su PID
     echo "$mensaje" | aosd_cat \
         -n "Montserrat Black 32" \
-        -u 5000 \
-        -o 300 \
+        -u 3500 \
+        -o 200 \
         -R white \
         -S "#2D2D2D" \
         -f 300 \
@@ -218,7 +222,7 @@ cerrar_aplicaciones_demo() {
     for app in "${APPS_DEMO[@]}"; do
         pkill -x "$app" 2>/dev/null || true
     done
-    sleep 0.5
+    sleep 0.3
 }
 
 mostrar_cabecera_tema() {
@@ -257,40 +261,6 @@ aplicar_tema() {
     fi
 }
 
-abrir_aplicaciones_demo() {
-    # Abre las aplicaciones de demostración en posiciones específicas.
-    
-    # 1. xfce4-about (centro superior)
-    echo "[INFO] Abriendo: xfce4-about"
-    xfce4-about &
-    sleep 0.5
-    xdotool search --class "xfce4-about" windowmove 600 100 &
-    
-    # 2. thunar (centro izquierda)
-    echo "[INFO] Abriendo: thunar"
-    thunar &
-    sleep 0.5
-    xdotool search --class "Thunar" windowmove 100 300 &
-    
-    # 3. mousepad (centro derecha)
-    echo "[INFO] Abriendo: mousepad"
-    mousepad &
-    sleep 0.5
-    xdotool search --class "Mousepad" windowmove 1000 300 &
-    
-    # Esperar a que todas las aplicaciones estén listas
-    sleep 1.5
-}
-
-rotar_foco_aplicaciones() {
-    # Rota el foco entre las aplicaciones de demostración.
-    for app_class in "xfce4-about" "Thunar" "Mousepad"; do
-        echo "[INFO] Rotando foco a: $app_class"
-        xdotool search --class "$app_class" windowactivate
-        sleep 0.5
-    done
-}
-
 prueba_osd() {
     echo "[INFO] MODO PRUEBA OSD - Mostrando todos los mensajes en secuencia"
     obtener_resolucion
@@ -311,55 +281,301 @@ prueba_osd() {
     echo ""
 }
 
-mostrar_menu_grabacion() {
-    # Muestra el menú de opciones de grabación.
-    clear
-    echo "========================================"
-    echo "  DEMOSTRACIÓN CON OSD - TEMAS GTK+ EN XFCE"
-    echo "========================================"
-    echo ""
-    echo "Selecciona el modo de grabación:"
-    echo ""
-    echo "  1. Grabar con FFmpeg (recomendado para video final)"
-    echo "  2. Grabar con SimpleScreenRecorder (interfaz gráfica)"
-    echo "  3. No grabar (solo demostración)"
-    echo "  4. Salir"
-    echo ""
-    echo -n "Tu elección [1-4]: "
+# ----------------------------------------------------------------------------
+# FUNCIONES PARA MANEJO DE VENTANAS Y DEMOSTRACIÓN
+# ----------------------------------------------------------------------------
+
+obtener_ventana_activa() {
+    # Guarda la ventana activa actual para restaurarla después
+    ACTIVE_WIN=$(xdotool getactivewindow 2>/dev/null || echo "")
 }
 
-grabar_ffmpeg() {
-    # Inicia grabación con FFmpeg en segundo plano.
-    local timestamp=$(date +%Y%m%d-%H%M%S)
-    local archivo_salida="demo-temas-${timestamp}.mp4"
-    
-    echo "[INFO] Iniciando grabación con FFmpeg..."
-    echo "[INFO] El video se guardará como: ${archivo_salida}"
-    echo "[INFO] Presiona 'q' en la terminal de FFmpeg para finalizar la grabación."
-    echo ""
-    
-    ffmpeg -f x11grab -video_size "${ancho}x${alto}" -framerate 30 -i :0.0 \
-           -vcodec libx264 -preset fast -pix_fmt yuv420p \
-           "${archivo_salida}" 2>/dev/null &
-    
-    FFMPEG_PID=$!
-    echo "[INFO] FFmpeg iniciado (PID: $FFMPEG_PID)"
-    sleep 2
+guardar_ventana_terminal() {
+    # Guarda la ventana del terminal actual
+    TERMINAL_WIN=$(xdotool getactivewindow 2>/dev/null || echo "")
+    echo "[INFO] Ventana del terminal guardada (ID: $TERMINAL_WIN)"
 }
 
-detener_ffmpeg() {
-    # Detiene la grabación de FFmpeg.
-    if [ -n "${FFMPEG_PID:-}" ]; then
-        echo "[INFO] Deteniendo FFmpeg (PID: $FFMPEG_PID)..."
-        kill -INT "$FFMPEG_PID" 2>/dev/null || true
-        wait "$FFMPEG_PID" 2>/dev/null || true
-        echo "[ÉXITO] Grabación finalizada."
+minimizar_ventana_terminal() {
+    # Minimiza la ventana del terminal
+    if [ -n "$TERMINAL_WIN" ]; then
+        echo "[INFO] Minimizando ventana del terminal (ID: $TERMINAL_WIN)..."
+        xdotool windowactivate "$TERMINAL_WIN"
+        sleep 0.2
+        xdotool key alt+F9
+        sleep 0.3
     fi
 }
+
+restaurar_ventana_activa() {
+    # Restaura la ventana activa previamente guardada
+    if [ -n "$ACTIVE_WIN" ] && xdotool windowfocus "$ACTIVE_WIN" 2>/dev/null; then
+        xdotool windowactivate "$ACTIVE_WIN"
+        sleep 0.2
+    fi
+}
+
+mostrar_escritorio_limpio() {
+    # Muestra el escritorio limpio (Ctrl+Alt+d)
+    echo "[INFO] Mostrando escritorio limpio..."
+    obtener_ventana_activa
+    xdotool key ctrl+alt+d
+    sleep 0.5
+}
+
+minimizar_ventana_actual() {
+    # Minimiza la ventana actual (ALT+F9)
+    echo "[INFO] Minimizando ventana actual..."
+    xdotool key alt+F9
+    sleep 0.3
+}
+
+minimizar_ventana_por_clase() {
+    # Minimiza una ventana específica por su clase
+    local app_clase="$1"
+    local ventana_id=$(xdotool search --class "$app_clase" | head -1)
+    
+    if [ -n "$ventana_id" ]; then
+        echo "[INFO] Minimizando ventana de clase: $app_clase (ID: $ventana_id)"
+        xdotool windowactivate "$ventana_id"
+        sleep 0.2
+        xdotool key alt+F9
+        sleep 0.3
+    fi
+}
+
+activar_ventana_por_clase() {
+    # Activa y desminimiza una ventana por su clase
+    local app_clase="$1"
+    local ventana_id=$(xdotool search --class "$app_clase" | head -1)
+    
+    if [ -n "$ventana_id" ]; then
+        echo "[INFO] Activando ventana: $app_clase (ID: $ventana_id)"
+        # Primero desminimizar (windowmap)
+        xdotool windowmap "$ventana_id"
+        sleep 0.2
+        # Luego activar
+        xdotool windowactivate "$ventana_id"
+        xdotool windowraise "$ventana_id"
+        sleep 0.3
+    else
+        echo "[ERROR] No se encontró ventana para: $app_clase"
+        return 1
+    fi
+}
+
+iniciar_aplicaciones_minimizadas() {
+    # Abre las aplicaciones y las minimiza inmediatamente.
+    echo "[INFO] Iniciando aplicaciones en modo minimizado..."
+    
+    # Cerrar cualquier instancia previa
+    cerrar_aplicaciones_demo
+    
+    # Mostrar escritorio limpio antes de abrir
+    mostrar_escritorio_limpio
+    
+    # Abrir y minimizar cada aplicación
+    for app in "${APPS_DEMO[@]}"; do
+        echo "[INFO] Abriendo y minimizando: $app"
+        case "$app" in
+            "xfce4-about")
+                xfce4-about &
+                sleep 0.8
+                xdotool search --class "xfce4-about" windowmove 600 100
+                minimizar_ventana_por_clase "xfce4-about"
+                ;;
+            "thunar")
+                # Usar thunar sin --daemon para evitar problemas
+                thunar ~/ &
+                sleep 1.0
+                xdotool search --class "Thunar" windowmove 100 300
+                minimizar_ventana_por_clase "Thunar"
+                ;;
+            "mousepad")
+                mousepad &
+                sleep 0.8
+                xdotool search --class "Mousepad" windowmove 1000 300
+                minimizar_ventana_por_clase "Mousepad"
+                ;;
+        esac
+    done
+    
+    echo "[INFO] Todas las aplicaciones están abiertas y minimizadas."
+    sleep 0.5
+}
+
+mostrar_aplicacion_con_osd() {
+    # Muestra una aplicación específica con su OSD
+    local app_nombre="$1"
+    local app_clase="$2"
+    local tema_actual="$3"
+    
+    # Activar y desminimizar la ventana
+    if ! activar_ventana_por_clase "$app_clase"; then
+        return 1
+    fi
+    
+    # Mostrar OSD
+    mostrar_osd_aplicacion "$app_nombre" "$tema_actual"
+    
+    # Esperar tiempo de observación
+    sleep "$TIEMPO_OBSERVACION"
+    
+    # Minimizar aplicación con ALT+F9
+    minimizar_ventana_por_clase "$app_clase"
+}
+
+mostrar_menu_whisker() {
+    # Muestra y oculta el menú Whisker
+    local tema_actual="$1"
+    
+    echo "[INFO] Mostrando menú Whisker..."
+    
+    # Guardar ventana activa actual
+    obtener_ventana_activa
+    
+    # Mostrar escritorio limpio primero
+    mostrar_escritorio_limpio
+    sleep 0.3
+    
+    # Abrir menú Whisker (usando xfce4-popup-whiskermenu)
+    xfce4-popup-whiskermenu &
+    sleep 0.8
+    
+    # Mostrar OSD
+    mostrar_osd_aplicacion "Menú de aplicaciones (Whisker)" "$tema_actual"
+    
+    # Esperar tiempo de observación
+    sleep "$TIEMPO_OBSERVACION"
+    
+    # Cerrar menú (presionar Escape)
+    xdotool key Escape
+    sleep 0.3
+    
+    # Restaurar ventana activa anterior
+    restaurar_ventana_activa
+}
+
+calcular_duracion_total() {
+    # Calcula la duración total estimada de la demostración
+    local num_temas=${#TEMAS_GTK[@]}
+    
+    # Tiempos por tema (en segundos)
+    local tiempo_aplicar_tema=1
+    local tiempo_entre_temas=1
+    
+    # Cálculo preciso
+    local duracion_por_tema=$(( 
+        tiempo_aplicar_tema + 
+        TIEMPO_OSD_TRANSICION + 
+        (3 * (TIEMPO_OBSERVACION + TIEMPO_ENTRE_APPS)) + 
+        TIEMPO_OBSERVACION + 
+        tiempo_entre_temas 
+    ))
+    
+    # Duración total (convertir a entero)
+    local duracion_total=$(( duracion_por_tema * num_temas ))
+    
+    # Asegurar que sea un entero positivo (mínimo 10 segundos)
+    if [ "$duracion_total" -lt 10 ]; then
+        duracion_total=10
+    fi
+    
+    echo "$duracion_total"
+}
+
+preparar_grabacion_desatendida() {
+    # Prepara la grabación en modo desatendido
+    local modo="$1"
+    
+    case "$modo" in
+        "1")  # FFmpeg
+            local timestamp=$(date +%Y%m%d-%H%M%S)
+            local archivo_salida="demo-temas-${timestamp}.mp4"
+            local resolucion="${ancho}x${alto}"
+            local duracion_total=$(calcular_duracion_total)
+            
+            echo "[INFO] Iniciando grabación FFmpeg desatendida..."
+            echo "[INFO] Duración calculada: ${duracion_total} segundos"
+            echo "[INFO] Resolución: $resolucion"
+            echo "[INFO] Archivo: $archivo_salida"
+            echo ""
+            
+            # Grabación con duración automática (usar timeout para asegurar)
+            timeout $((duracion_total + 5)) \
+            ffmpeg -f x11grab -video_size "$resolucion" -framerate 25 \
+                   -i :0.0 -t "$duracion_total" \
+                   -c:v libx264 -preset fast -pix_fmt yuv420p \
+                   -y "$archivo_salida" >/tmp/ffmpeg.log 2>&1 &
+            
+            FFMPEG_PID=$!
+            echo "[INFO] FFmpeg iniciado (PID: $FFMPEG_PID)"
+            sleep 2  # Esperar que FFmpeg se estabilice
+            ;;
+            
+        "2")  # SimpleScreenRecorder
+            echo "[INFO] Configurando SimpleScreenRecorder para modo desatendido..."
+            echo "[INFO] Asegúrate de que SimpleScreenRecorder esté ejecutándose en segundo plano."
+            echo ""
+            echo -n "[INFO] Iniciando grabación en 3 segundos (presiona Ctrl+Shift+R para grabar)... "
+            sleep 3
+            
+            # Iniciar grabación con atajo
+            xdotool key ctrl+shift+r
+            echo "[INFO] Grabación iniciada (Ctrl+Shift+R enviado)"
+            sleep 1
+            ;;
+    esac
+}
+
+finalizar_grabacion_desatendida() {
+    # Finaliza la grabación según el modo
+    local modo="$1"
+    
+    case "$modo" in
+        "1")  # FFmpeg
+            if [ -n "${FFMPEG_PID:-}" ]; then
+                echo "[INFO] Esperando a que FFmpeg termine (PID: $FFMPEG_PID)..."
+                # Esperar a que el proceso termine naturalmente
+                if wait "$FFMPEG_PID" 2>/dev/null; then
+                    echo "[ÉXITO] Grabación FFmpeg finalizada."
+                else
+                    echo "[ADVERTENCIA] FFmpeg terminó con error, revisa /tmp/ffmpeg.log"
+                fi
+                
+                # Verificar si el archivo se creó
+                local archivos=$(ls -la demo-temas-*.mp4 2>/dev/null | wc -l)
+                if [ "$archivos" -gt 0 ]; then
+                    echo "[INFO] Archivo(s) creado(s):"
+                    ls -lh demo-temas-*.mp4
+                else
+                    echo "[ERROR] No se creó ningún archivo de video"
+                    echo "[INFO] Revisa /tmp/ffmpeg.log para detalles"
+                fi
+            fi
+            ;;
+            
+        "2")  # SimpleScreenRecorder
+            echo "[INFO] Finalizando grabación SimpleScreenRecorder..."
+            sleep 1
+            # Enviar atajo para pausar/detener
+            xdotool key ctrl+shift+r
+            echo "[INFO] Grabación pausada. Guarda manualmente en SimpleScreenRecorder."
+            sleep 1
+            ;;
+    esac
+}
+
+# ----------------------------------------------------------------------------
+# FUNCIÓN PRINCIPAL DE DEMOSTRACIÓN
+# ----------------------------------------------------------------------------
 
 ejecutar_demostracion() {
     # Función principal que ejecuta la demostración completa.
     local modo_grabacion="$1"
+    
+    # Guardar ventana del terminal
+    guardar_ventana_terminal
     
     # Precalentar sudo/pkcon para evitar prompts
     precalentar_sudo_pkcon
@@ -370,82 +586,77 @@ ejecutar_demostracion() {
     # Obtener resolución para OSD y grabación
     obtener_resolucion
     
-    # Iniciar grabación si se seleccionó
-    if [ "$modo_grabacion" = "1" ]; then
-        grabar_ffmpeg
-        echo "[INFO] La grabación ha comenzado. Iniciando demostración en 3 segundos..."
-        sleep 3
-    elif [ "$modo_grabacion" = "2" ]; then
-        echo "[INFO] Modo SimpleScreenRecorder seleccionado."
-        echo "[INFO] Inicia la grabación manualmente con Ctrl+Shift+R antes de continuar."
-        echo -n "[INFO] Presiona Enter cuando estés listo para comenzar la demostración... "
-        read -r
+    # 1. INICIAR APLICACIONES Y MINIMIZARLAS
+    iniciar_aplicaciones_minimizadas
+    
+    # 2. MINIMIZAR TERMINAL (si no estamos en modo de prueba)
+    if [ "$modo_grabacion" != "3" ]; then
+        minimizar_ventana_terminal
+        sleep 0.5
     fi
     
-    # Ejecutar ciclo de temas
+    # 3. INICIAR GRABACIÓN EN MODO DESATENDIDO
+    if [ "$modo_grabacion" = "1" ] || [ "$modo_grabacion" = "2" ]; then
+        preparar_grabacion_desatendida "$modo_grabacion"
+        echo "[INFO] Demostración comenzará en 2 segundos..."
+        sleep 2
+    fi
+    
+    # 4. EJECUTAR CICLO DE TEMAS (13 pasos por tema)
     local total_temas=${#TEMAS_GTK[@]}
     
     for ((i=0; i<total_temas; i++)); do
         tema_actual="${TEMAS_GTK[$i]}"
         indice=$((i+1))
         
-        # Mostrar cabecera
+        # Mostrar cabecera (solo para logging, no interrumpe presentación)
         mostrar_cabecera_tema "$tema_actual" "$indice" "$total_temas"
         
-        # Aplicar tema (excepto en el primer ciclo, asumiendo tema por defecto ya aplicado)
+        # 3. MOSTRAR OSD DE TRANSICIÓN Y CAMBIAR TEMA
         if [ $i -gt 0 ]; then
             tema_anterior="${TEMAS_GTK[$((i-1))]}"
-            
-            # Mostrar OSD de transición
             echo "[INFO] Transición: $tema_anterior → $tema_actual"
             mostrar_osd_transicion "$tema_anterior" "$tema_actual"
-            
-            # Aplicar nuevo tema
             aplicar_tema "$tema_actual"
-            
-            # Esperar tiempo de transición OSD
             sleep "$TIEMPO_OSD_TRANSICION"
         else
             # Primer tema: aplicar sin transición previa
             aplicar_tema "$tema_actual"
+            sleep 1
         fi
         
-        # Cerrar y abrir aplicaciones para mostrar el nuevo tema
-        cerrar_aplicaciones_demo
-        abrir_aplicaciones_demo
+        # Mostrar escritorio limpio después de aplicar tema
+        mostrar_escritorio_limpio
         
-        # Mostrar OSD para cada aplicación
-        for app in "${APPS_DEMO[@]}"; do
-            case "$app" in
-                "xfce4-about")
-                    mostrar_osd_aplicacion "Acerca de Xfce" "$tema_actual"
-                    ;;
-                "thunar")
-                    mostrar_osd_aplicacion "Thunar" "$tema_actual"
-                    ;;
-                "mousepad")
-                    mostrar_osd_aplicacion "Mousepad" "$tema_actual"
-                    ;;
-            esac
-            sleep 1
-        done
+        # 4-9. MOSTRAR APLICACIONES UNA POR UNA
+        # 4. Mostrar xfce4-about y OSD
+        mostrar_aplicacion_con_osd "Acerca de Xfce" "xfce4-about" "$tema_actual"
         
-        # Rotar foco entre aplicaciones
-        rotar_foco_aplicaciones
+        # Pequeña pausa entre aplicaciones
+        sleep "$TIEMPO_ENTRE_APPS"
         
-        # Tiempo de observación
-        echo "[INFO] Observando tema durante ${TIEMPO_OBSERVACION}s..."
-        sleep "$TIEMPO_OBSERVACION"
+        # 6. Mostrar thunar y OSD
+        mostrar_aplicacion_con_osd "Thunar" "Thunar" "$tema_actual"
         
-        # Cerrar aplicaciones para el próximo tema
+        # Pequeña pausa entre aplicaciones
+        sleep "$TIEMPO_ENTRE_APPS"
+        
+        # 8. Mostrar mousepad y OSD
+        mostrar_aplicacion_con_osd "Mousepad" "Mousepad" "$tema_actual"
+        
+        # 10-11. MOSTRAR Y OCULTAR MENÚ WHISKER
+        sleep "$TIEMPO_ENTRE_APPS"
+        mostrar_menu_whisker "$tema_actual"
+        
+        # Pausa entre temas (excepto último)
         if [ $i -lt $((total_temas-1)) ]; then
-            cerrar_aplicaciones_demo
+            sleep 1
         fi
     done
     
-    # Finalizar grabación si se inició
-    if [ "$modo_grabacion" = "1" ]; then
-        detener_ffmpeg
+    # 13. FINALIZAR GRABACIÓN EN MODO DESATENDIDO
+    if [ "$modo_grabacion" = "1" ] || [ "$modo_grabacion" = "2" ]; then
+        finalizar_grabacion_desatendida "$modo_grabacion"
     fi
     
     # Cerrar aplicaciones finales
@@ -454,9 +665,38 @@ ejecutar_demostracion() {
     echo ""
     echo "[ÉXITO] Demostración completada."
     if [ "$modo_grabacion" = "1" ]; then
-        echo "[INFO] Video guardado en: $(pwd)/demo-temas-*.mp4"
+        echo "[INFO] Video guardado automáticamente."
+    elif [ "$modo_grabacion" = "2" ]; then
+        echo "[INFO] Guarda el video manualmente en SimpleScreenRecorder."
     fi
     echo ""
+}
+
+# ----------------------------------------------------------------------------
+# MENÚ Y EJECUCIÓN PRINCIPAL
+# ----------------------------------------------------------------------------
+
+mostrar_menu_grabacion() {
+    # Muestra el menú de opciones de grabación.
+    clear
+    echo "========================================"
+    echo "  DEMOSTRACIÓN CON OSD - TEMAS GTK+ EN XFCE"
+    echo "========================================"
+    echo ""
+    echo "Selecciona el modo de grabación:"
+    echo ""
+    echo "  1. Grabar con FFmpeg (MODO DESATENDIDO)"
+    echo "     - Grabación automática con duración calculada"
+    echo "     - Video se guarda automáticamente"
+    echo ""
+    echo "  2. Grabar con SimpleScreenRecorder"
+    echo "     - Inicia/pausa con Ctrl+Shift+R"
+    echo "     - Guarda manualmente al finalizar"
+    echo ""
+    echo "  3. No grabar (solo demostración)"
+    echo "  4. Salir"
+    echo ""
+    echo -n "Tu elección [1-4]: "
 }
 
 main() {
@@ -484,7 +724,7 @@ main() {
         
         case "$opcion" in
             1)
-                echo "[INFO] Modo FFmpeg seleccionado."
+                echo "[INFO] Modo FFmpeg (desatendido) seleccionado."
                 ejecutar_demostracion "1"
                 break
                 ;;
