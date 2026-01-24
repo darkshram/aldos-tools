@@ -190,6 +190,33 @@ case "$ACTION" in
         fi
         exit $EXIT_CODE
         ;;
+
+    restart)
+        if [ -z "$SERVICE_NAME" ]; then
+            echo "Error: Se requiere nombre del servicio" 1>&2
+            exit 1
+        fi
+        check_service_exists "$SERVICE_NAME"
+        SERVICE_CMD=$(get_service_command "$SERVICE_NAME")
+    
+        # Primero verificar si está corriendo
+        if "$SERVICE_CMD" status >/dev/null 2>&1; then
+            # Está corriendo, hacer restart normal
+            if [ "$SERVICE_CMD" = "service" ]; then
+                /sbin/service "$SERVICE_NAME" restart
+            else
+                "$SERVICE_CMD" restart
+            fi
+        else
+            # No está corriendo, solo iniciar
+            echo "Servicio no está corriendo, iniciando..."
+            if [ "$SERVICE_CMD" = "service" ]; then
+                /sbin/service "$SERVICE_NAME" start
+            else
+                "$SERVICE_CMD" start
+            fi
+        fi
+        ;;
     
     # Deshabilitar servicio (con soporte para --now)
     disable)
