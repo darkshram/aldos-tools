@@ -1,0 +1,350 @@
+#!/bin/bash
+# systemctl - Emulador de systemctl para SysVinit
+# Versión: 1.2
+# Autor: AlcanceLibre.org
+# Licencia: GPLv3
+
+VERSION="1.2"
+ACTION=$1
+
+# Verificar privilegios root
+if [ "$(id -u)" != "0" ]; then
+    echo "Este programa sólo puede ser ejecutado como 'root'" 1>&2
+    exit 1
+fi
+
+# Función para extraer nombre del servicio y detectar --now
+parse_arguments() {
+    local args=("$@")
+    local service_name=""
+    local now_flag=false
+    
+    for arg in "${args[@]}"; do
+        case "$arg" in
+            --now)
+                now_flag=true
+                ;;
+            -*)
+                # Ignorar otras opciones por ahora
+                continue
+                ;;
+            *)
+                if [ -z "$service_name" ]; then
+                    service_name="$arg"
+                fi
+                ;;
+        esac
+    done
+    
+    echo "$service_name"
+    return $([ "$now_flag" = true ] && echo 0 || echo 1)
+}
+
+# Funciones de utilidad
+check_service_exists() {
+    local service="$1"
+    if [ -z "$service" ]; then
+        echo "Error: Se requiere nombre del servicio" 1>&2
+        exit 1
+    fi
+    
+    if [ ! -f "/etc/init.d/$service" ] && [ ! -f "/etc/rc.d/init.d/$service" ]; then
+        echo "Unidad $service no encontrada." 1>&2
+        exit 1
+    fi
+}
+
+get_service_command() {
+    local service="$1"
+    if [ -f "/etc/init.d/$service" ]; then
+        echo "/etc/init.d/$service"
+    elif [ -f "/etc/rc.d/init.d/$service" ]; then
+        echo "/etc/rc.d/init.d/$service"
+    elif which service >/dev/null 2>&1; then
+        echo "service"
+    else
+        echo ""
+    fi
+}
+
+# Lista de scripts que NO son servicios y deben ignorarse
+should_ignore_script() {
+    local script_name="$1"
+    local ignore_list="functions single killall halt reboot network-functions netconsole"
+    
+    for ignore in $ignore_list; do
+        if [ "$script_name" = "$ignore" ]; then
+            return 0
+        fi
+    done
+    
+    if [[ "$script_name" = .* ]] || [[ "$script_name" = _* ]]; then
+        return 0
+    fi
+    
+    return 1
+}
+
+# Comandos principales
+case "$ACTION" in
+    # Comandos básicos de servicio (sin --now)
+    start|stop|restart|reload|status|condrestart|try-restart|force-reload|is-active|is-enabled)
+        SERVICE_NAME=$2
+        if [ -z "$SERVICE_NAME" ]; then
+            echo "Error: Se requiere nombre del servicio" 1>&2
+            exit 1
+        fi
+        
+        case "$ACTION" in
+            is-active)
+                SERVICE_CMD=$(get_service_command "$SERVICE_NAME")
+                if [ "$SERVICE_CMD" = "service" ]; then
+                    if /sbin/service "$SERVICE_NAME" status >/dev/null 2>&1; then
+                        echo "active"
+                        exit 0
+                    else
+                        echo "inactive"
+                        exit 1
+                    fi
+                else
+                    if "$SERVICE_CMD" status >/dev/null 2>&1; then
+                        echo "active"
+                        exit 0
+                    else
+                        echo "inactive"
+                        exit 1
+                    fi
+                fi
+                ;;
+            is-enabled)
+                if command -v chkconfig >/dev/null 2>&1; then
+                    if chkconfig --list "$SERVICE_NAME" 2>/dev/null | grep -q ":on"; then
+                        echo "enabled"
+                        exit 0
+                    else
+                        echo "disabled"
+                        exit 1
+                    fi
+                elif command -v update-rc.d >/dev/null 2>&1; then
+                    if ls /etc/rc*.d/*"$SERVICE_NAME" 2>/dev/null | grep -q "S"; then
+                        echo "enabled"
+                        exit 0
+                    else
+                        echo "disabled"
+                        exit 1
+                    fi
+                else
+                    echo "unknown"
+                    exit 1
+                fi
+                ;;
+            *)
+                check_service_exists "$SERVICE_NAME"
+                SERVICE_CMD=$(get_service_command "$SERVICE_NAME")
+                if [ "$SERVICE_CMD" = "service" ]; then
+                    /sbin/service "$SERVICE_NAME" "$ACTION"
+                else
+                    "$SERVICE_CMD" "$ACTION"
+                fi
+                ;;
+        esac
+        ;;
+    
+    # Habilitar servicio (con soporte para --now)
+    enable)
+        # Extraer nombre del servicio y detectar --now
+        shift
+        SERVICE_NAME=$(parse_arguments "$@")
+        NOW_FLAG=$?
+        
+        if [ -z "$SERVICE_NAME" ]; then
+            echo "Error: Se requiere nombre del servicio" 1>&2
+            exit 1
+        fi
+        
+        check_service_exists "$SERVICE_NAME"
+        
+        # Verificar si se usa chkconfig o update-rc.d
+        if command -v chkconfig >/dev/null 2>&1; then
+            /sbin/chkconfig "$SERVICE_NAME" on
+            EXIT_CODE=$?
+            echo "Servicio '$SERVICE_NAME' habilitado para inicio automático"
+        elif command -v update-rc.d >/dev/null 2>&1; then
+            update-rc.d "$SERVICE_NAME" defaults
+            EXIT_CODE=$?
+            echo "Servicio '$SERVICE_NAME' habilitado para inicio automático"
+        else
+            echo "Error: No se encontró chkconfig ni update-rc.d" 1>&2
+            exit 1
+        fi
+        
+        # Si se especificó --now, iniciar el servicio también
+        if [ $NOW_FLAG -eq 0 ]; then
+            echo "Iniciando servicio '$SERVICE_NAME'..."
+            SERVICE_CMD=$(get_service_command "$SERVICE_NAME")
+            if [ "$SERVICE_CMD" = "service" ]; then
+                /sbin/service "$SERVICE_NAME" start
+            else
+                "$SERVICE_CMD" start
+            fi
+        fi
+        exit $EXIT_CODE
+        ;;
+    
+    # Deshabilitar servicio (con soporte para --now)
+    disable)
+        # Extraer nombre del servicio y detectar --now
+        shift
+        SERVICE_NAME=$(parse_arguments "$@")
+        NOW_FLAG=$?
+        
+        if [ -z "$SERVICE_NAME" ]; then
+            echo "Error: Se requiere nombre del servicio" 1>&2
+            exit 1
+        fi
+        
+        check_service_exists "$SERVICE_NAME"
+        
+        if command -v chkconfig >/dev/null 2>&1; then
+            /sbin/chkconfig "$SERVICE_NAME" off
+            EXIT_CODE=$?
+            echo "Servicio '$SERVICE_NAME' deshabilitado para inicio automático"
+        elif command -v update-rc.d >/dev/null 2>&1; then
+            update-rc.d "$SERVICE_NAME" remove
+            EXIT_CODE=$?
+            echo "Servicio '$SERVICE_NAME' deshabilitado para inicio automático"
+        else
+            echo "Error: No se encontró chkconfig ni update-rc.d" 1>&2
+            exit 1
+        fi
+        
+        # Si se especificó --now, detener el servicio también
+        if [ $NOW_FLAG -eq 0 ]; then
+            echo "Deteniendo servicio '$SERVICE_NAME'..."
+            SERVICE_CMD=$(get_service_command "$SERVICE_NAME")
+            if [ "$SERVICE_CMD" = "service" ]; then
+                /sbin/service "$SERVICE_NAME" stop
+            else
+                "$SERVICE_CMD" stop
+            fi
+        fi
+        exit $EXIT_CODE
+        ;;
+    
+    # Recargar demonio
+    daemon-reload)
+        echo "Recargando configuración del demonio..."
+        if [ -x /lib/sysvinit/telinit ]; then
+            /lib/sysvinit/telinit u
+        else
+            echo "Nota: telinit no encontrado, recarga limitada"
+            touch /etc/inittab 2>/dev/null
+        fi
+        ;;
+    
+    # Listar unidades (versión mejorada)
+    list-units)
+        echo "UNIT                LOAD   ACTIVE SUB     DESCRIPTION"
+        echo "-----------------------------------------------------"
+        
+        declare -A processed_services
+        
+        for dir in /etc/init.d /etc/rc.d/init.d; do
+            if [ -d "$dir" ]; then
+                for service_path in "$dir"/*; do
+                    if [ -f "$service_path" ] && [ -x "$service_path" ]; then
+                        SERVICE_NAME=$(basename "$service_path")
+                        
+                        if should_ignore_script "$SERVICE_NAME"; then
+                            continue
+                        fi
+                        
+                        if [ "${processed_services[$SERVICE_NAME]}" = "1" ]; then
+                            continue
+                        fi
+                        
+                        processed_services[$SERVICE_NAME]=1
+                        
+                        STATUS="inactive"
+                        ENABLED="disabled"
+                        
+                        if pgrep -f "$SERVICE_NAME" >/dev/null 2>&1 || \
+                           pidof "$SERVICE_NAME" >/dev/null 2>&1; then
+                            STATUS="active"
+                        fi
+                        
+                        if command -v chkconfig >/dev/null 2>&1; then
+                            if chkconfig --list "$SERVICE_NAME" 2>/dev/null | grep -q ":on"; then
+                                ENABLED="enabled"
+                            fi
+                        elif command -v update-rc.d >/dev/null 2>&1; then
+                            if ls /etc/rc*.d/*"$SERVICE_NAME" 2>/dev/null | grep -q "S"; then
+                                ENABLED="enabled"
+                            fi
+                        fi
+                        
+                        printf "%-20s %-6s %-6s %-6s %s\n" \
+                            "$SERVICE_NAME.service" "loaded" "$STATUS" "exited" "$SERVICE_NAME"
+                    fi
+                done
+            fi
+        done
+        ;;
+    
+    # Mostrar versión
+    --version)
+        echo "systemctl v$VERSION (emulador SysVinit para ALDOS)"
+        echo "Compatibilidad parcial con systemctl de SystemD"
+        echo "Copyright © $(date +%Y) AlcanceLibre.org - Licencia GPLv3"
+        ;;
+    
+    # Mostrar ayuda
+    --help|-h|"")
+        cat << EOF
+systemctl v${VERSION} - Emulador para SysVinit
+
+Uso:
+  systemctl [OPCIONES...] {COMANDO} [NOMBRE_SERVICIO...]
+
+Comandos de unidad:
+  start [NOMBRE...]           Iniciar una o más unidades
+  stop [NOMBRE...]            Detener una o más unidades
+  restart [NOMBRE...]         Reiniciar una o más unidades
+  reload [NOMBRE...]          Recargar configuración de una o más unidades
+  status [NOMBRE...]          Mostrar estado de una o más unidades
+  
+Comandos de habilitación:
+  enable [NOMBRE...]          Habilitar una o más unidades
+  disable [NOMBRE...]         Deshabilitar una o más unidades
+  is-enabled [NOMBRE...]      Verificar si una unidad está habilitada
+  is-active [NOMBRE...]       Verificar si una unidad está activa
+  
+Comandos del sistema:
+  daemon-reload               Recargar configuración del sistema
+  list-units                  Listar unidades cargadas
+  --version                   Mostrar versión
+  --help                      Mostrar esta ayuda
+
+Opciones:
+  --now                       Ejecutar acción inmediatamente con enable/disable
+  -t, --type=TYPE             Tipo de unidad (ignorado, para compatibilidad)
+  -a, --all                   Todas las unidades (para list-units)
+
+Ejemplos:
+  systemctl start sshd
+  systemctl enable --now nginx
+  systemctl status httpd
+  systemctl daemon-reload
+
+Nota: Esta es una implementación para SysVinit. Algunas opciones de
+systemctl original pueden no estar disponibles o comportarse diferente.
+EOF
+        ;;
+    
+    # Comando no reconocido
+    *)
+        echo "Comando '$ACTION' no reconocido o no implementado" 1>&2
+        echo "Use 'systemctl --help' para ver los comandos disponibles" 1>&2
+        exit 1
+        ;;
+esac
